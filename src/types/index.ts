@@ -20,7 +20,13 @@ export type IconName =
   | 'users'
   | 'lock'
   | 'arrow'
-  | 'x';
+  | 'x'
+  | 'user'
+  | 'stethoscope'
+  | 'phone'
+  | 'eye'
+  | 'eyeOff'
+  | 'heart';
 
 export type UserRole = 'Patient' | 'Doctor' | 'Admin';
 export type AccountStatus = 'Active' | 'Pending' | 'Suspended';

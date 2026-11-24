@@ -8,14 +8,14 @@ interface LogoProps {
 }
 
 export function Logo({ href = '/', className = '' }: LogoProps) {
-  // Source is 1600x533 (3:1). "h-* w-auto object-contain" keeps that ratio
+  // Source is 2172x724 (3:1). "h-* w-auto object-contain" keeps that ratio
   // and never crops or stretches it inside the sidebar header.
   const image = (
     <Image
-      src="/logo.jpeg"
+      src="/logo-robot.png"
       alt="MedBuddy"
-      width={1600}
-      height={533}
+      width={2172}
+      height={724}
       className={`h-11 w-auto object-contain ${className}`}
     />
   );
