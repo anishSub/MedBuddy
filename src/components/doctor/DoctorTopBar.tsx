@@ -1,6 +1,7 @@
 'use client';
 
 import { Icon } from '@/components/common/Icon';
+import { NotificationMenu } from '@/components/common/NotificationMenu';
 
 export function DoctorTopBar() {
   return (
@@ -21,13 +22,7 @@ export function DoctorTopBar() {
           <span className="block text-[11px] font-semibold text-[#334155]">Monday, 24 June</span>
           <span className="text-[10px] text-[#94A3B8]">12 appointments today</span>
         </p>
-        <button
-          aria-label="Notifications"
-          className="relative grid h-9 sm:h-10 w-9 sm:w-10 place-items-center rounded-lg border border-[#E2E8F0] bg-white text-[#475569] shadow-xs hover:bg-slate-50"
-        >
-          <Icon name="bell" size={17} />
-          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />
-        </button>
+        <NotificationMenu />
       </div>
     </header>
   );

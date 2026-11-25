@@ -220,6 +220,23 @@ export default function DashboardPage() {
     }
   };
 
+  const triggerReminderAlert = async () => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      let perm = Notification.permission;
+      if (perm === 'default') {
+        perm = await Notification.requestPermission();
+      }
+      if (perm === 'granted') {
+        new Notification('MedBuddy Dose Reminder', {
+          body: 'Time to take Metformin 500 mg — Evening dose after meal!',
+          icon: '/logo-robot.png',
+        });
+      } else {
+        alert('Time to take Metformin 500 mg — Evening dose after meal! (Enable desktop notifications in your browser settings to see native banners)');
+      }
+    }
+  };
+
   const adherenceRate = patientDetail?.weekly_adherence || 88;
   const firstName = user?.full_name ? user.full_name.split(' ')[0] : 'Ramesh';
   const appointmentDate = appointment?.appointment_date
@@ -258,9 +275,20 @@ export default function DashboardPage() {
                 {totalDoses} doses scheduled for today
               </p>
             </div>
-            <div className="flex items-center gap-1.5 rounded-full bg-[#E8F7F1] px-2.5 py-1 text-[10px] font-semibold text-[#0F766E]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
-              {takenCount} of {totalDoses} taken
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={triggerReminderAlert}
+                title="Test browser reminder notification"
+                className="flex items-center gap-1.5 rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1 text-[11px] font-semibold text-[#334155] shadow-xs hover:bg-slate-50 transition"
+              >
+                <Icon name="bell" size={13} className="text-[#0D9488]" />
+                <span>Simulate Reminder</span>
+              </button>
+              <div className="flex items-center gap-1.5 rounded-full bg-[#E8F7F1] px-2.5 py-1 text-[10px] font-semibold text-[#0F766E]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
+                {takenCount} of {totalDoses} taken
+              </div>
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Icon } from '@/components/common/Icon';
+import { NotificationMenu } from '@/components/common/NotificationMenu';
 
 interface PatientHeaderProps {
   eyebrow?: string;
@@ -53,15 +54,7 @@ export function PatientHeader({ eyebrow, title, compact = false }: PatientHeader
           <Icon name="qr" size={16} />
           <span className="hidden xs:inline sm:inline">My QR Card</span>
         </Link>
-        <button
-          aria-label="Notifications"
-          className={`relative grid h-9 w-9 place-items-center rounded-lg border border-[#E2E8F0] bg-white text-[#475569] shadow-xs transition hover:border-[#B9D8D5] hover:bg-[#F8FAFC] sm:h-10 sm:w-10 ${
-            compact ? 'md:h-9 md:w-9' : ''
-          }`}
-        >
-          <Icon name="bell" size={17} />
-          <span className="absolute right-[8px] top-[7px] h-1.5 w-1.5 rounded-full bg-[#F59E0B] ring-2 ring-white" />
-        </button>
+        <NotificationMenu className={compact ? 'md:h-9 md:w-9' : ''} />
       </div>
     </header>
   );

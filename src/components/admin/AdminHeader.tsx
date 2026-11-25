@@ -1,6 +1,6 @@
 'use client';
 
-import { Icon } from '@/components/common/Icon';
+import { NotificationMenu } from '@/components/common/NotificationMenu';
 
 interface AdminHeaderProps {
   title: string;
@@ -19,12 +19,7 @@ export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
         </h1>
       </div>
       <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-        <button
-          aria-label="Notifications"
-          className="grid h-9 sm:h-10 w-9 sm:w-10 place-items-center rounded-lg border border-[#E2E8F0] bg-white text-[#475569] shadow-xs hover:bg-slate-50"
-        >
-          <Icon name="bell" size={17} />
-        </button>
+        <NotificationMenu />
         <div className="grid h-9 sm:h-10 w-9 sm:w-10 place-items-center rounded-full bg-[#DDEBE9] text-[11px] font-semibold text-[#0F766E]">
           NA
         </div>
