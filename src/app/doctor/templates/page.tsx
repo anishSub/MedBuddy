@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@/components/common/Icon';
 import { doctorService } from '@/lib/supabase/services';
+import { useAuth } from '@/context/AuthContext';
 
 type PreviewMed = [name: string, dosage: string, timing: string];
 type RxTemplateItem = [
@@ -26,7 +27,7 @@ const DEFAULT_INSTRUCTIONS =
 // Fallback mock data shown when DB has no templates yet
 const MOCK_TEMPLATES: RxTemplateItem[] = [
   [
-    'Viral Fever 1-0-1',
+    'Viral Fever Care Plan',
     '3 medicines',
     'Paracetamol · Cetirizine · Pantoprazole',
     'General Medicine',
@@ -38,7 +39,7 @@ const MOCK_TEMPLATES: RxTemplateItem[] = [
     ],
   ],
   [
-    'Gastritis Regimen',
+    'Gastritis & Acidity Plan',
     '2 medicines',
     'Pantoprazole · Antacid suspension',
     'Gastroenterology',
@@ -46,7 +47,7 @@ const MOCK_TEMPLATES: RxTemplateItem[] = [
     GENERIC_MEDS,
   ],
   [
-    'Post-Op Care',
+    'Post-Op Healing Plan',
     '4 medicines',
     'Antibiotic · Analgesic · PPI · Supplement',
     'Surgery',
@@ -54,7 +55,7 @@ const MOCK_TEMPLATES: RxTemplateItem[] = [
     GENERIC_MEDS,
   ],
   [
-    'Hypertension Review',
+    'Hypertension Routine',
     '3 medicines',
     'Amlodipine · Losartan · Atorvastatin',
     'Cardiology',
@@ -62,7 +63,7 @@ const MOCK_TEMPLATES: RxTemplateItem[] = [
     GENERIC_MEDS,
   ],
   [
-    'Diabetes Follow-Up',
+    'Diabetes Maintenance Plan',
     '3 medicines',
     'Metformin · Sitagliptin · Calcium D3',
     'Endocrinology',
@@ -96,10 +97,26 @@ function mapTemplate(r: TemplateRow): RxTemplateItem {
 }
 
 export default function RxTemplatesPage() {
+  const { user } = useAuth();
   const [templates, setTemplates] = useState<RxTemplateItem[]>(MOCK_TEMPLATES);
   const [selected, setSelected] = useState<RxTemplateItem>(MOCK_TEMPLATES[0]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
+
+  // New template modal state
+  const [showModal, setShowModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    title: '',
+    department: 'General Medicine',
+    instructions: 'Take medicines after meals with warm water. Rest well.',
+    med1Name: '',
+    med1Dose: '',
+    med1Timing: '1 - 0 - 1',
+    med2Name: '',
+    med2Dose: '',
+    med2Timing: '0 - 0 - 1',
+  });
 
   useEffect(() => {
     doctorService
@@ -124,6 +141,59 @@ export default function RxTemplatesPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  async function handleCreateTemplate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.title.trim() || !form.med1Name.trim()) return;
+
+    setSaving(true);
+    try {
+      const medsList: Array<{ name: string; dosage: string; timing: string }> = [
+        { name: form.med1Name.trim(), dosage: form.med1Dose.trim() || 'Standard', timing: form.med1Timing },
+      ];
+      if (form.med2Name.trim()) {
+        medsList.push({
+          name: form.med2Name.trim(),
+          dosage: form.med2Dose.trim() || 'Standard',
+          timing: form.med2Timing,
+        });
+      }
+
+      const count = `${medsList.length} medicines`;
+      const summary = medsList.map((m) => m.name).join(' · ');
+
+      const newRow = await doctorService.createRxTemplate({
+        title: form.title.trim(),
+        department: form.department,
+        medicines_count: count,
+        medication_summary: summary,
+        instructions: form.instructions.trim(),
+        medications_json: medsList,
+        doctor_id: user?.id,
+      });
+
+      const mapped = mapTemplate(newRow as TemplateRow);
+      setTemplates((prev) => [mapped, ...prev]);
+      setSelected(mapped);
+      setUsingMock(false);
+      setShowModal(false);
+      setForm({
+        title: '',
+        department: 'General Medicine',
+        instructions: 'Take medicines after meals with warm water. Rest well.',
+        med1Name: '',
+        med1Dose: '',
+        med1Timing: '1 - 0 - 1',
+        med2Name: '',
+        med2Dose: '',
+        med2Timing: '0 - 0 - 1',
+      });
+    } catch {
+      alert('Could not save template. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <main className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
       {/* Template list column */}
@@ -131,22 +201,25 @@ export default function RxTemplatesPage() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
-              Prescription library
+              Prescription Library
             </p>
             <h1 className="mt-1 text-xl sm:text-[22px] font-semibold tracking-[-0.03em] text-[#0F172A]">
-              Rx Templates
+              Prescription Templates
             </h1>
             <p className="mt-0.5 text-[10px] text-[#64748B]">
-              Reusable medication plans for common clinical cases.
+              Standardized treatment plans and medicine regimens for clinical cases.
               {loading && <span className="ml-2">Loading templates…</span>}
               {usingMock && (
                 <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
               )}
             </p>
           </div>
-          <button className="flex h-8 sm:h-9 items-center gap-1.5 sm:gap-2 rounded-md bg-[#0D9488] px-3 sm:px-3.5 text-[10px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]">
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex h-8 sm:h-9 items-center gap-1.5 sm:gap-2 rounded-md bg-[#0D9488] px-3 sm:px-3.5 text-[10px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
+          >
             <Icon name="plus" size={14} />
-            New template
+            New Treatment Plan
           </button>
         </div>
 
@@ -168,7 +241,7 @@ export default function RxTemplatesPage() {
                 </div>
                 <p className="mt-1.5 text-[10px] text-[#64748B] truncate">{template[2]}</p>
                 <p className="mt-1 text-[9px] text-[#94A3B8]">
-                  {template[1]} · Updated 12 Jun 2024
+                  {template[1]} · Ready for prescribing
                 </p>
               </div>
               <Icon name="arrow" size={15} className="ml-auto text-[#94A3B8] shrink-0" />
@@ -180,7 +253,7 @@ export default function RxTemplatesPage() {
       {/* Preview column */}
       <aside className="flex w-full xl:w-[42%] flex-col bg-[#FCFDFD] px-4 sm:px-6 lg:px-9 py-6 sm:py-7 xl:overflow-y-auto">
         <p className="text-[9px] font-semibold uppercase tracking-[.12em] text-[#94A3B8]">
-          Template preview
+          Treatment plan preview
         </p>
         <h2 className="mt-2 text-lg sm:text-[19px] font-semibold tracking-[-0.02em] text-[#0F172A]">
           {selected[0]}
@@ -204,23 +277,166 @@ export default function RxTemplatesPage() {
 
         <div className="mt-5 sm:mt-6">
           <p className="text-[9px] font-semibold uppercase tracking-[.1em] text-[#94A3B8]">
-            Default instructions
+            Patient instructions
           </p>
           <p className="mt-1.5 text-[10px] leading-5 text-[#64748B]">{selected[4]}</p>
         </div>
 
         <div className="mt-6 sm:mt-auto grid grid-cols-2 gap-2 border-t border-[#E2E8F0] pt-5">
-          <button className="h-9 sm:h-10 rounded-md border border-[#CBD5E1] text-[10px] font-semibold text-[#475569] shadow-xs hover:bg-slate-50">
-            Edit template
+          <button
+            onClick={() => setShowModal(true)}
+            className="h-9 sm:h-10 rounded-md border border-[#CBD5E1] text-[10px] font-semibold text-[#475569] shadow-xs hover:bg-slate-50"
+          >
+            New plan
           </button>
           <Link
-            href="/doctor/patient"
+            href={`/doctor/patient?template=${encodeURIComponent(selected[0])}`}
             className="flex h-9 sm:h-10 items-center justify-center rounded-md bg-[#0D9488] text-[10px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
           >
-            Use for patient
+            Apply to Patient
           </Link>
         </div>
       </aside>
+
+      {/* New Template Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3 mb-4">
+              <h2 className="text-[15px] font-semibold text-[#0F172A]">Create Prescription Template</h2>
+              <button onClick={() => setShowModal(false)} className="text-[#94A3B8] hover:text-[#0F172A]">
+                <Icon name="x" size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateTemplate} className="flex flex-col gap-3">
+              <div>
+                <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                  Plan / Template Title
+                </label>
+                <input
+                  required
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  placeholder="e.g. Acute Bronchitis Regimen"
+                  className="w-full rounded-md border border-[#CBD5E1] px-3 py-2 text-[12px] text-[#0F172A] focus:border-[#0D9488] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                  Department / Speciality
+                </label>
+                <select
+                  value={form.department}
+                  onChange={(e) => setForm((f) => ({ ...f, department: e.target.value }))}
+                  className="w-full rounded-md border border-[#CBD5E1] px-3 py-2 text-[12px] text-[#0F172A] focus:border-[#0D9488] focus:outline-none"
+                >
+                  <option>General Medicine</option>
+                  <option>Cardiology</option>
+                  <option>Gastroenterology</option>
+                  <option>Endocrinology</option>
+                  <option>Pulmonology</option>
+                  <option>Orthopaedics</option>
+                  <option>Paediatrics</option>
+                </select>
+              </div>
+
+              <div className="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                <p className="text-[11px] font-semibold text-[#334155] mb-2">Medicine 1 (Primary)</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    required
+                    value={form.med1Name}
+                    onChange={(e) => setForm((f) => ({ ...f, med1Name: e.target.value }))}
+                    placeholder="Medicine name (e.g. Amoxicillin)"
+                    className="rounded border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-[11px] text-[#0F172A]"
+                  />
+                  <input
+                    value={form.med1Dose}
+                    onChange={(e) => setForm((f) => ({ ...f, med1Dose: e.target.value }))}
+                    placeholder="Dose (e.g. 500 mg)"
+                    className="rounded border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-[11px] text-[#0F172A]"
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="block text-[10px] text-[#64748B] mb-0.5">Timing (Morning - Afternoon - Night)</label>
+                  <select
+                    value={form.med1Timing}
+                    onChange={(e) => setForm((f) => ({ ...f, med1Timing: e.target.value }))}
+                    className="w-full rounded border border-[#CBD5E1] bg-white px-2 py-1 text-[11px] text-[#0F172A]"
+                  >
+                    <option value="1 - 0 - 1">1 - 0 - 1 (Morning & Night)</option>
+                    <option value="1 - 1 - 1">1 - 1 - 1 (Thrice daily)</option>
+                    <option value="1 - 0 - 0">1 - 0 - 0 (Morning only)</option>
+                    <option value="0 - 0 - 1">0 - 0 - 1 (Night only)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                <p className="text-[11px] font-semibold text-[#334155] mb-2">Medicine 2 (Optional)</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    value={form.med2Name}
+                    onChange={(e) => setForm((f) => ({ ...f, med2Name: e.target.value }))}
+                    placeholder="Medicine name (e.g. Paracetamol)"
+                    className="rounded border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-[11px] text-[#0F172A]"
+                  />
+                  <input
+                    value={form.med2Dose}
+                    onChange={(e) => setForm((f) => ({ ...f, med2Dose: e.target.value }))}
+                    placeholder="Dose (e.g. 650 mg)"
+                    className="rounded border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-[11px] text-[#0F172A]"
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="block text-[10px] text-[#64748B] mb-0.5">Timing</label>
+                  <select
+                    value={form.med2Timing}
+                    onChange={(e) => setForm((f) => ({ ...f, med2Timing: e.target.value }))}
+                    className="w-full rounded border border-[#CBD5E1] bg-white px-2 py-1 text-[11px] text-[#0F172A]"
+                  >
+                    <option value="0 - 0 - 1">0 - 0 - 1 (Night only)</option>
+                    <option value="1 - 0 - 1">1 - 0 - 1 (Morning & Night)</option>
+                    <option value="1 - 1 - 1">1 - 1 - 1 (Thrice daily)</option>
+                    <option value="1 - 0 - 0">1 - 0 - 0 (Morning only)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-[#475569] mb-1">
+                  Instructions for Patient
+                </label>
+                <textarea
+                  rows={2}
+                  value={form.instructions}
+                  onChange={(e) => setForm((f) => ({ ...f, instructions: e.target.value }))}
+                  className="w-full rounded-md border border-[#CBD5E1] px-3 py-2 text-[12px] text-[#0F172A] focus:border-[#0D9488] focus:outline-none resize-none"
+                />
+              </div>
+
+              <div className="mt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 rounded-md border border-[#CBD5E1] py-2 text-[12px] font-medium text-[#475569] hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 rounded-md bg-[#0D9488] py-2 text-[12px] font-semibold text-white hover:bg-[#0F766E] disabled:opacity-60 transition"
+                >
+                  {saving ? 'Saving to Database…' : 'Save Template'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

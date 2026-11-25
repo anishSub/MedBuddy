@@ -18,7 +18,7 @@ const doctorNavItems: DoctorNavItem[] = [
   { href: '/doctor/dashboard', label: 'Dashboard', icon: 'home' },
   { href: '/doctor/scan', label: 'Scan Patient QR', icon: 'scan' },
   { href: '/doctor/patient', label: 'Patients', icon: 'users' },
-  { href: '/doctor/templates', label: 'Rx Templates', icon: 'records' },
+  { href: '/doctor/templates', label: 'Prescription Templates', icon: 'records' },
 ];
 
 export function DoctorSidebar() {

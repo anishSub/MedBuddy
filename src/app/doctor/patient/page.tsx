@@ -201,6 +201,7 @@ function DoctorPatientContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const patientParam = searchParams.get('code') || searchParams.get('id') || 'CT-2048';
+  const templateParam = searchParams.get('template');
 
   const { user } = useAuth();
   const [patient, setPatient] = useState<PatientView>(MOCK_PATIENT);
@@ -315,8 +316,12 @@ function DoctorPatientContent() {
       .getRxTemplates()
       .then((rows) => {
         if (rows.length > 0) {
-          setTemplates(rows.map(mapTemplate));
+          const mapped = rows.map(mapTemplate);
+          setTemplates(mapped);
           setUsingMockTemplates(false);
+          if (templateParam) {
+            applyTemplate(templateParam, mapped);
+          }
         } else {
           setTemplates(MOCK_TEMPLATES);
           setUsingMockTemplates(true);
@@ -326,7 +331,7 @@ function DoctorPatientContent() {
         setTemplates(MOCK_TEMPLATES);
         setUsingMockTemplates(true);
       });
-  }, []);
+  }, [templateParam]);
 
   const removeMed = (id: number) => {
     setMeds((prev) => prev.filter((m) => m.id !== id));
@@ -359,9 +364,9 @@ function DoctorPatientContent() {
     );
   };
 
-  const applyTemplate = (title: string) => {
+  const applyTemplate = (title: string, currentTemplates = templates) => {
     setTemplateChoice(title);
-    const template = templates.find((t) => t[0] === title);
+    const template = currentTemplates.find((t) => t[0].toLowerCase() === title.toLowerCase());
     if (!template) return;
     setMeds(
       template[5].map(([name, dosage, timing], i) => {
@@ -375,6 +380,9 @@ function DoctorPatientContent() {
         };
       })
     );
+    if (template[4]) {
+      setNotes(template[4]);
+    }
   };
 
   async function handlePublish() {
@@ -553,16 +561,16 @@ function DoctorPatientContent() {
             </h2>
           </div>
           <label className="grid gap-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
-            Load preset template
+            Load Treatment Template
             <select
               value={templateChoice}
               onChange={(e) => applyTemplate(e.target.value)}
-              className="h-9 w-full sm:w-[210px] rounded-md border border-[#CBD5E1] bg-white px-3 text-[11px] font-medium normal-case tracking-normal text-[#475569] shadow-xs"
+              className="h-9 w-full sm:w-[220px] rounded-md border border-[#CBD5E1] bg-white px-3 text-[11px] font-medium normal-case tracking-normal text-[#475569] shadow-xs"
             >
-              <option value="">Choose a template</option>
+              <option value="">Choose a treatment plan…</option>
               {templates.map((t) => (
                 <option key={t[0]} value={t[0]}>
-                  {t[0]}
+                  {t[0]} ({t[3]})
                 </option>
               ))}
             </select>

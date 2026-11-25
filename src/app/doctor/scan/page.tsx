@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@/components/common/Icon';
-import { doctorService } from '@/lib/supabase/services';
+import { doctorService, patientService } from '@/lib/supabase/services';
 
 type ScannedPatient = {
+  profile_id: string;
   full_name: string;
   avatar_initials: string | null;
   patient_code: string;
@@ -14,10 +15,12 @@ type ScannedPatient = {
   blood_group: string | null;
   allergies: string[];
   weekly_adherence: number | null;
+  active_meds_count?: number;
 };
 
 // Fallback mock data shown when DB has no matching patient yet
 const MOCK_PATIENT: ScannedPatient = {
+  profile_id: 'a0000000-0000-0000-0000-000000000001',
   full_name: 'Ramesh Sharma',
   avatar_initials: 'RS',
   patient_code: 'CT-2048',
@@ -26,9 +29,11 @@ const MOCK_PATIENT: ScannedPatient = {
   blood_group: 'O+',
   allergies: ['Penicillin'],
   weekly_adherence: 88,
+  active_meds_count: 4,
 };
 
 type PatientContextRow = {
+  profile_id: string;
   patient_code: string;
   age: number | null;
   gender: string | null;
@@ -38,8 +43,9 @@ type PatientContextRow = {
   profiles: { full_name: string; avatar_initials: string | null } | null;
 };
 
-function mapPatient(r: PatientContextRow): ScannedPatient {
+function mapPatient(r: PatientContextRow, medsCount?: number): ScannedPatient {
   return {
+    profile_id: r.profile_id,
     full_name: r.profiles?.full_name ?? 'Unknown patient',
     avatar_initials: r.profiles?.avatar_initials ?? null,
     patient_code: r.patient_code,
@@ -48,21 +54,38 @@ function mapPatient(r: PatientContextRow): ScannedPatient {
     blood_group: r.blood_group,
     allergies: Array.isArray(r.allergies) ? r.allergies : [],
     weekly_adherence: r.weekly_adherence,
+    active_meds_count: medsCount,
   };
 }
+
+const DEMO_PATIENTS = [
+  { code: 'CT-2048', name: 'Ramesh Sharma' },
+  { code: 'CT-1987', name: 'Maya Gurung' },
+  { code: 'CT-2186', name: 'Bikash Thapa' },
+  { code: 'CT-1934', name: 'Sita Rai' },
+  { code: 'CT-2076', name: 'Anu Maharjan' },
+];
 
 export default function DoctorScanPage() {
   const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
   const [usingMock, setUsingMock] = useState(false);
   const [patient, setPatient] = useState<ScannedPatient>(MOCK_PATIENT);
+  const [inputCode, setInputCode] = useState('');
 
   async function lookup(code: string) {
     setLoading(true);
     try {
       const row = await doctorService.getPatientContext(code);
       if (row) {
-        setPatient(mapPatient(row));
+        let medsCount = 0;
+        try {
+          const meds = await patientService.getMedications(row.profile_id);
+          medsCount = meds.length;
+        } catch {
+          medsCount = 0;
+        }
+        setPatient(mapPatient(row, medsCount));
         setUsingMock(false);
       } else {
         setPatient(MOCK_PATIENT);
@@ -89,11 +112,12 @@ export default function DoctorScanPage() {
           Scan Patient QR
         </h1>
         <p className="mt-2 max-w-[390px] text-center text-[11px] leading-5 text-[#64748B]">
-          Position the MedBuddy Health Pass inside the frame. Patient details are only displayed
-          after verified consent.
+          Position the MedBuddy Health Pass inside the frame. Patient details are loaded live from the
+          clinical database after verified consent.
         </p>
 
-        <div className="relative mt-6 sm:mt-8 grid h-[280px] sm:h-[320px] w-full max-w-[400px] place-items-center overflow-hidden rounded-xl border border-[#CBD5E1] bg-white shadow-xs">
+        {/* QR Scanner viewport */}
+        <div className="relative mt-6 sm:mt-8 grid h-[260px] sm:h-[300px] w-full max-w-[400px] place-items-center overflow-hidden rounded-xl border border-[#CBD5E1] bg-white shadow-xs">
           <div className="absolute inset-3 sm:inset-4 rounded-lg border border-dashed border-[#E2E8F0]" />
           <div className="absolute left-6 sm:left-8 top-6 sm:top-8 h-10 w-10 sm:h-12 sm:w-12 border-l-2 border-t-2 border-[#94A3B8]" />
           <div className="absolute right-6 sm:right-8 top-6 sm:top-8 h-10 w-10 sm:h-12 sm:w-12 border-r-2 border-t-2 border-[#94A3B8]" />
@@ -115,6 +139,7 @@ export default function DoctorScanPage() {
           )}
         </div>
 
+        {/* Camera scan button */}
         <button
           onClick={() => {
             if (scanned) {
@@ -124,23 +149,50 @@ export default function DoctorScanPage() {
             lookup('CT-2048');
           }}
           disabled={loading}
-          className="mt-6 flex h-10 sm:h-11 items-center gap-2 rounded-md bg-[#0D9488] px-5 text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
+          className="mt-5 flex h-10 sm:h-11 items-center gap-2 rounded-md bg-[#0D9488] px-5 text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
         >
           <Icon name="scan" size={16} />
-          {loading ? 'Looking up…' : scanned ? 'Reset camera scan' : 'Start camera scan'}
+          {loading ? 'Looking up…' : scanned ? 'Reset camera scan' : 'Scan Health Pass (Simulate)'}
         </button>
-        <p className="mt-4 text-[9px] text-[#94A3B8]">
-          No camera available?{' '}
+
+        {/* Manual lookup input */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (inputCode.trim()) lookup(inputCode.trim());
+          }}
+          className="mt-5 flex w-full max-w-[400px] gap-2"
+        >
+          <input
+            type="text"
+            value={inputCode}
+            onChange={(e) => setInputCode(e.target.value)}
+            placeholder="Enter Patient ID (e.g. CT-1987)"
+            className="h-10 flex-1 rounded-md border border-[#CBD5E1] bg-white px-3 text-[12px] text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:outline-none"
+          />
           <button
-            onClick={() => {
-              const code = window.prompt('Enter patient ID', 'CT-2048');
-              if (code && code.trim()) lookup(code.trim());
-            }}
-            className="font-semibold text-[#0D9488] hover:underline"
+            type="submit"
+            disabled={loading || !inputCode.trim()}
+            className="h-10 rounded-md bg-[#334155] px-4 text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#1E293B] disabled:opacity-50"
           >
-            Enter patient ID manually
+            {loading ? 'Searching…' : 'Look Up'}
           </button>
-        </p>
+        </form>
+
+        {/* Quick test chips */}
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 max-w-[420px]">
+          <span className="text-[10px] text-[#94A3B8]">Quick patient codes:</span>
+          {DEMO_PATIENTS.map((p) => (
+            <button
+              key={p.code}
+              type="button"
+              onClick={() => lookup(p.code)}
+              className="rounded bg-white border border-[#CBD5E1] px-2 py-0.5 text-[10px] font-medium text-[#475569] hover:border-[#0D9488] hover:text-[#0D9488] transition"
+            >
+              {p.name.split(' ')[0]} ({p.code})
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Patient details column */}
@@ -161,7 +213,7 @@ export default function DoctorScanPage() {
           <div className="py-4">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-[9px] font-semibold text-[#059669]">
               <Icon name="check" size={12} />
-              Identity verified
+              Identity verified & loaded
             </span>
             {usingMock && (
               <span className="ml-2 text-[9px] text-amber-500 font-medium">(demo data)</span>
@@ -197,8 +249,7 @@ export default function DoctorScanPage() {
             </div>
 
             <p className="mt-5 text-[10px] leading-5 text-[#64748B]">
-              4 active medications · {patient.weekly_adherence ?? '—'}% weekly adherence · Last visit
-              06 May 2024
+              {patient.active_meds_count ?? 4} active medications · {patient.weekly_adherence ?? '—'}% weekly adherence · Verified Clinical Record
             </p>
 
             <Link

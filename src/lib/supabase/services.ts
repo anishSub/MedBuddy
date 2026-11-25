@@ -316,6 +316,32 @@ export const doctorService = {
     return data || [];
   },
 
+  async createRxTemplate(template: {
+    title: string;
+    department: string;
+    medicines_count: string;
+    medication_summary: string;
+    instructions: string;
+    medications_json: Array<{ name: string; dosage: string; timing: string }>;
+    doctor_id?: string;
+  }) {
+    const { data, error } = await supabase
+      .from('rx_templates')
+      .insert({
+        ...template,
+        updated_date: new Date().toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }),
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
   async savePrescription(data: {
     patient_id: string;
     doctor_id?: string;
