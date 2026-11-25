@@ -20,7 +20,6 @@ interface PatientSidebarProps {
 
 const navItems: NavItem[] = [
   { href: '/dashboard', label: 'Overview', icon: 'home' },
-  { href: '/scan', label: 'Scan Prescription', icon: 'scan' },
   { href: '/records', label: 'Medical Records', icon: 'records' },
   { href: '/health-pass', label: 'QR Health Pass', icon: 'qr' },
 ];
