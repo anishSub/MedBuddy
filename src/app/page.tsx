@@ -64,6 +64,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      let profile;
       if (isSignUp) {
         if (!fullName.trim()) {
           throw new Error('Please enter your full name');
@@ -71,17 +72,19 @@ export default function LoginPage() {
         if (!phone.trim()) {
           throw new Error('Please enter your mobile number');
         }
-        await signUp(fullName.trim(), phone.trim(), role, password);
+        profile = await signUp(fullName.trim(), phone.trim(), role, password);
       } else {
         if (!phone.trim()) {
           throw new Error('Please enter your mobile number');
         }
-        await login(phone.trim(), role, password);
+        profile = await login(phone.trim(), role, password);
       }
 
-      // Route based on role
-      if (role === 'Doctor') {
+      // Route based on authenticated role
+      if (profile.role === 'Doctor') {
         router.push('/doctor/dashboard');
+      } else if (profile.role === 'Admin') {
+        router.push('/admin/overview');
       } else {
         router.push('/dashboard');
       }
@@ -305,7 +308,9 @@ export default function LoginPage() {
             </label>
 
             <p className="-mt-1 text-[11px] text-[#94A3B8]">
-              Demo password: first name + @123 (e.g. Ramesh@123, Sushil@123).
+              Demo password: first name + @123 (e.g. Ramesh@123, Sushil@123, Nisha@123). Admin phone:{' '}
+              <span className="font-medium text-[#475569]">+977 980-887-1265</span> or enter{' '}
+              <span className="font-medium text-[#475569]">admin</span>.
             </p>
 
             <label className="mt-1 flex items-start gap-2.5 text-[11px] leading-5 text-[#64748B]">
@@ -362,6 +367,16 @@ export default function LoginPage() {
               >
                 <span>
                   🩺 <strong>Dr. Sushil Adhikari</strong> (Doctor)
+                </span>
+                <span className="font-semibold text-[#0D9488]">Enter →</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => switchDemoUser('Admin')}
+                className="flex items-center justify-between rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[11px] font-medium text-[#334155] transition hover:bg-[#F8FAFC]"
+              >
+                <span>
+                  ⚙️ <strong>Nisha Aryal</strong> (Clinic Admin)
                 </span>
                 <span className="font-semibold text-[#0D9488]">Enter →</span>
               </button>

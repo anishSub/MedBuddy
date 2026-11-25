@@ -154,6 +154,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       // Find profile by phone, tolerating pasted hidden characters
       const cleanPhone = normalizePhone(phone);
+
+      // Handle static admin login directly from patient login form
+      const isAdminLogin =
+        cleanPhone.toLowerCase() === 'admin' ||
+        phoneDigits(cleanPhone) === '9808871265' ||
+        phoneDigits(cleanPhone) === phoneDigits(DEMO_USERS.Admin.phone);
+
+      if (isAdminLogin) {
+        const trimmedPass = password.trim();
+        if (
+          trimmedPass !== 'Nisha@123' &&
+          trimmedPass !== 'Admin@123' &&
+          trimmedPass !== 'admin123' &&
+          trimmedPass !== expectedPassword('Nisha Aryal')
+        ) {
+          throw new Error('Incorrect password for Admin (try Nisha@123 or Admin@123)');
+        }
+
+        let adminProfile: Profile | null = null;
+        try {
+          const { data: dbAdmin } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('role', 'Admin')
+            .maybeSingle();
+          if (dbAdmin) adminProfile = dbAdmin as Profile;
+        } catch {
+          // ignore error, fall back to static
+        }
+
+        if (!adminProfile) {
+          adminProfile = {
+            id: 'c0000000-0000-0000-0000-000000000001',
+            role: 'Admin',
+            full_name: 'Nisha Aryal',
+            phone: DEMO_USERS.Admin.phone,
+            status: 'Active',
+            avatar_initials: 'NA',
+          };
+        }
+
+        setUser(adminProfile);
+        localStorage.setItem('medbuddy_user', JSON.stringify(adminProfile));
+        await loadUserDetails(adminProfile);
+        return adminProfile;
+      }
+
       const { data: match, error } = await supabase
         .from('profiles')
         .select('*')
