@@ -36,8 +36,8 @@ interface AuthContextType {
   patientDetail: PatientDetail | null;
   doctorDetail: DoctorDetail | null;
   loading: boolean;
-  login: (phone: string, role: UserRole) => Promise<Profile>;
-  signUp: (fullName: string, phone: string, role: UserRole) => Promise<Profile>;
+  login: (phone: string, role: UserRole, password: string) => Promise<Profile>;
+  signUp: (fullName: string, phone: string, role: UserRole, password: string) => Promise<Profile>;
   logout: () => void;
   switchDemoUser: (role: UserRole) => Promise<void>;
 }
@@ -49,6 +49,26 @@ const DEMO_USERS: Record<UserRole, { phone: string; name: string }> = {
   Doctor: { phone: '+977 980-112-4482', name: 'Dr. Sushil Adhikari' },
   Admin: { phone: '+977 980-887-1265', name: 'Nisha Aryal' },
 };
+
+// Demo password rule: first name of the profile + "@123" (e.g. Ramesh@123, Sushil@123).
+function expectedPassword(fullName: string): string {
+  const first = fullName
+    .trim()
+    .split(/\s+/)
+    .filter((part) => part !== 'Dr.' && part !== 'Dr')[0];
+  return `${first || 'User'}@123`;
+}
+
+// Copying a phone from chat/messages can add zero-width spaces or NBSP.
+// .trim() does NOT remove those, so strip them explicitly.
+function normalizePhone(value: string): string {
+  return value.replace(/[\u200B-\u200F\uFEFF\u00A0\u202F]/g, '').trim();
+}
+
+// Last resort: match by digits only, so formatting differences don't break login.
+function phoneDigits(value: string): string {
+  return value.replace(/\D/g, '');
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<Profile | null>(null);
@@ -129,25 +149,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadUserDetails(defaultProfile).finally(() => setLoading(false));
   }, []);
 
-  const login = async (phone: string, role: UserRole): Promise<Profile> => {
+  const login = async (phone: string, role: UserRole, password: string): Promise<Profile> => {
     setLoading(true);
     try {
-      // Find profile by phone
-      const { data, error } = await supabase
+      // Find profile by phone, tolerating pasted hidden characters
+      const cleanPhone = normalizePhone(phone);
+      const { data: match, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('phone', phone)
+        .eq('phone', cleanPhone)
         .maybeSingle();
 
       if (error) throw error;
 
+      let data = match;
+      if (!data) {
+        const { data: allProfiles } = await supabase.from('profiles').select('*');
+        data =
+          (allProfiles || []).find(
+            (p) => phoneDigits(p.phone) === phoneDigits(cleanPhone)
+          ) || null;
+      }
+
       let currentProfile: Profile;
 
       if (data) {
+        if (password.trim() !== expectedPassword(data.full_name)) {
+          throw new Error('Incorrect password');
+        }
         currentProfile = data as Profile;
       } else {
         // Fallback demo user creation
         const demo = DEMO_USERS[role];
+        if (password.trim() !== expectedPassword(demo.name)) {
+          throw new Error('Incorrect password');
+        }
         const initials = (demo.name || 'User')
           .split(' ')
           .filter((w) => w !== 'Dr.')
@@ -160,7 +196,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .from('profiles')
           .insert({
             full_name: demo.name,
-            phone,
+            phone: cleanPhone,
             role,
             avatar_initials: initials,
             status: 'Active',
@@ -181,14 +217,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (fullName: string, phone: string, role: UserRole): Promise<Profile> => {
+  const signUp = async (
+    fullName: string,
+    phone: string,
+    role: UserRole,
+    password: string
+  ): Promise<Profile> => {
     setLoading(true);
     try {
+      if (password.trim() !== expectedPassword(fullName)) {
+        throw new Error('Incorrect password');
+      }
+      const cleanPhone = normalizePhone(phone);
       // Check existing
       const { data: existing } = await supabase
         .from('profiles')
         .select('*')
-        .eq('phone', phone)
+        .eq('phone', cleanPhone)
         .maybeSingle();
 
       if (existing) {
@@ -210,7 +255,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .from('profiles')
         .insert({
           full_name: fullName,
-          phone,
+          phone: cleanPhone,
           role,
           avatar_initials: initials || 'MB',
           status: 'Active',
@@ -261,7 +306,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const switchDemoUser = async (role: UserRole) => {
     const demo = DEMO_USERS[role];
-    const profile = await login(demo.phone, role);
+    const profile = await login(demo.phone, role, expectedPassword(demo.name));
     if (role === 'Doctor') {
       router.push('/doctor/dashboard');
     } else if (role === 'Admin') {

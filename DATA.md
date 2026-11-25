@@ -29,40 +29,42 @@ Project: `https://rgazcagnqduocafubkxp.supabase.co`
 
 ## Demo accounts
 
-Login is phone-based, not Supabase Auth. The login form looks up `phone` in `profiles` (see `AuthContext.tsx`). Use the full phone values below.
+Login is phone-based, not Supabase Auth. The login form looks up `phone` in `profiles` and checks a derived demo password (see `AuthContext.tsx`). Password rule: **first name + `@123`**, ignoring a leading `Dr.` (e.g. `Ramesh@123`, `Sushil@123`). Use the full phone values below.
+
+⚠️ This check runs in the browser only — it is a demo gate, not real authentication. The password is not stored in the database.
 
 ### Patients
 
-| Profile ID | Name | Patient code | Phone | Status |
-|---|---|---|---|---|
-| `a0000000-0000-0000-0000-000000000001` | Ramesh Sharma | CT-2048 | `+977 981-234-5678` | Active |
-| `a0000000-0000-0000-0000-000000000002` | Maya Gurung | CT-1987 | `+977 984-625-0198` | Active |
-| `a0000000-0000-0000-0000-000000000003` | Bikash Thapa | CT-2186 | `+977 986-315-7610` | Suspended |
-| `a0000000-0000-0000-0000-000000000004` | Sita Rai | CT-1934 | `+977 981-998-1122` | Active |
-| `a0000000-0000-0000-0000-000000000005` | Kiran Lama | CT-2231 | `+977 984-112-9988` | Active |
-| `a0000000-0000-0000-0000-000000000006` | Anu Maharjan | CT-2076 | `+977 980-334-7766` | Active |
-| `a0000000-0000-0000-0000-000000000007` | Nabin KC | CT-1812 | `+977 986-554-3321` | Active |
+| Profile ID | Name | Patient code | Phone | Password | Status |
+|---|---|---|---|---|---|
+| `a0000000-0000-0000-0000-000000000001` | Ramesh Sharma | CT-2048 | `+977 981-234-5678` | `Ramesh@123` | Active |
+| `a0000000-0000-0000-0000-000000000002` | Maya Gurung | CT-1987 | `+977 984-625-0198` | `Maya@123` | Active |
+| `a0000000-0000-0000-0000-000000000003` | Bikash Thapa | CT-2186 | `+977 986-315-7610` | `Bikash@123` | Suspended |
+| `a0000000-0000-0000-0000-000000000004` | Sita Rai | CT-1934 | `+977 981-998-1122` | `Sita@123` | Active |
+| `a0000000-0000-0000-0000-000000000005` | Kiran Lama | CT-2231 | `+977 984-112-9988` | `Kiran@123` | Active |
+| `a0000000-0000-0000-0000-000000000006` | Anu Maharjan | CT-2076 | `+977 980-334-7766` | `Anu@123` | Active |
+| `a0000000-0000-0000-0000-000000000007` | Nabin KC | CT-1812 | `+977 986-554-3321` | `Nabin@123` | Active |
 
 The default demo session in `AuthContext.tsx:121` is Ramesh Sharma (`a0000000-…-0001`, CT-2048).
 
 ### Doctors
 
-| Profile ID | Name | Phone | Status | doctor_details.id |
-|---|---|---|---|---|
-| `b0000000-0000-0000-0000-000000000001` | Dr. Sushil Adhikari | `+977 980-112-4482` | Active | `d83821ba-c3ca-48db-80c5-289b1e6c3193` |
-| `b0000000-0000-0000-0000-000000000002` | Dr. Anjali Karki | `+977 985-018-4431` | Active | `fa385977-910b-4eb6-9039-ae4cbd7274da` |
-| `b0000000-0000-0000-0000-000000000003` | Dr. Bimal Shrestha | `+977 981-554-9988` | Active | `dfe20bbb-1efa-48df-86ed-8bc2b2ff46cd` |
-| `b0000000-0000-0000-0000-000000000004` | Dr. Pratik Manandhar | `+977 981-776-8304` | Pending | `85833693-689a-4464-87db-f2a03d3f0d93` |
-| `b0000000-0000-0000-0000-000000000005` | Dr. Sneha Poudel | `+977 980-332-1199` | Pending | `08b52d2f-049f-49f1-a34f-85ff1a346e48` |
-| `b0000000-0000-0000-0000-000000000006` | Dr. Aayush Shahi | `+977 984-889-2233` | Pending | `e7786c97-8044-47ab-a69b-7445d1efbc94` |
-| `b0000000-0000-0000-0000-000000000007` | Dr. Rojina Tamang | `+977 981-223-9900` | Pending | `09d7c210-6b29-46d2-bae0-922780f8e5c6` |
-| `b0000000-0000-0000-0000-000000000008` | Dr. Samir Khadka | `+977 986-001-4455` | Pending | `3d932c6c-6e58-4b4c-a48d-10d71dd745e3` |
+| Profile ID | Name | Phone | Password | Status | doctor_details.id |
+|---|---|---|---|---|---|
+| `b0000000-0000-0000-0000-000000000001` | Dr. Sushil Adhikari | `+977 980-112-4482` | `Sushil@123` | Active | `d83821ba-c3ca-48db-80c5-289b1e6c3193` |
+| `b0000000-0000-0000-0000-000000000002` | Dr. Anjali Karki | `+977 985-018-4431` | `Anjali@123` | Active | `fa385977-910b-4eb6-9039-ae4cbd7274da` |
+| `b0000000-0000-0000-0000-000000000003` | Dr. Bimal Shrestha | `+977 981-554-9988` | `Bimal@123` | Active | `dfe20bbb-1efa-48df-86ed-8bc2b2ff46cd` |
+| `b0000000-0000-0000-0000-000000000004` | Dr. Pratik Manandhar | `+977 981-776-8304` | `Pratik@123` | Pending | `85833693-689a-4464-87db-f2a03d3f0d93` |
+| `b0000000-0000-0000-0000-000000000005` | Dr. Sneha Poudel | `+977 980-332-1199` | `Sneha@123` | Pending | `08b52d2f-049f-49f1-a34f-85ff1a346e48` |
+| `b0000000-0000-0000-0000-000000000006` | Dr. Aayush Shahi | `+977 984-889-2233` | `Aayush@123` | Pending | `e7786c97-8044-47ab-a69b-7445d1efbc94` |
+| `b0000000-0000-0000-0000-000000000007` | Dr. Rojina Tamang | `+977 981-223-9900` | `Rojina@123` | Pending | `09d7c210-6b29-46d2-bae0-922780f8e5c6` |
+| `b0000000-0000-0000-0000-000000000008` | Dr. Samir Khadka | `+977 986-001-4455` | `Samir@123` | Pending | `3d932c6c-6e58-4b4c-a48d-10d71dd745e3` |
 
 ### Admin
 
-| Profile ID | Name | Phone | Status |
-|---|---|---|---|
-| `c0000000-0000-0000-0000-000000000001` | Nisha Aryal | `+977 980-887-1265` | Active |
+| Profile ID | Name | Phone | Password | Status |
+|---|---|---|---|---|
+| `c0000000-0000-0000-0000-000000000001` | Nisha Aryal | `+977 980-887-1265` | `Nisha@123` | Active |
 
 ## Patient details
 

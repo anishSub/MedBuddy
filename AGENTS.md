@@ -31,6 +31,8 @@ npm start       # next start
 
 **There is no linter, no formatter, and no test runner.** `npm run lint` and `npm test` do not exist. Never run them. Never tell the user to run them. If you need to verify code, use `npx tsc --noEmit` (TypeScript is installed) and `npm run build`.
 
+⚠️ **Never run `npm run build` while `npm run dev` is running.** Both write to `.next`; the running dev server keeps stale in-memory chunk IDs and the browser then fails with `__webpack_modules__[moduleId] is not a function`. Check with `lsof -nP -iTCP:3000 -sTCP:LISTEN` first. If it happened, stop dev, `rm -rf .next`, and restart.
+
 ---
 
 ## 2. Anti-hallucination rules (highest priority)
@@ -101,10 +103,10 @@ curl "$NEXT_PUBLIC_SUPABASE_URL/rest/v1/profiles?select=*&limit=1" \
 `seed.sql` is now idempotent (stable IDs + `ON CONFLICT (id) DO NOTHING` on appointments and rx_templates). RLS is still permissive — see §4.5.
 
 ### 4.2 Two data layers, both live
-- `src/context/AuthContext.tsx` — login, profile, session. Used by `src/app/layout.tsx` and `src/app/page.tsx`.
-- `src/lib/supabase/services.ts` (447 lines, 4 service objects) — **no longer dead code**. Imported as `patientService` by `src/app/dashboard/page.tsx:7` and `src/app/scan/page.tsx:9`.
+- `src/context/AuthContext.tsx` — login, profile, session. Used by `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/patient/HealthPassModal.tsx` and all three sidebars.
+- `src/lib/supabase/services.ts` (447 lines, 4 service objects) — imported by **all 11 data pages**: patient `dashboard`, `scan`, `records`; doctor `dashboard`, `patient`, `scan`, `templates`; admin `overview`, `follow-ups`, `users`, `verification`.
 
-This changed during development. Re-check before claiming either is unused:
+Every page keeps a labelled `(demo data)` fallback for empty/failed queries. Re-check before claiming a page is still static:
 
 ```bash
 grep -rn "lib/supabase/services" src
@@ -116,9 +118,9 @@ Several places return invented data when the DB is empty or unreachable. Do not 
 | Location | Fake behavior |
 |---|---|
 | `services.ts:369-372` | `scheduled \|\| 24`, `confirmed \|\| 18`, `reschedule \|\| 3`, `pendingDoctors \|\| 2` |
-| `AuthContext.tsx:73` | Hardcoded patient code `CT-2048` |
-| `AuthContext.tsx:95` | Hardcoded doctor detail `NMC 18422` / `Confirmed` |
-| `AuthContext.tsx:121` | Default profile id `a0000000-0000-0000-0000-000000000001` |
+| `AuthContext.tsx:82` | Hardcoded patient code `CT-2048` |
+| `AuthContext.tsx:104` | Hardcoded doctor detail `NMC 18422` / `Confirmed` |
+| `AuthContext.tsx:130` | Default profile id `a0000000-0000-0000-0000-000000000001` |
 
 When you touch this, say clearly whether you removed, kept, or relied on the fallback.
 
@@ -130,7 +132,11 @@ When you touch this, say clearly whether you removed, kept, or relied on the fal
 `UserRole`, `AccountStatus`, and `AppointmentStatus` are duplicated in both files. If you change an enum, check **both** — a mismatch already broke the build once (`dashboard/page.tsx` imported `AppointmentStatus` from `@/types` before it was exported there).
 
 ### 4.5 Auth is not real auth
-Login is **phone-number lookup/insert into `profiles`**, not Supabase Auth. Session lives in `localStorage['medbuddy_user']`. There is no `auth.users` usage, no password, no JWT. RLS is enabled (`schema.sql:190-199`) but the policies are permissive (`schema.sql:213`: `FOR ALL USING (true)`).
+Login is **phone-number lookup/insert into `profiles`**, not Supabase Auth. Session lives in `localStorage['medbuddy_user']`. There is no `auth.users` usage and no JWT.
+
+A demo password gate exists: `expectedPassword()` in `AuthContext.tsx` derives `<FirstName>@123` from the profile's `full_name` (strips `Dr.`). `login()` / `signUp()` / `switchDemoUser()` check it, and the login form passes it (with an eye toggle to reveal it). Phone input is normalised by `normalizePhone()` (zero-width/NBSP) plus a digits-only fallback, because pasted phone numbers can otherwise miss the lookup and hit the wrong demo profile. **The check runs in the browser only** — it is not stored or enforced server-side and is trivially bypassable.
+
+RLS is enabled (`schema.sql:190-199`) but the policies are permissive (`schema.sql:213`: `FOR ALL USING (true)`).
 
 Do not describe this as secure, authenticated, or production-ready.
 

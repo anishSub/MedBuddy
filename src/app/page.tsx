@@ -15,7 +15,8 @@ export default function LoginPage() {
   const [role, setRole] = useState<UserRole>('Patient');
   const [fullName, setFullName] = useState('Ramesh Sharma');
   const [phone, setPhone] = useState('+977 981-234-5678');
-  const [password, setPassword] = useState('password123');
+  const [password, setPassword] = useState('Ramesh@123');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -25,12 +26,15 @@ export default function LoginPage() {
       if (newRole === 'Patient') {
         setFullName('Ramesh Sharma');
         setPhone('+977 981-234-5678');
+        setPassword('Ramesh@123');
       } else if (newRole === 'Doctor') {
         setFullName('Dr. Sushil Adhikari');
         setPhone('+977 980-112-4482');
+        setPassword('Sushil@123');
       } else {
         setFullName('Nisha Aryal');
         setPhone('+977 980-887-1265');
+        setPassword('Nisha@123');
       }
     }
   };
@@ -48,12 +52,12 @@ export default function LoginPage() {
         if (!phone.trim()) {
           throw new Error('Please enter your mobile number');
         }
-        await signUp(fullName.trim(), phone.trim(), role);
+        await signUp(fullName.trim(), phone.trim(), role, password);
       } else {
         if (!phone.trim()) {
           throw new Error('Please enter your mobile number');
         }
-        await login(phone.trim(), role);
+        await login(phone.trim(), role, password);
       }
 
       // Route based on role
@@ -204,19 +208,28 @@ export default function LoginPage() {
               Password
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-11 sm:h-12 w-full rounded-lg border border-[#CBD5E1] px-3.5 pr-11 text-[14px] font-normal outline-none transition focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
-                  placeholder="At least 6 characters"
+                  placeholder="First name@123 (e.g. Ramesh@123)"
+                  autoComplete="current-password"
                 />
-                <Icon
-                  name="lock"
-                  size={17}
-                  className="absolute right-3.5 top-3.5 text-[#94A3B8]"
-                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showPassword}
+                  className="absolute right-2.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-[#94A3B8] transition hover:bg-slate-100 hover:text-[#475569]"
+                >
+                  <Icon name={showPassword ? 'eyeOff' : 'eye'} size={17} />
+                </button>
               </div>
             </label>
+
+            <p className="-mt-1 text-[11px] text-[#94A3B8]">
+              Demo password: first name + @123 (e.g. Ramesh@123, Sushil@123).
+            </p>
 
             <label className="mt-1 flex items-start gap-2.5 text-[12px] leading-5 text-[#64748B]">
               <input

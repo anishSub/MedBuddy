@@ -19,6 +19,8 @@ export type IconName =
   | 'shield'
   | 'users'
   | 'lock'
+  | 'eye'
+  | 'eyeOff'
   | 'arrow'
   | 'x';
 

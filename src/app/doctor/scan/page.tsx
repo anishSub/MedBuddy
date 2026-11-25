@@ -3,9 +3,80 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@/components/common/Icon';
+import { doctorService } from '@/lib/supabase/services';
+
+type ScannedPatient = {
+  full_name: string;
+  avatar_initials: string | null;
+  patient_code: string;
+  age: number | null;
+  gender: string | null;
+  blood_group: string | null;
+  allergies: string[];
+  weekly_adherence: number | null;
+};
+
+// Fallback mock data shown when DB has no matching patient yet
+const MOCK_PATIENT: ScannedPatient = {
+  full_name: 'Ramesh Sharma',
+  avatar_initials: 'RS',
+  patient_code: 'CT-2048',
+  age: 64,
+  gender: 'Male',
+  blood_group: 'O+',
+  allergies: ['Penicillin'],
+  weekly_adherence: 88,
+};
+
+type PatientContextRow = {
+  patient_code: string;
+  age: number | null;
+  gender: string | null;
+  blood_group: string | null;
+  allergies: string[] | null;
+  weekly_adherence: number | null;
+  profiles: { full_name: string; avatar_initials: string | null } | null;
+};
+
+function mapPatient(r: PatientContextRow): ScannedPatient {
+  return {
+    full_name: r.profiles?.full_name ?? 'Unknown patient',
+    avatar_initials: r.profiles?.avatar_initials ?? null,
+    patient_code: r.patient_code,
+    age: r.age,
+    gender: r.gender,
+    blood_group: r.blood_group,
+    allergies: Array.isArray(r.allergies) ? r.allergies : [],
+    weekly_adherence: r.weekly_adherence,
+  };
+}
 
 export default function DoctorScanPage() {
   const [scanned, setScanned] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [usingMock, setUsingMock] = useState(false);
+  const [patient, setPatient] = useState<ScannedPatient>(MOCK_PATIENT);
+
+  async function lookup(code: string) {
+    setLoading(true);
+    try {
+      const row = await doctorService.getPatientContext(code);
+      if (row) {
+        setPatient(mapPatient(row));
+        setUsingMock(false);
+      } else {
+        setPatient(MOCK_PATIENT);
+        setUsingMock(true);
+      }
+      setScanned(true);
+    } catch {
+      setPatient(MOCK_PATIENT);
+      setUsingMock(true);
+      setScanned(true);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
@@ -45,16 +116,26 @@ export default function DoctorScanPage() {
         </div>
 
         <button
-          onClick={() => setScanned(!scanned)}
+          onClick={() => {
+            if (scanned) {
+              setScanned(false);
+              return;
+            }
+            lookup('CT-2048');
+          }}
+          disabled={loading}
           className="mt-6 flex h-10 sm:h-11 items-center gap-2 rounded-md bg-[#0D9488] px-5 text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
         >
           <Icon name="scan" size={16} />
-          {scanned ? 'Reset camera scan' : 'Start camera scan'}
+          {loading ? 'Looking up…' : scanned ? 'Reset camera scan' : 'Start camera scan'}
         </button>
         <p className="mt-4 text-[9px] text-[#94A3B8]">
           No camera available?{' '}
           <button
-            onClick={() => setScanned(true)}
+            onClick={() => {
+              const code = window.prompt('Enter patient ID', 'CT-2048');
+              if (code && code.trim()) lookup(code.trim());
+            }}
             className="font-semibold text-[#0D9488] hover:underline"
           >
             Enter patient ID manually
@@ -82,30 +163,42 @@ export default function DoctorScanPage() {
               <Icon name="check" size={12} />
               Identity verified
             </span>
+            {usingMock && (
+              <span className="ml-2 text-[9px] text-amber-500 font-medium">(demo data)</span>
+            )}
 
             <div className="mt-5 flex items-center border-b border-[#E2E8F0] pb-5">
               <div className="grid h-12 w-12 place-items-center rounded-full bg-[#DDEBE9] text-[12px] font-semibold text-[#0F766E]">
-                RS
+                {patient.avatar_initials ?? '??'}
               </div>
               <div className="ml-3">
-                <h2 className="text-[17px] sm:text-[18px] font-semibold text-[#0F172A]">Ramesh Sharma</h2>
-                <p className="mt-0.5 text-[10px] text-[#64748B]">#CT-2048 · 64 years · Male</p>
+                <h2 className="text-[17px] sm:text-[18px] font-semibold text-[#0F172A]">
+                  {patient.full_name}
+                </h2>
+                <p className="mt-0.5 text-[10px] text-[#64748B]">
+                  #{patient.patient_code} · {patient.age ?? '—'} years · {patient.gender ?? '—'}
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:gap-5 border-b border-[#E2E8F0] py-5">
               <div>
                 <p className="text-[9px] uppercase tracking-[.08em] text-[#94A3B8]">Blood group</p>
-                <p className="mt-1 text-[13px] font-semibold text-[#334155]">O+</p>
+                <p className="mt-1 text-[13px] font-semibold text-[#334155]">
+                  {patient.blood_group ?? '—'}
+                </p>
               </div>
               <div>
                 <p className="text-[9px] uppercase tracking-[.08em] text-[#94A3B8]">Known allergy</p>
-                <p className="mt-1 text-[13px] font-semibold text-[#B45309]">Penicillin</p>
+                <p className="mt-1 text-[13px] font-semibold text-[#B45309]">
+                  {patient.allergies.length > 0 ? patient.allergies.join(', ') : 'None known'}
+                </p>
               </div>
             </div>
 
             <p className="mt-5 text-[10px] leading-5 text-[#64748B]">
-              4 active medications · 88% weekly adherence · Last visit 06 May 2024
+              4 active medications · {patient.weekly_adherence ?? '—'}% weekly adherence · Last visit
+              06 May 2024
             </p>
 
             <Link
