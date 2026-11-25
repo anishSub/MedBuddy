@@ -328,13 +328,13 @@ export default function DashboardPage() {
         <aside className="w-full shrink-0 border-t border-[#E2E8F0] bg-white px-4 py-5 sm:px-6 sm:py-6 xl:w-[340px] xl:overflow-y-auto xl:border-l xl:border-t-0 xl:px-6">
           <div className="patient-card p-4 sm:p-5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#94A3B8]">
-              Weekly adherence
+              How you took your medicines this week
             </p>
             <div className="mt-2.5 flex items-end gap-2">
               <span className="text-3xl font-semibold leading-none tracking-[-0.05em] tabular-nums text-[#0F172A] sm:text-[36px]">
                 {adherenceRate}%
               </span>
-              <span className="pb-1 text-xs text-[#64748B]">taken this week</span>
+              <span className="pb-1 text-xs text-[#64748B]">of doses taken this week</span>
             </div>
 
             {/* Bar Chart */}
