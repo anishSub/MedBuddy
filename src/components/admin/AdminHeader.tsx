@@ -1,6 +1,7 @@
 'use client';
 
 import { NotificationMenu } from '@/components/common/NotificationMenu';
+import { useAuth } from '@/context/AuthContext';
 
 interface AdminHeaderProps {
   title: string;
@@ -8,6 +9,8 @@ interface AdminHeaderProps {
 }
 
 export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
+  const { user } = useAuth();
+
   return (
     <header className="flex h-16 sm:h-20 lg:h-[84px] shrink-0 items-center justify-between border-b border-[#E2E8F0] px-4 sm:px-6 lg:px-8 bg-white gap-3">
       <div className="min-w-0 pr-3">
@@ -20,8 +23,8 @@ export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
       </div>
       <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
         <NotificationMenu />
-        <div className="grid h-9 sm:h-10 w-9 sm:w-10 place-items-center rounded-full bg-[#DDEBE9] text-[11px] font-semibold text-[#0F766E]">
-          NA
+        <div className="grid h-9 sm:h-10 w-9 sm:w-10 place-items-center rounded-full bg-[#DDEBE9] text-xs font-semibold text-[#0F766E]">
+          {user?.avatar_initials || 'NA'}
         </div>
       </div>
     </header>

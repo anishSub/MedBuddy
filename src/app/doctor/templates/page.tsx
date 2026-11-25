@@ -200,13 +200,13 @@ export default function RxTemplatesPage() {
       <div className="w-full xl:w-[58%] border-b xl:border-b-0 xl:border-r border-[#E2E8F0] px-4 sm:px-6 lg:px-9 py-6 sm:py-7 shrink-0 xl:overflow-y-auto">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
               Prescription Library
             </p>
             <h1 className="mt-1 text-xl sm:text-[22px] font-semibold tracking-[-0.03em] text-[#0F172A]">
               Prescription Templates
             </h1>
-            <p className="mt-0.5 text-[10px] text-[#64748B]">
+            <p className="mt-0.5 text-sm text-[#64748B]">
               Standardized treatment plans and medicine regimens for clinical cases.
               {loading && <span className="ml-2">Loading templates…</span>}
               {usingMock && (
@@ -223,24 +223,27 @@ export default function RxTemplatesPage() {
           </button>
         </div>
 
-        <div className="mt-6 sm:mt-7 border-y border-[#E2E8F0]">
+        <div className="mt-6 sm:mt-7 flex flex-col gap-3">
           {templates.map((template) => (
             <button
               key={template[0]}
               onClick={() => setSelected(template)}
-              className={`flex h-[88px] sm:h-[94px] w-full items-center border-t border-[#E2E8F0] px-3 sm:px-4 text-left first:border-0 transition ${
-                selected[0] === template[0] ? 'bg-[#F0FDFA]' : 'hover:bg-[#F8FAFC]'
-              }`}
+              style={
+                selected[0] === template[0]
+                  ? { borderColor: '#B9D8D5', backgroundColor: '#F0FDFA' }
+                  : undefined
+              }
+              className="patient-card flex min-h-[88px] w-full items-center gap-3 px-4 py-3 text-left transition hover:border-[#B9D8D5]"
             >
               <div className="min-w-0 flex-1 pr-3">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-[12px] font-semibold text-[#0F172A] truncate">{template[0]}</h2>
+                  <h2 className="text-sm font-semibold text-[#0F172A] truncate">{template[0]}</h2>
                   <span className="rounded bg-[#F1F5F9] px-2 py-0.5 text-[8px] font-semibold text-[#64748B] shrink-0">
                     {template[3]}
                   </span>
                 </div>
-                <p className="mt-1.5 text-[10px] text-[#64748B] truncate">{template[2]}</p>
-                <p className="mt-1 text-[9px] text-[#94A3B8]">
+                <p className="mt-1.5 text-xs text-[#64748B] truncate">{template[2]}</p>
+                <p className="mt-1 text-[11px] text-[#64748B]">
                   {template[1]} · Ready for prescribing
                 </p>
               </div>
@@ -251,22 +254,23 @@ export default function RxTemplatesPage() {
       </div>
 
       {/* Preview column */}
-      <aside className="flex w-full xl:w-[42%] flex-col bg-[#FCFDFD] px-4 sm:px-6 lg:px-9 py-6 sm:py-7 xl:overflow-y-auto">
-        <p className="text-[9px] font-semibold uppercase tracking-[.12em] text-[#94A3B8]">
+      <aside className="flex w-full xl:w-[42%] flex-col bg-[#F8FAFC] px-4 py-5 sm:px-6 sm:py-6 lg:px-8 xl:overflow-y-auto">
+        <div className="patient-card p-4 sm:p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[.12em] text-[#64748B]">
           Treatment plan preview
         </p>
         <h2 className="mt-2 text-lg sm:text-[19px] font-semibold tracking-[-0.02em] text-[#0F172A]">
           {selected[0]}
         </h2>
-        <p className="mt-0.5 text-[10px] text-[#64748B]">
+        <p className="mt-0.5 text-sm text-[#64748B]">
           {selected[3]} · {selected[1]}
         </p>
 
-        <div className="mt-5 sm:mt-6 border-y border-[#E2E8F0]">
+        <div className="mt-5 flex flex-col gap-2">
           {selected[5].map((med) => (
             <div
               key={med[0]}
-              className="grid h-[58px] sm:h-[64px] grid-cols-[1.3fr_.8fr_.7fr] items-center border-t border-[#E2E8F0] px-2 text-[10px] first:border-0"
+              className="patient-card grid min-h-[58px] grid-cols-[1.3fr_.8fr_.7fr] items-center gap-2 px-3 py-2 text-xs"
             >
               <span className="font-semibold text-[#334155] truncate">{med[0]}</span>
               <span className="text-[#64748B]">{med[1]}</span>
@@ -275,26 +279,27 @@ export default function RxTemplatesPage() {
           ))}
         </div>
 
-        <div className="mt-5 sm:mt-6">
-          <p className="text-[9px] font-semibold uppercase tracking-[.1em] text-[#94A3B8]">
+        <div className="mt-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[.1em] text-[#64748B]">
             Patient instructions
           </p>
-          <p className="mt-1.5 text-[10px] leading-5 text-[#64748B]">{selected[4]}</p>
+          <p className="mt-1.5 text-sm leading-6 text-[#64748B]">{selected[4]}</p>
         </div>
 
         <div className="mt-6 sm:mt-auto grid grid-cols-2 gap-2 border-t border-[#E2E8F0] pt-5">
           <button
             onClick={() => setShowModal(true)}
-            className="h-9 sm:h-10 rounded-md border border-[#CBD5E1] text-[10px] font-semibold text-[#475569] shadow-xs hover:bg-slate-50"
+            className="h-10 rounded-lg border border-[#CBD5E1] bg-white text-xs font-semibold text-[#475569] shadow-xs transition hover:bg-slate-50"
           >
             New plan
           </button>
           <Link
             href={`/doctor/patient?template=${encodeURIComponent(selected[0])}`}
-            className="flex h-9 sm:h-10 items-center justify-center rounded-md bg-[#0D9488] text-[10px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
+            className="flex h-10 items-center justify-center rounded-lg bg-[#0D9488] text-xs font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
           >
             Apply to Patient
           </Link>
+        </div>
         </div>
       </aside>
 

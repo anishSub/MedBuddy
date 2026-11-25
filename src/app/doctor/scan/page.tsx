@@ -104,33 +104,34 @@ export default function DoctorScanPage() {
   return (
     <main className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
       {/* Scanner column */}
-      <div className="flex w-full xl:w-[57%] flex-col items-center justify-center border-b xl:border-b-0 xl:border-r border-[#E2E8F0] bg-[#F8FAFC] p-6 sm:p-10 lg:p-16 shrink-0 xl:overflow-y-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
+      <div className="flex w-full shrink-0 flex-col items-center justify-center border-b border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:p-6 xl:w-[57%] xl:overflow-y-auto xl:border-b-0 xl:border-r">
+        <div className="patient-card flex w-full max-w-[560px] flex-col items-center p-5 sm:p-7">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
           Secure patient lookup
         </p>
-        <h1 className="mt-1 text-2xl sm:text-[24px] font-semibold tracking-[-0.03em] text-[#0F172A] text-center">
+        <h1 className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[#0F172A] text-center">
           Scan Patient QR
         </h1>
-        <p className="mt-2 max-w-[390px] text-center text-[11px] leading-5 text-[#64748B]">
+        <p className="mt-2 max-w-[390px] text-center text-sm leading-6 text-[#64748B]">
           Position the MedBuddy Health Pass inside the frame. Patient details are loaded live from the
           clinical database after verified consent.
         </p>
 
         {/* QR Scanner viewport */}
-        <div className="relative mt-6 sm:mt-8 grid h-[260px] sm:h-[300px] w-full max-w-[400px] place-items-center overflow-hidden rounded-xl border border-[#CBD5E1] bg-white shadow-xs">
-          <div className="absolute inset-3 sm:inset-4 rounded-lg border border-dashed border-[#E2E8F0]" />
-          <div className="absolute left-6 sm:left-8 top-6 sm:top-8 h-10 w-10 sm:h-12 sm:w-12 border-l-2 border-t-2 border-[#94A3B8]" />
-          <div className="absolute right-6 sm:right-8 top-6 sm:top-8 h-10 w-10 sm:h-12 sm:w-12 border-r-2 border-t-2 border-[#94A3B8]" />
-          <div className="absolute bottom-6 sm:bottom-8 left-6 sm:left-8 h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-l-2 border-[#94A3B8]" />
-          <div className="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-r-2 border-[#94A3B8]" />
+        <div className="relative mt-6 grid h-[240px] w-full max-w-[400px] place-items-center overflow-hidden rounded-xl border-2 border-[#B8D8D4] bg-[#F8FAFC] shadow-inner sm:mt-7 sm:h-[300px]">
+          <div className="absolute inset-3 sm:inset-4 rounded-lg border border-dashed border-[#B8D8D4]" />
+          <div className="absolute left-6 top-6 h-10 w-10 border-l-2 border-t-2 border-[#0D9488] sm:left-8 sm:top-8 sm:h-12 sm:w-12" />
+          <div className="absolute right-6 top-6 h-10 w-10 border-r-2 border-t-2 border-[#0D9488] sm:right-8 sm:top-8 sm:h-12 sm:w-12" />
+          <div className="absolute bottom-6 left-6 h-10 w-10 border-b-2 border-l-2 border-[#0D9488] sm:bottom-8 sm:left-8 sm:h-12 sm:w-12" />
+          <div className="absolute bottom-6 right-6 h-10 w-10 border-b-2 border-r-2 border-[#0D9488] sm:bottom-8 sm:right-8 sm:h-12 sm:w-12" />
 
           {scanned ? (
             <div className="grid h-20 w-20 sm:h-24 sm:w-24 place-items-center rounded-full bg-[#ECFDF5] text-[#059669]">
               <Icon name="check" size={36} />
             </div>
           ) : (
-            <div className="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:p-6">
-              <Icon name="qr" size={64} className="text-[#0F172A]" />
+            <div className="rounded-xl border border-[#E2E8F0] bg-white p-4 sm:p-6">
+              <Icon name="qr" size={64} className="text-[#0D9488]" />
             </div>
           )}
 
@@ -149,7 +150,7 @@ export default function DoctorScanPage() {
             lookup('CT-2048');
           }}
           disabled={loading}
-          className="mt-5 flex h-10 sm:h-11 items-center gap-2 rounded-md bg-[#0D9488] px-5 text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
+          className="mt-5 flex h-11 w-full max-w-[400px] items-center justify-center gap-2 rounded-lg bg-[#0D9488] px-5 text-sm font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
         >
           <Icon name="scan" size={16} />
           {loading ? 'Looking up…' : scanned ? 'Reset camera scan' : 'Scan Health Pass (Simulate)'}
@@ -168,12 +169,12 @@ export default function DoctorScanPage() {
             value={inputCode}
             onChange={(e) => setInputCode(e.target.value)}
             placeholder="Enter Patient ID (e.g. CT-1987)"
-            className="h-10 flex-1 rounded-md border border-[#CBD5E1] bg-white px-3 text-[12px] text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:outline-none"
+            className="h-10 min-w-0 flex-1 rounded-md border border-[#CBD5E1] bg-white px-3 text-sm text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:outline-none"
           />
           <button
             type="submit"
             disabled={loading || !inputCode.trim()}
-            className="h-10 rounded-md bg-[#334155] px-4 text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#1E293B] disabled:opacity-50"
+            className="h-10 shrink-0 rounded-lg bg-[#334155] px-4 text-xs font-semibold text-white shadow-xs transition hover:bg-[#1E293B] disabled:opacity-50"
           >
             {loading ? 'Searching…' : 'Look Up'}
           </button>
@@ -181,22 +182,24 @@ export default function DoctorScanPage() {
 
         {/* Quick test chips */}
         <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 max-w-[420px]">
-          <span className="text-[10px] text-[#94A3B8]">Quick patient codes:</span>
+          <span className="text-xs text-[#64748B]">Quick patient codes:</span>
           {DEMO_PATIENTS.map((p) => (
             <button
               key={p.code}
               type="button"
               onClick={() => lookup(p.code)}
-              className="rounded bg-white border border-[#CBD5E1] px-2 py-0.5 text-[10px] font-medium text-[#475569] hover:border-[#0D9488] hover:text-[#0D9488] transition"
+              className="rounded-md bg-white border border-[#CBD5E1] px-2.5 py-1 text-xs font-medium text-[#475569] transition hover:border-[#0D9488] hover:text-[#0D9488]"
             >
               {p.name.split(' ')[0]} ({p.code})
             </button>
           ))}
         </div>
+        </div>
       </div>
 
       {/* Patient details column */}
-      <aside className="flex w-full xl:w-[43%] flex-col justify-center p-6 sm:p-10 lg:p-12 xl:overflow-y-auto">
+      <aside className="flex w-full flex-col justify-center bg-[#F8FAFC] p-4 sm:p-6 xl:w-[43%] xl:overflow-y-auto">
+        <div className="patient-card w-full p-5 sm:p-6">
         {!scanned ? (
           <div className="text-center py-8">
             <div className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-[#E2E8F0] text-[#94A3B8]">
@@ -205,7 +208,7 @@ export default function DoctorScanPage() {
             <h2 className="mt-4 text-[15px] font-semibold text-[#334155]">
               Waiting for a verified scan
             </h2>
-            <p className="mx-auto mt-2 max-w-[280px] text-[10px] leading-5 text-[#94A3B8]">
+            <p className="mx-auto mt-2 max-w-[280px] text-sm leading-6 text-[#64748B]">
               Patient identity, allergies, active medication, and emergency details will appear here.
             </p>
           </div>
@@ -227,7 +230,7 @@ export default function DoctorScanPage() {
                 <h2 className="text-[17px] sm:text-[18px] font-semibold text-[#0F172A]">
                   {patient.full_name}
                 </h2>
-                <p className="mt-0.5 text-[10px] text-[#64748B]">
+                <p className="mt-0.5 text-sm text-[#64748B]">
                   #{patient.patient_code} · {patient.age ?? '—'} years · {patient.gender ?? '—'}
                 </p>
               </div>
@@ -235,32 +238,33 @@ export default function DoctorScanPage() {
 
             <div className="grid grid-cols-2 gap-4 sm:gap-5 border-b border-[#E2E8F0] py-5">
               <div>
-                <p className="text-[9px] uppercase tracking-[.08em] text-[#94A3B8]">Blood group</p>
-                <p className="mt-1 text-[13px] font-semibold text-[#334155]">
+                <p className="text-[11px] uppercase tracking-[.08em] text-[#64748B]">Blood group</p>
+                <p className="mt-1 text-sm font-semibold text-[#334155]">
                   {patient.blood_group ?? '—'}
                 </p>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-[.08em] text-[#94A3B8]">Known allergy</p>
-                <p className="mt-1 text-[13px] font-semibold text-[#B45309]">
+                <p className="text-[11px] uppercase tracking-[.08em] text-[#64748B]">Known allergy</p>
+                <p className="mt-1 text-sm font-semibold text-[#B45309]">
                   {patient.allergies.length > 0 ? patient.allergies.join(', ') : 'None known'}
                 </p>
               </div>
             </div>
 
-            <p className="mt-5 text-[10px] leading-5 text-[#64748B]">
+            <p className="mt-5 text-sm leading-6 text-[#64748B]">
               {patient.active_meds_count ?? 4} active medications · {patient.weekly_adherence ?? '—'}% weekly adherence · Verified Clinical Record
             </p>
 
             <Link
               href={`/doctor/patient?code=${patient.patient_code}`}
-              className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-md bg-[#0D9488] text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
+              className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#0D9488] text-sm font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
             >
               Open Clinical Record
               <Icon name="arrow" size={15} />
             </Link>
           </div>
         )}
+        </div>
       </aside>
     </main>
   );

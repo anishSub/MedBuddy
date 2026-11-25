@@ -56,6 +56,15 @@ const CALL_TYPES = [
   { id: 'chat', label: 'Live chat', icon: 'chat' as IconName },
 ];
 
+function getPatientInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join('');
+}
+
 export default function DoctorMessagesPage() {
   const [selectedId, setSelectedId] = useState(CONVERSATIONS[0].id);
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -74,22 +83,22 @@ export default function DoctorMessagesPage() {
   return (
     <main className="min-h-0 flex-1 overflow-y-auto px-4 sm:px-6 lg:px-9 py-6 sm:py-7">
       <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#0D9488]">
           Doctor panel
         </p>
-        <h1 className="mt-1 text-xl sm:text-[23px] font-semibold tracking-[-0.03em] text-[#0F172A]">
+        <h1 className="mt-1 text-xl sm:text-[22px] font-semibold tracking-[-0.03em] text-[#0F172A]">
           Messages
         </h1>
-        <p className="mt-1 text-[11px] text-[#64748B]">
+        <p className="mt-1 text-sm text-[#64748B]">
           Consultations and patient conversations.
         </p>
       </div>
 
       <div className="mt-6 sm:mt-7 grid grid-cols-1 xl:grid-cols-[340px_1fr] gap-4">
         {/* Conversation list */}
-        <div className="rounded-lg border border-[#E2E8F0] overflow-hidden">
+        <div className="patient-card overflow-hidden">
           <div className="border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2.5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#64748B]">
               Conversations
             </p>
           </div>
@@ -98,33 +107,38 @@ export default function DoctorMessagesPage() {
               <button
                 key={c.id}
                 onClick={() => setSelectedId(c.id)}
-                className={`w-full px-4 py-3 text-left transition hover:bg-[#F8FAFC] ${
+                className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-[#F8FAFC] ${
                   c.id === selectedId ? 'bg-[#E6F4F2]' : ''
                 }`}
               >
-                <p className="text-[12px] font-semibold text-[#0F172A]">{c.patient}</p>
-                <p className="mt-0.5 text-[10px] text-[#64748B]">{c.department}</p>
-                <p className="mt-0.5 text-[10px] text-[#94A3B8]">Free: {c.freeTime}</p>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#DDEBE9] text-xs font-semibold text-[#0F766E]">
+                  {getPatientInitials(c.patient)}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-[#0F172A]">{c.patient}</span>
+                  <span className="mt-0.5 block text-xs text-[#64748B]">{c.department}</span>
+                  <span className="mt-0.5 block text-xs text-[#64748B]">Free: {c.freeTime}</span>
+                </span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Thread */}
-        <div className="rounded-lg border border-[#E2E8F0] overflow-hidden">
+        <div className="patient-card overflow-hidden">
           <div className="flex items-center gap-3 border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3">
             <div className="grid h-11 w-11 place-items-center rounded-full bg-[#E6F4F2] text-[#0D9488] shrink-0">
               <Icon name="stethoscope" size={20} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-semibold text-[#0F172A]">{selected.doctor}</p>
-              <p className="mt-0.5 text-[10px] text-[#64748B]">
+              <p className="text-sm font-semibold text-[#0F172A]">{selected.doctor}</p>
+              <p className="mt-0.5 text-xs text-[#64748B]">
                 {selected.patient} · {selected.department} · Free: {selected.freeTime}
               </p>
             </div>
             <button
               onClick={() => setBookingOpen(true)}
-              className="h-8 rounded-md bg-[#0D9488] px-3 text-[10px] font-semibold text-white transition hover:bg-[#0F766E]"
+              className="h-9 rounded-lg bg-[#0D9488] px-3 text-xs font-semibold text-white transition hover:bg-[#0F766E]"
             >
               Book
             </button>
@@ -134,14 +148,14 @@ export default function DoctorMessagesPage() {
             {selected.messages.map((m) => (
               <div key={m.id} className={`flex ${m.from === 'doctor' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[75%] rounded-lg px-3 py-2 text-[11px] leading-5 ${
+                  className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-5 sm:max-w-[75%] ${
                     m.from === 'doctor'
                       ? 'bg-[#E6F4F2] text-[#0F172A]'
                       : 'bg-[#F1F5F9] text-[#334155]'
                   }`}
                 >
                   {m.text}
-                  <span className="mt-1 block text-[9px] opacity-70">{m.time}</span>
+                  <span className="mt-1 block text-[11px] opacity-70">{m.time}</span>
                 </div>
               </div>
             ))}
