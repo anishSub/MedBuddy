@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Icon } from '@/components/common/Icon';
 import { DocumentThumb } from '@/components/patient/DocumentThumb';
 import { useAuth } from '@/context/AuthContext';
@@ -196,9 +197,14 @@ type BuilderMed = {
   meal: string;
 };
 
-export default function DoctorPatientPage() {
+function DoctorPatientContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const patientParam = searchParams.get('code') || searchParams.get('id') || 'CT-2048';
+
   const { user } = useAuth();
   const [patient, setPatient] = useState<PatientView>(MOCK_PATIENT);
+  const [allPatients, setAllPatients] = useState<PatientView[]>([]);
   const [templates, setTemplates] = useState<RxTemplateItem[]>(MOCK_TEMPLATES);
   const [templateChoice, setTemplateChoice] = useState('');
   const [loading, setLoading] = useState(true);
@@ -224,9 +230,23 @@ export default function DoctorPatientPage() {
     { id: 3, name: 'Azithromycin', dose: '250 mg', times: [true, false, true], meal: 'After meal' },
   ]);
 
+  // Load all available patients for quick switching
   useEffect(() => {
     doctorService
-      .getPatientContext('CT-2048')
+      .getAllPatients()
+      .then((rows) => {
+        if (rows.length > 0) {
+          setAllPatients(rows.map(mapPatient));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Load selected patient context
+  useEffect(() => {
+    setLoading(true);
+    doctorService
+      .getPatientContext(patientParam)
       .then((row) => {
         if (row) {
           setPatient(mapPatient(row));
@@ -241,7 +261,7 @@ export default function DoctorPatientPage() {
         setUsingMockPatient(true);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [patientParam]);
 
   useEffect(() => {
     if (loading) return;
@@ -399,25 +419,49 @@ export default function DoctorPatientPage() {
         </p>
 
         {/* Patient header */}
-        <div className="mt-4 flex items-center border-b border-[#E2E8F0] pb-5 sm:pb-6">
-          <div className="grid h-11 w-11 sm:h-12 sm:w-12 place-items-center rounded-full bg-[#DDEBE9] text-[13px] font-semibold text-[#0F766E] shrink-0">
-            {patient.avatar_initials ?? '??'}
+        <div className="mt-4 border-b border-[#E2E8F0] pb-5 sm:pb-6">
+          <div className="flex items-center">
+            <div className="grid h-11 w-11 sm:h-12 sm:w-12 place-items-center rounded-full bg-[#DDEBE9] text-[13px] font-semibold text-[#0F766E] shrink-0">
+              {patient.avatar_initials ?? '??'}
+            </div>
+            <div className="ml-3 min-w-0 flex-1">
+              <h1 className="text-base sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A] truncate">
+                {patient.full_name}
+              </h1>
+              <p className="mt-0.5 text-[10px] text-[#64748B]">
+                #{patient.patient_code} · {patient.age ?? '—'} years · {patient.gender ?? '—'} ·{' '}
+                {patient.blood_group ?? '—'}
+              </p>
+            </div>
+            <div className="ml-auto text-right shrink-0">
+              <p className="text-xl sm:text-[22px] font-semibold tracking-[-0.04em] tabular-nums text-[#0D9488]">
+                {patient.weekly_adherence ?? '—'}%
+              </p>
+              <p className="text-[9px] text-[#94A3B8]">Adherence</p>
+            </div>
           </div>
-          <div className="ml-3 min-w-0 flex-1">
-            <h1 className="text-base sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A] truncate">
-              {patient.full_name}
-            </h1>
-            <p className="mt-0.5 text-[10px] text-[#64748B]">
-              #{patient.patient_code} · {patient.age ?? '—'} years · {patient.gender ?? '—'} ·{' '}
-              {patient.blood_group ?? '—'}
-            </p>
-          </div>
-          <div className="ml-auto text-right shrink-0">
-            <p className="text-xl sm:text-[22px] font-semibold tracking-[-0.04em] tabular-nums text-[#0D9488]">
-              {patient.weekly_adherence ?? '—'}%
-            </p>
-            <p className="text-[9px] text-[#94A3B8]">Adherence</p>
-          </div>
+
+          {/* Quick patient switcher dropdown */}
+          {allPatients.length > 0 && (
+            <div className="mt-3.5 flex items-center gap-2 rounded-lg bg-[#F1F5F9] p-1.5 text-[11px]">
+              <span className="font-semibold text-[#64748B] pl-1 shrink-0">Select patient:</span>
+              <select
+                value={patient.patient_code}
+                onChange={(e) => {
+                  const targetCode = e.target.value;
+                  router.push(`/doctor/patient?code=${targetCode}`);
+                }}
+                aria-label="Switch patient"
+                className="h-7 w-full rounded border border-[#CBD5E1] bg-white px-2 text-[11px] font-medium text-[#0F172A] focus:border-[#0D9488] focus:outline-none"
+              >
+                {allPatients.map((p) => (
+                  <option key={p.profile_id} value={p.patient_code}>
+                    {p.full_name} (#{p.patient_code}) · {p.age ? `${p.age}y` : ''} {p.blood_group || ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Active meds */}
@@ -631,5 +675,19 @@ export default function DoctorPatientPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function DoctorPatientPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-1 items-center justify-center p-12 text-sm text-[#94A3B8]">
+          Loading patient record…
+        </div>
+      }
+    >
+      <DoctorPatientContent />
+    </Suspense>
   );
 }

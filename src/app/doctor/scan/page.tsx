@@ -202,7 +202,7 @@ export default function DoctorScanPage() {
             </p>
 
             <Link
-              href="/doctor/patient"
+              href={`/doctor/patient?code=${patient.patient_code}`}
               className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-md bg-[#0D9488] text-[11px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
             >
               Open Clinical Record

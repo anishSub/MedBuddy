@@ -275,15 +275,35 @@ export const doctorService = {
     return data || [];
   },
 
-  async getPatientContext(patientCode = 'CT-2048') {
-    const { data, error } = await supabase
+  async getPatientContext(patientCodeOrId = 'CT-2048') {
+    const trimmed = patientCodeOrId.trim();
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      trimmed
+    );
+    let query = supabase
       .from('patient_details')
-      .select('*, profiles!patient_details_profile_id_fkey(*)')
-      .eq('patient_code', patientCode)
-      .maybeSingle();
+      .select('*, profiles!patient_details_profile_id_fkey(*)');
+
+    if (isUuid) {
+      query = query.eq('profile_id', trimmed);
+    } else {
+      query = query.ilike('patient_code', trimmed);
+    }
+
+    const { data, error } = await query.maybeSingle();
 
     if (error) throw error;
     return data;
+  },
+
+  async getAllPatients() {
+    const { data, error } = await supabase
+      .from('patient_details')
+      .select('*, profiles!patient_details_profile_id_fkey(*)')
+      .order('patient_code', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
   },
 
   async getRxTemplates() {

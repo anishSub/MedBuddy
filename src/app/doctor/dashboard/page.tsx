@@ -12,19 +12,21 @@ type AppointmentRow = [
   visit: string,
   status: string,
   department: string,
+  patientId?: string,
 ];
 
 // Fallback mock data shown when DB has no appointments yet
 const MOCK_APPOINTMENTS: AppointmentRow[] = [
-  ['09:30 AM', 'Maya Gurung', 'Routine follow-up', 'Checked in', 'Cardiology'],
-  ['10:30 AM', 'Ramesh Sharma', 'Cardiology review', 'Next', 'Cardiology'],
-  ['11:15 AM', 'Bikash Thapa', 'New consultation', 'Confirmed', 'General Medicine'],
-  ['12:00 PM', 'Sita Rai', 'Medication review', 'Confirmed', 'Endocrinology'],
-  ['02:15 PM', 'Anu Maharjan', 'Post-op review', 'Pending', 'Orthopaedics'],
+  ['09:30 AM', 'Maya Gurung', 'Routine follow-up', 'Checked in', 'Cardiology', 'a0000000-0000-0000-0000-000000000002'],
+  ['10:30 AM', 'Ramesh Sharma', 'Cardiology review', 'Next', 'Cardiology', 'a0000000-0000-0000-0000-000000000001'],
+  ['11:15 AM', 'Bikash Thapa', 'New consultation', 'Confirmed', 'General Medicine', 'a0000000-0000-0000-0000-000000000003'],
+  ['12:00 PM', 'Sita Rai', 'Medication review', 'Confirmed', 'Endocrinology', 'a0000000-0000-0000-0000-000000000004'],
+  ['02:15 PM', 'Anu Maharjan', 'Post-op review', 'Pending', 'Orthopaedics', 'a0000000-0000-0000-0000-000000000006'],
 ];
 
 type AppointmentRecord = {
   id: string;
+  patient_id: string;
   appointment_time: string;
   visit_type: string;
   status: string;
@@ -39,6 +41,7 @@ function mapAppointment(a: AppointmentRecord): AppointmentRow {
     a.visit_type,
     a.status,
     a.department,
+    a.patient_id,
   ];
 }
 
@@ -121,7 +124,7 @@ export default function DoctorDashboardPage() {
 
   const attention = ATTENTION_RULES.map((rule) => {
     const row = appointments.find((a) => a[3] === rule.status);
-    return row ? { ...rule, patient: row[1] } : null;
+    return row ? { ...rule, patient: row[1], patientId: row[5] } : null;
   }).filter((item): item is NonNullable<typeof item> => item !== null);
 
   return (
@@ -205,7 +208,7 @@ export default function DoctorDashboardPage() {
                       {item[3]}
                     </span>
                     <Link
-                      href="/doctor/patient"
+                      href={item[5] ? `/doctor/patient?id=${item[5]}` : '/doctor/patient'}
                       className="font-semibold text-[#0D9488] hover:underline"
                     >
                       Open
@@ -244,10 +247,10 @@ export default function DoctorDashboardPage() {
                   Nothing needs attention right now.
                 </div>
               ) : (
-                attention.map(({ title, patient, detail, icon, level }) => (
+                attention.map(({ title, patient, detail, icon, level, patientId }) => (
                   <Link
                     key={title}
-                    href="/doctor/patient"
+                    href={patientId ? `/doctor/patient?id=${patientId}` : '/doctor/patient'}
                     className="grid h-[52px] w-full grid-cols-[36px_1.25fr_1fr_1.4fr_60px] items-center gap-3 border-t border-[#E2E8F0] px-3 text-left first:border-0 hover:bg-[#F8FAFC]"
                   >
                     <span
