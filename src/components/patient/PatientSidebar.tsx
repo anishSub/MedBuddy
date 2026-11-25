@@ -37,7 +37,7 @@ export function PatientSidebar({ compact = false }: PatientSidebarProps) {
   const navContent = (
     <>
       <div className="px-6 pt-6 pb-6 lg:pb-9 flex items-center justify-between">
-        <Logo href="/dashboard" />
+        <Logo href="/" />
         <button
           onClick={() => setMobileOpen(false)}
           className={`p-1.5 rounded-md text-[#64748B] hover:bg-slate-200 ${
@@ -97,7 +97,7 @@ export function PatientSidebar({ compact = false }: PatientSidebarProps) {
           compact ? 'md:hidden' : 'lg:hidden'
         }`}
       >
-        <Logo href="/dashboard" />
+        <Logo href="/" />
         <button
           onClick={() => setMobileOpen(true)}
           className="p-2 rounded-lg border border-[#CBD5E1] bg-white text-[#475569] shadow-xs"

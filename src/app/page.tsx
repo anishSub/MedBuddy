@@ -28,7 +28,7 @@ const FEATURES: { icon: IconName; title: string; copy: string }[] = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, signUp, switchDemoUser } = useAuth();
+  const { login, signUp } = useAuth();
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [role, setRole] = useState<UserRole>('Patient');
@@ -343,45 +343,6 @@ export default function LoginPage() {
             By continuing, you consent to secure health data processing in accordance with
             applicable Nepal regulations.
           </p>
-
-          {/* Quick demo switcher */}
-          <div className="mt-7 border-t border-[#E8EDF0] pt-5">
-            <p className="mb-2.5 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
-              Quick 1-Click Demo Profiles (Supabase Live)
-            </p>
-            <div className="flex flex-col gap-1.5">
-              <button
-                type="button"
-                onClick={() => switchDemoUser('Patient')}
-                className="flex items-center justify-between rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[11px] font-medium text-[#334155] transition hover:bg-[#F8FAFC]"
-              >
-                <span>
-                  👤 <strong>Ramesh Sharma</strong> (Patient)
-                </span>
-                <span className="font-semibold text-[#0D9488]">Enter →</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => switchDemoUser('Doctor')}
-                className="flex items-center justify-between rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[11px] font-medium text-[#334155] transition hover:bg-[#F8FAFC]"
-              >
-                <span>
-                  🩺 <strong>Dr. Sushil Adhikari</strong> (Doctor)
-                </span>
-                <span className="font-semibold text-[#0D9488]">Enter →</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => switchDemoUser('Admin')}
-                className="flex items-center justify-between rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[11px] font-medium text-[#334155] transition hover:bg-[#F8FAFC]"
-              >
-                <span>
-                  ⚙️ <strong>Nisha Aryal</strong> (Clinic Admin)
-                </span>
-                <span className="font-semibold text-[#0D9488]">Enter →</span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </section>

@@ -32,7 +32,7 @@ export function AdminSidebar() {
   const navContent = (
     <>
       <div className="px-6 pt-6 pb-2 flex items-center justify-between">
-        <Logo href="/admin/overview" />
+        <Logo href="/" />
         <button
           onClick={() => setMobileOpen(false)}
           className="lg:hidden p-1.5 rounded-md text-[#64748B] hover:bg-slate-200"
@@ -89,7 +89,7 @@ export function AdminSidebar() {
     <>
       {/* Mobile Top Bar */}
       <div className="lg:hidden flex items-center justify-between border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 shrink-0">
-        <Logo href="/admin/overview" />
+        <Logo href="/" />
         <button
           onClick={() => setMobileOpen(true)}
           className="p-2 rounded-lg border border-[#CBD5E1] bg-white text-[#475569] shadow-xs"
