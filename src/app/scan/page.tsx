@@ -151,9 +151,9 @@ export default function ScanPage() {
         className="hidden"
       />
 
-      <main className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
+      <main className="flex flex-1 min-h-0 flex-col overflow-y-auto bg-[#F8FAFC] xl:flex-row xl:overflow-hidden">
         {/* Left column: Prescription preview */}
-        <div className="flex w-full xl:w-1/2 flex-col border-b xl:border-b-0 xl:border-r border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:p-6 lg:p-8 shrink-0 min-h-[460px] xl:min-h-0 xl:overflow-y-auto">
+        <div className="flex w-full shrink-0 flex-col border-b border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:p-6 lg:p-8 xl:min-h-0 xl:w-1/2 xl:overflow-y-auto xl:border-b-0 xl:border-r">
           <div className="mb-4 sm:mb-5 flex items-end justify-between">
             <div>
               <h2 className="text-[17px] sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A]">
@@ -172,7 +172,7 @@ export default function ScanPage() {
             </button>
           </div>
 
-          <div className="relative flex min-h-[350px] flex-1 items-center justify-center overflow-hidden rounded-xl border border-dashed border-[#B8C7D4] bg-[#EDF2F4] p-4">
+          <div className="relative flex min-h-[350px] flex-1 items-center justify-center overflow-hidden rounded-xl border border-dashed border-[#B8C7D4] bg-[#EDF2F4] p-4 shadow-xs">
             <div className="absolute left-3 sm:left-4 top-3 sm:top-4 z-10 rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-semibold text-[#64748B] shadow-xs">
               Page 1 of 1 · OCR Extracted
             </div>
@@ -213,13 +213,13 @@ export default function ScanPage() {
         </div>
 
         {/* Right column: Extracted Schedule */}
-        <div className="flex w-full xl:w-1/2 flex-col p-4 sm:p-6 lg:p-8 xl:overflow-y-auto">
+        <div className="flex w-full min-w-0 flex-col bg-white p-4 sm:p-6 lg:p-8 xl:w-1/2 xl:overflow-y-auto">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
               <h2 className="text-[17px] sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A]">
                 Extracted Medication Schedule
               </h2>
-              <p className="mt-1 text-[12px] text-[#64748B]">
+              <p className="mt-1 text-sm text-[#64748B]">
                 Review each detail before activating reminders into Supabase.
               </p>
             </div>
@@ -247,9 +247,9 @@ export default function ScanPage() {
             </div>
           )}
 
-          <div className="mt-5 sm:mt-6 overflow-x-auto border-y border-[#E2E8F0]">
+          <div className="patient-card mt-5 overflow-x-auto sm:mt-6">
             <div className="min-w-[500px]">
-              <div className="grid grid-cols-[1.3fr_.7fr_1.1fr_.9fr_.7fr_40px] gap-2 bg-[#F8FAFC] px-3 py-3 text-[9px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
+              <div className="grid grid-cols-[1.3fr_.7fr_1.1fr_.9fr_.7fr_40px] gap-2 bg-[#F8FAFC] px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#64748B]">
                 <span>Medicine</span>
                 <span>Dosage</span>
                 <span>Timing (M / A / N)</span>
@@ -284,7 +284,7 @@ export default function ScanPage() {
                         <input
                           value={row.dosage}
                           onChange={(e) => updateMedicine(row.id, 'dosage', e.target.value)}
-                          className="w-full border-b border-[#0D9488] bg-transparent text-[11px] outline-none"
+                          className="w-full border-b border-[#0D9488] bg-transparent text-xs outline-none"
                         />
                       ) : (
                         <span className="tabular-nums">{row.dosage}</span>
@@ -325,7 +325,7 @@ export default function ScanPage() {
                           <option>Before meal</option>
                         </select>
                       ) : (
-                        <span className="text-[11px]">{row.meal}</span>
+                        <span className="text-xs">{row.meal}</span>
                       )}
                     </div>
 
@@ -334,10 +334,10 @@ export default function ScanPage() {
                         <input
                           value={row.duration}
                           onChange={(e) => updateMedicine(row.id, 'duration', e.target.value)}
-                          className="w-16 border-b border-[#0D9488] bg-transparent text-[11px] outline-none"
+                          className="w-16 border-b border-[#0D9488] bg-transparent text-xs outline-none"
                         />
                       ) : (
-                        <span className="text-[11px] tabular-nums">{row.duration}</span>
+                        <span className="text-xs tabular-nums">{row.duration}</span>
                       )}
                     </div>
 
@@ -367,14 +367,14 @@ export default function ScanPage() {
 
           <button
             onClick={addMedicineRow}
-            className="mt-4 flex h-9 items-center gap-2 self-start text-[11px] font-semibold text-[#0D9488] hover:underline"
+            className="mt-4 flex h-9 items-center gap-2 self-start text-xs font-semibold text-[#0D9488] hover:underline"
           >
             <Icon name="plus" size={14} />
             Add medicine row
           </button>
 
           <div className="mt-6 sm:mt-auto border-t border-[#E2E8F0] pt-5">
-            <div className="mb-4 flex items-start gap-2.5 rounded-lg bg-[#FFFBEB] px-3.5 py-3 text-[11px] leading-4 text-[#92400E]">
+            <div className="mb-4 flex items-start gap-2.5 rounded-lg bg-[#FFFBEB] px-3.5 py-3 text-xs leading-5 text-[#92400E]">
               <Icon name="clock" size={15} className="mt-0.5 shrink-0 text-[#F59E0B]" />
               <span>
                 MedBuddy extracted {meds.length} medicines. Please verify dosage and timing before activating.

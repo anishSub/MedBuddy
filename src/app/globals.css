@@ -4,6 +4,7 @@
 @layer base {
   :root {
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
     color: #0f172a;
     background: #f8fafc;
     font-synthesis: none;
@@ -37,6 +38,20 @@
     background: #ccfbf1;
     color: #0f172a;
   }
+}
+
+.patient-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 5%);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.patient-card-interactive:hover {
+  border-color: #b9d8d5;
+  box-shadow: 0 5px 16px rgb(15 23 42 / 8%);
+  transform: translateY(-1px);
 }
 
 .app-page {

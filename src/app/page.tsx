@@ -187,13 +187,13 @@ export default function LoginPage() {
           <Logo className="h-9" />
         </div>
 
-        <div className="relative z-10 w-full max-w-[420px]">
+        <div className="relative z-10 w-full max-w-[460px] rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.07)] sm:p-8">
           <div className="mb-7">
-            <p className="text-[11px] font-semibold text-[#0D9488]">Welcome to MedBuddy</p>
+            <p className="text-xs font-semibold text-[#0D9488]">Welcome to MedBuddy</p>
             <h2 className="mt-1.5 text-[24px] font-semibold tracking-[-0.03em] text-[#0F172A] sm:text-[26px]">
               {isSignUp ? 'Create your account' : 'Sign in to your account'}
             </h2>
-            <p className="mt-2 text-[12.5px] text-[#64748B]">
+            <p className="mt-2 text-sm text-[#64748B]">
               {isSignUp ? 'Already registered? ' : "Don't have an account? "}
               <button
                 type="button"
@@ -235,7 +235,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="grid gap-4">
             {isSignUp && (
-              <label className="grid gap-1.5 text-[11.5px] font-semibold text-[#334155]">
+              <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
                 Full name
                 <div className="relative">
                   <Icon
@@ -247,14 +247,14 @@ export default function LoginPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-3.5 text-[13px] font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
+                    className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-3.5 text-sm font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
                     placeholder="Enter your full name"
                   />
                 </div>
               </label>
             )}
 
-            <label className="grid gap-1.5 text-[11.5px] font-semibold text-[#334155]">
+            <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
               Mobile number
               <div className="relative">
                 <Icon
@@ -266,13 +266,13 @@ export default function LoginPage() {
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-3.5 text-[13px] font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
+                  className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-3.5 text-sm font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
                   placeholder="+977 98XXXXXXXX"
                 />
               </div>
             </label>
 
-            <label className="grid gap-1.5 text-[11.5px] font-semibold text-[#334155]">
+            <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
               Password
               <div className="relative">
                 <Icon
@@ -284,7 +284,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-11 text-[13px] font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
+                  className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-11 text-sm font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
                   placeholder="At least 8 characters"
                 />
                 <button

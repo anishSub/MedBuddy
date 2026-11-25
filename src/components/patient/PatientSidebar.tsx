@@ -16,6 +16,7 @@ interface NavItem {
 
 interface PatientSidebarProps {
   compact?: boolean;
+  wide?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -25,7 +26,7 @@ const navItems: NavItem[] = [
   { href: '/health-pass', label: 'QR Health Pass', icon: 'qr' },
 ];
 
-export function PatientSidebar({ compact = false }: PatientSidebarProps) {
+export function PatientSidebar({ compact = false, wide = false }: PatientSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, patientDetail, logout } = useAuth();
@@ -58,7 +59,7 @@ export function PatientSidebar({ compact = false }: PatientSidebarProps) {
               href={item.href}
               onClick={() => setMobileOpen(false)}
               className={`flex h-11 w-full items-center gap-3 rounded-lg px-3.5 text-[14px] font-medium transition-colors ${
-                compact ? 'md:h-9 md:gap-2 md:px-2.5 md:text-[11px]' : ''
+                compact ? 'md:h-10 md:gap-2.5 md:px-3 md:text-[13px]' : ''
               } ${
                 isActive
                   ? 'bg-[#E6F4F2] text-[#0D9488]'
@@ -133,7 +134,9 @@ export function PatientSidebar({ compact = false }: PatientSidebarProps) {
       {/* Desktop/Laptop Sidebar */}
       <aside
         className={`hidden h-full shrink-0 flex-col border-r border-[#E2E8F0] bg-[#F8FAFC] ${
-          compact ? 'md:flex md:w-40' : 'lg:flex lg:w-56 xl:w-60'
+          compact
+            ? `md:flex ${wide ? 'md:w-52' : 'md:w-44'}`
+            : 'lg:flex lg:w-56 xl:w-60'
         }`}
       >
         {navContent}

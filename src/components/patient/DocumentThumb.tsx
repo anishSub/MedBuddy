@@ -1,8 +1,25 @@
+import Image from 'next/image';
+
 interface DocumentThumbProps {
   kind: 'rx' | 'lab' | 'xray' | string;
+  illustrated?: boolean;
 }
 
-export function DocumentThumb({ kind }: DocumentThumbProps) {
+export function DocumentThumb({ kind, illustrated = false }: DocumentThumbProps) {
+  if (illustrated && kind === 'rx') {
+    return (
+      <div className="relative h-full w-full overflow-hidden rounded-md">
+        <Image
+          src="/document-prescription.svg"
+          alt="Illustration of a prescription"
+          fill
+          sizes="270px"
+          className="object-cover"
+        />
+      </div>
+    );
+  }
+
   if (kind === 'xray') {
     return (
       <div className="relative h-full w-full bg-[#22303C]">
