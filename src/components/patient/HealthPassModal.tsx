@@ -57,7 +57,7 @@ export function HealthPassModal({ onClose, inline = false }: HealthPassModalProp
     >
       <div className="flex items-start justify-between border-b border-[#E2E8F0] px-5 sm:px-7 py-4 sm:py-5">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#0D9488]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#0D9488]">
             MedBuddy health pass
           </p>
           <h2
@@ -83,46 +83,46 @@ export function HealthPassModal({ onClose, inline = false }: HealthPassModalProp
           <div className="rounded-lg border border-[#E2E8F0] bg-white p-1">
             <QRCode seed={patientCode} />
           </div>
-          <p className="mt-2 max-w-[210px] text-[9px] leading-snug text-[#94A3B8]">
+          <p className="mt-2 max-w-[210px] text-[11px] leading-snug text-[#64748B]">
             Illustrative QR — scanning is not enabled yet.
           </p>
         </div>
         <div className="min-w-0 flex-1 w-full text-center sm:text-left">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
             Patient
           </p>
           <h3 className="mt-1 text-xl sm:text-[21px] font-semibold tracking-[-0.025em] text-[#0F172A]">
             {name}
           </h3>
-          <p className="mt-0.5 text-[12px] font-medium tabular-nums text-[#64748B]">
+          <p className="mt-0.5 text-sm font-medium tabular-nums text-[#64748B]">
             Patient ID <span className="text-[#334155]">#{patientCode}</span>
           </p>
           <div className="mt-4 flex flex-wrap gap-2 justify-center sm:justify-start">
-            <span className="rounded-md border border-[#D7E7E5] bg-[#F0FDFA] px-2.5 py-1 text-[10px] font-semibold text-[#0F766E]">
+            <span className="rounded-md border border-[#D7E7E5] bg-[#F0FDFA] px-2.5 py-1 text-[11px] font-semibold text-[#0F766E]">
               Blood Group: {bloodGroup}
             </span>
-            <span className="rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-2.5 py-1 text-[10px] font-semibold text-[#92400E]">
+            <span className="rounded-md border border-[#FDE68A] bg-[#FFFBEB] px-2.5 py-1 text-[11px] font-semibold text-[#92400E]">
               Allergy: {allergies}
             </span>
           </div>
           <div className="mt-5 border-t border-[#E2E8F0] pt-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#64748B]">
               Emergency contact
             </p>
-            <p className="mt-1.5 text-[12px] font-semibold text-[#334155]">{emergencyName}</p>
-            <p className="mt-0.5 text-[11px] tabular-nums text-[#64748B]">{emergencyPhone}</p>
+            <p className="mt-1.5 text-sm font-semibold text-[#334155]">{emergencyName}</p>
+            <p className="mt-0.5 text-xs tabular-nums text-[#64748B]">{emergencyPhone}</p>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between border-t border-[#E2E8F0] bg-[#F8FAFC] px-5 sm:px-7 py-4 gap-3">
-        <p className="flex items-center gap-1.5 text-[10px] text-[#64748B]">
+        <p className="flex items-center gap-1.5 text-xs text-[#64748B]">
           <Icon name="shield" size={14} className="text-[#0D9488]" />
           For emergency identification
         </p>
         <button
           onClick={downloadPass}
-          className="w-full sm:w-auto flex h-9 sm:h-10 items-center justify-center gap-2 rounded-md bg-[#0D9488] px-4 text-[11px] font-semibold text-white transition hover:bg-[#0F766E] shadow-xs"
+          className="w-full sm:w-auto flex h-10 items-center justify-center gap-2 rounded-md bg-[#0D9488] px-4 text-xs font-semibold text-white transition hover:bg-[#0F766E] shadow-xs"
         >
           <Icon name="upload" size={15} className="rotate-180" />
           Download Health Pass

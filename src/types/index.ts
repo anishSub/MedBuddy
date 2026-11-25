@@ -22,7 +22,11 @@ export type IconName =
   | 'eye'
   | 'eyeOff'
   | 'arrow'
-  | 'x';
+  | 'x'
+  | 'user'
+  | 'stethoscope'
+  | 'phone'
+  | 'heart';
 
 export type UserRole = 'Patient' | 'Doctor' | 'Admin';
 export type AccountStatus = 'Active' | 'Pending' | 'Suspended';

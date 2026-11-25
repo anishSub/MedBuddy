@@ -14,6 +14,10 @@ interface NavItem {
   icon: IconName;
 }
 
+interface PatientSidebarProps {
+  compact?: boolean;
+}
+
 const navItems: NavItem[] = [
   { href: '/dashboard', label: 'Overview', icon: 'home' },
   { href: '/scan', label: 'Scan Prescription', icon: 'scan' },
@@ -21,7 +25,7 @@ const navItems: NavItem[] = [
   { href: '/health-pass', label: 'QR Health Pass', icon: 'qr' },
 ];
 
-export function PatientSidebar() {
+export function PatientSidebar({ compact = false }: PatientSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, patientDetail, logout } = useAuth();
@@ -36,7 +40,9 @@ export function PatientSidebar() {
         <Logo href="/dashboard" />
         <button
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden p-1.5 rounded-md text-[#64748B] hover:bg-slate-200"
+          className={`p-1.5 rounded-md text-[#64748B] hover:bg-slate-200 ${
+            compact ? 'md:hidden' : 'lg:hidden'
+          }`}
           aria-label="Close menu"
         >
           <Icon name="plus" size={20} className="rotate-45" />
@@ -86,7 +92,11 @@ export function PatientSidebar() {
   return (
     <>
       {/* Mobile Header Bar with Hamburger */}
-      <div className="lg:hidden flex items-center justify-between border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 shrink-0">
+      <div
+        className={`flex items-center justify-between border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-3 shrink-0 ${
+          compact ? 'md:hidden' : 'lg:hidden'
+        }`}
+      >
         <Logo href="/dashboard" />
         <button
           onClick={() => setMobileOpen(true)}
@@ -104,7 +114,9 @@ export function PatientSidebar() {
       {/* Mobile Drawer Overlay */}
       {mobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-50 bg-[#0F172A]/40 backdrop-blur-xs flex"
+          className={`fixed inset-0 z-50 bg-[#0F172A]/40 backdrop-blur-xs flex ${
+            compact ? 'md:hidden' : 'lg:hidden'
+          }`}
           onClick={() => setMobileOpen(false)}
         >
           <aside
@@ -117,7 +129,13 @@ export function PatientSidebar() {
       )}
 
       {/* Desktop/Laptop Sidebar */}
-      <aside className="hidden lg:flex h-full w-56 xl:w-60 shrink-0 flex-col border-r border-[#E2E8F0] bg-[#F8FAFC]">
+      <aside
+        className={`hidden h-full shrink-0 flex-col border-r border-[#E2E8F0] bg-[#F8FAFC] ${
+          compact
+            ? 'md:flex md:w-56 xl:w-60'
+            : 'lg:flex lg:w-56 xl:w-60'
+        }`}
+      >
         {navContent}
       </aside>
     </>

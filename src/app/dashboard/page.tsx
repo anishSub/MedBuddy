@@ -222,16 +222,30 @@ export default function DashboardPage() {
 
   const adherenceRate = patientDetail?.weekly_adherence || 88;
   const firstName = user?.full_name ? user.full_name.split(' ')[0] : 'Ramesh';
+  const appointmentDate = appointment?.appointment_date
+    ? new Date(`${appointment.appointment_date}T00:00:00`)
+    : null;
+  const appointmentDateLabel = appointmentDate && !Number.isNaN(appointmentDate.getTime())
+    ? appointmentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    : null;
+  const doctorName = appointment?.doctor?.full_name || 'Dr. Sushil Adhikari';
+  const doctorInitials = doctorName
+    .replace(/^Dr\.\s*/i, '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join('');
 
   return (
-    <PatientShell title={`Good morning, ${firstName}`} eyebrow={todayFormatted}>
-      <main className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
+    <PatientShell title={`Good morning, ${firstName}`} eyebrow={todayFormatted} compact>
+      <main className="flex flex-1 min-h-0 flex-col overflow-y-auto bg-[#F8FAFC] xl:flex-row xl:overflow-hidden">
         {/* Schedule List Column */}
-        <div className="flex-1 w-full xl:w-[63%] xl:overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="flex flex-wrap items-end justify-between border-b border-[#E2E8F0] pb-5 gap-3">
+        <div className="w-full min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-6 xl:overflow-y-auto xl:px-7">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg sm:text-[20px] font-semibold tracking-[-0.025em] text-[#0F172A]">
+                <h2 className="text-base sm:text-[18px] font-semibold tracking-[-0.025em] text-[#0F172A]">
                   Today’s Medicine Schedule
                 </h2>
                 {loading && (
@@ -240,50 +254,59 @@ export default function DashboardPage() {
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-[13px] text-[#64748B]">
+              <p className="mt-1 text-sm text-[#64748B]">
                 {totalDoses} doses scheduled for today
               </p>
             </div>
-            <div className="flex items-center gap-2 text-[12px] text-[#64748B]">
-              <span className="h-2 w-2 rounded-full bg-[#10B981]" />
+            <div className="flex items-center gap-1.5 rounded-full bg-[#E8F7F1] px-2.5 py-1 text-[10px] font-semibold text-[#0F766E]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
               {takenCount} of {totalDoses} taken
             </div>
           </div>
 
-          <div className="relative mt-2">
-            <div className="hidden sm:block absolute bottom-7 left-[21px] top-7 w-px bg-[#E2E8F0]" />
+          <div className="relative mt-3">
+            <div className="hidden sm:block absolute bottom-6 left-4 top-6 w-px bg-[#E2E8F0]" />
             {scheduleGroups.map((group) => (
               <div
                 key={group.time}
-                className="relative flex flex-col sm:flex-row border-b border-[#E2E8F0] py-5 last:border-b-0 gap-3 sm:gap-0"
+                className="relative flex flex-col sm:flex-row py-2.5 last:pb-0 gap-3 sm:gap-0"
               >
-                <div className="relative z-10 sm:mr-5 mt-0.5 grid h-[40px] w-[40px] sm:h-[43px] sm:w-[43px] shrink-0 place-items-center rounded-full border border-[#D5E2E0] bg-white text-[9px] font-bold tabular-nums text-[#0F766E] shadow-xs">
+                <div className={`relative z-10 sm:mr-3 mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border text-[7px] font-bold tabular-nums shadow-xs ${
+                  group.time === 'Morning'
+                    ? 'border-[#B8E9E0] bg-[#E8F8F5] text-[#0F766E]'
+                    : group.time === 'Afternoon'
+                      ? 'border-[#F4DFAC] bg-[#FFF7E5] text-[#B7791F]'
+                      : 'border-[#D7E2FC] bg-[#F1F5FF] text-[#4563A8]'
+                }`}>
                   {group.icon}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="mb-2 flex items-baseline gap-2">
-                    <h3 className="text-[14px] font-semibold text-[#0F172A]">{group.time}</h3>
-                    <span className="text-[12px] tabular-nums text-[#94A3B8]">{group.hour}</span>
+                  <div className="mb-1.5 flex items-baseline gap-2">
+                    <h3 className="text-[12px] font-semibold text-[#0F172A]">{group.time}</h3>
+                    <span className="text-[10px] tabular-nums text-[#94A3B8]">{group.hour}</span>
                   </div>
                   {group.items.map((med) => {
                     const isTaken = takenKeys.has(`${med.id}_${group.slot}`);
                     return (
                       <div
                         key={med.id}
-                        className="flex flex-wrap sm:flex-nowrap items-center border-t border-[#F1F5F9] first:border-t-0 py-3 sm:py-0 sm:h-[57px] gap-2 sm:gap-4"
+                        className="patient-card patient-card-interactive mb-2 flex min-h-[58px] flex-wrap items-center gap-2 px-3 py-2.5 last:mb-0 sm:flex-nowrap sm:gap-3 sm:py-0"
                       >
-                        <div className="flex-1 min-w-[160px]">
-                          <p className="text-[14px] font-semibold text-[#0F172A]">{med.name}</p>
+                        <div className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-[#E8F7F4] text-[#0D9488]">
+                          <Icon name="plus" size={13} />
+                        </div>
+                        <div className="min-w-[120px] flex-1">
+                          <p className="text-[13px] font-semibold text-[#0F172A]">{med.name}</p>
                           <p className="mt-0.5 text-[11px] tabular-nums text-[#64748B]">
                             {med.dosage} · 1 {med.form.toLowerCase()}
                           </p>
                         </div>
-                        <span className="rounded-md bg-[#F1F5F9] px-2.5 py-1 text-[10px] font-semibold text-[#64748B] shrink-0">
+                        <span className="shrink-0 rounded-md bg-[#F1F5F9] px-2 py-1 text-[10px] font-semibold text-[#64748B]">
                           {med.meal_timing}
                         </span>
                         <button
                           onClick={() => toggleTaken(med.id, group.slot)}
-                          className={`ml-auto sm:ml-0 flex h-8 items-center gap-1.5 rounded-md border px-3 text-[11px] font-semibold transition shrink-0 ${
+                          className={`ml-auto flex h-8 shrink-0 items-center gap-1 rounded-md border px-2.5 text-[11px] font-semibold transition sm:ml-0 ${
                             isTaken
                               ? 'border-[#A7F3D0] bg-[#ECFDF5] text-[#059669]'
                               : 'border-[#CBD5E1] bg-white text-[#475569] hover:bg-slate-50'
@@ -302,41 +325,42 @@ export default function DashboardPage() {
         </div>
 
         {/* Adherence and upcoming appointments aside */}
-        <aside className="w-full xl:w-[37%] xl:overflow-y-auto border-t xl:border-t-0 xl:border-l border-[#E2E8F0] bg-[#FCFDFD] px-4 sm:px-6 lg:px-7 py-6 sm:py-8">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#94A3B8]">
-            Weekly adherence
-          </p>
-          <div className="mt-3 flex items-end gap-2">
-            <span className="text-3xl sm:text-[40px] xl:text-[44px] font-semibold leading-none tracking-[-0.05em] tabular-nums text-[#0F172A]">
-              {adherenceRate}%
-            </span>
-            <span className="pb-1 text-[13px] text-[#64748B]">taken this week</span>
-          </div>
+        <aside className="w-full shrink-0 border-t border-[#E2E8F0] bg-white px-4 py-5 sm:px-6 sm:py-6 xl:w-[340px] xl:overflow-y-auto xl:border-l xl:border-t-0 xl:px-6">
+          <div className="patient-card p-4 sm:p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#94A3B8]">
+              Weekly adherence
+            </p>
+            <div className="mt-2.5 flex items-end gap-2">
+              <span className="text-3xl font-semibold leading-none tracking-[-0.05em] tabular-nums text-[#0F172A] sm:text-[36px]">
+                {adherenceRate}%
+              </span>
+              <span className="pb-1 text-xs text-[#64748B]">taken this week</span>
+            </div>
 
-          {/* Bar Chart */}
-          <div className="mt-6 flex h-[54px] items-end gap-2">
-            {[78, 92, 86, 100, 70, 62, 24].map((v, i) => (
-              <div className="flex h-full flex-1 flex-col justify-end gap-1.5" key={i}>
-                <div className="rounded-xs bg-[#D7ECE9]" style={{ height: `${v}%` }}>
-                  <div
-                    className="h-full rounded-xs bg-[#0D9488]"
-                    style={{ opacity: i === 6 ? 0.35 : 1 }}
-                  />
+            {/* Bar Chart */}
+            <div className="mt-3 flex h-[42px] items-end gap-1.5">
+              {[78, 92, 86, 100, 70, 62, 24].map((v, i) => (
+                <div className="flex h-full flex-1 flex-col justify-end gap-1" key={i}>
+                  <div className="rounded-xs bg-[#D7ECE9]" style={{ height: `${v}%` }}>
+                    <div
+                      className="h-full rounded-xs bg-[#0D9488]"
+                      style={{ opacity: i === 6 ? 0.35 : 1 }}
+                    />
+                  </div>
+                  <span className="text-center text-[9px] text-[#94A3B8]">
+                    {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
+                  </span>
                 </div>
-                <span className="text-center text-[9px] text-[#94A3B8]">
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Upcoming follow-up card */}
-          <div className="mt-8 border-t border-[#E2E8F0] pt-6 sm:pt-8">
-            <div className="rounded-xl border border-[#E2E8F0] bg-white p-4 sm:p-5 shadow-xs">
+            {/* Upcoming follow-up card */}
+            <div className="mt-5">
+              <div className="patient-card p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[#F59E0B]">
-                  <Icon name="calendar" size={17} />
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.11em]">
+                  <Icon name="calendar" size={13} />
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.11em]">
                     Upcoming follow-up
                   </p>
                 </div>
@@ -350,48 +374,56 @@ export default function DashboardPage() {
                   {appointment?.status || 'Confirmed'}
                 </span>
               </div>
-              <h3 className="mt-4 text-[17px] sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A]">
-                {appointment?.doctor?.full_name || 'Dr. Sushil Adhikari'}
-              </h3>
-              <p className="mt-1 text-[13px] font-medium text-[#475569]">
-                {appointment?.appointment_time || '10:30 AM'} · {appointment?.visit_type || 'Cardiology review'}
+              <div className="mt-4 flex items-center gap-3">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-xs font-semibold text-[#0D9488]" aria-hidden="true">
+                  {doctorInitials}
+                </div>
+                <h3 className="min-w-0 text-[15px] font-semibold tracking-[-0.02em] text-[#0F172A]">
+                  {doctorName}
+                </h3>
+              </div>
+              <p className="mt-2 text-[13px] font-medium text-[#475569]">
+                {appointmentDateLabel && `${appointmentDateLabel} · `}
+                {appointment?.appointment_time || '10:30 AM'} ·{' '}
+                {appointment?.visit_type || 'Cardiology review'}
               </p>
-              <p className="mt-1 text-[12px] text-[#94A3B8]">
+              <p className="mt-1 text-[11px] text-[#64748B]">
                 {appointment?.department || 'Cardiology'} · Norvic Clinic, Thapathali
               </p>
-              <div className="mt-5 flex gap-2">
+              <div className="mt-3 flex gap-2">
                 <button
                   disabled={updatingAppt}
                   onClick={() => handleUpdateAppointment('Confirmed')}
-                  className="h-9 flex-1 rounded-md bg-[#0D9488] text-[12px] font-semibold text-white transition hover:bg-[#0F766E] disabled:opacity-60"
+                  className="h-9 flex-1 rounded-md bg-[#0D9488] text-[11px] font-semibold text-white transition hover:bg-[#0F766E] disabled:opacity-60"
                 >
                   {appointment?.status === 'Confirmed' ? 'Visit confirmed' : 'Confirm visit'}
                 </button>
                 <button
                   disabled={updatingAppt}
                   onClick={() => handleUpdateAppointment('Reschedule Requested')}
-                  className="h-9 flex-1 rounded-md border border-[#CBD5E1] text-[12px] font-semibold text-[#475569] transition hover:bg-slate-50 disabled:opacity-60"
+                  className="h-9 flex-1 rounded-md border border-[#CBD5E1] text-[11px] font-semibold text-[#475569] transition hover:bg-slate-50 disabled:opacity-60"
                 >
                   Reschedule
                 </button>
               </div>
+              </div>
             </div>
-          </div>
 
-          {/* Care team */}
-          <div className="mt-7 flex items-center justify-between border-b border-[#E2E8F0] pb-3">
-            <p className="text-[13px] font-semibold text-[#334155]">Care team</p>
-            <button className="text-[11px] font-semibold text-[#0D9488] hover:underline">View all</button>
-          </div>
-          <div className="flex items-center gap-3 py-3.5">
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-[#E6F4F2] text-[11px] font-semibold text-[#0D9488]">
-              SA
+            {/* Care team */}
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-[11px] font-semibold text-[#334155]">Care team</p>
+              <button className="text-[9px] font-semibold text-[#0D9488] hover:underline">View all</button>
             </div>
-            <div>
-              <p className="text-[12px] font-semibold text-[#334155]">
-                {appointment?.doctor?.full_name || 'Dr. Sushil Adhikari'}
-              </p>
-              <p className="text-[11px] text-[#94A3B8]">Primary physician · Cardiology</p>
+            <div className="mt-2 flex items-center gap-2.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-2 py-2">
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-[11px] font-semibold text-[#0D9488]" aria-hidden="true">
+                {doctorInitials}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-[13px] font-semibold text-[#334155]">
+                  {doctorName}
+                </p>
+                <p className="text-[11px] text-[#64748B]">Primary physician · Cardiology</p>
+              </div>
             </div>
           </div>
         </aside>

@@ -121,6 +121,26 @@ export function Icon({ name, size = 18, className = '' }: IconProps) {
     ),
     arrow: <path d="M5 12h14M14 7l5 5-5 5" />,
     x: <path d="M18 6 6 18M6 6l12 12" />,
+    user: (
+      <>
+        <circle cx="12" cy="8" r="3.5" />
+        <path d="M5 20a7 7 0 0 1 14 0" />
+      </>
+    ),
+    stethoscope: (
+      <>
+        <path d="M5 3v5a4 4 0 0 0 8 0V3" />
+        <path d="M3.5 3h3M11.5 3h3" />
+        <path d="M9 14v1a4.5 4.5 0 0 0 9 0v-2" />
+        <circle cx="18" cy="11" r="2.2" />
+      </>
+    ),
+    phone: (
+      <path d="M5 3h3l2 5-2.5 1.5a12.5 12.5 0 0 0 6 6L15 13l5 2v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 3 5.2 2 2 0 0 1 5 3Z" />
+    ),
+    heart: (
+      <path d="M12 20s-7.5-4.6-7.5-9.4A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.5 3C19.5 15.4 12 20 12 20Z" />
+    ),
   };
 
   return (

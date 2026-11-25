@@ -87,6 +87,16 @@ function mapRecordToDoc(r: {
   };
 }
 
+function getProviderInitials(name: string) {
+  return name
+    .replace(/^(Dr\.|Doctor)\s*/i, '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join('');
+}
+
 export default function RecordsPage() {
   const { user } = useAuth();
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
@@ -159,11 +169,11 @@ export default function RecordsPage() {
   }
 
   return (
-    <PatientShell title="Medical Records" eyebrow="Documents & reports">
-      <main className="flex-1 min-h-0 flex flex-col px-4 sm:px-6 lg:px-10 py-6 sm:py-7 overflow-y-auto">
+    <PatientShell title="Medical Records" eyebrow="Documents & reports" compact>
+      <main className="flex-1 min-h-0 flex flex-col overflow-y-auto bg-[#F8FAFC] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         {/* Tab bar + upload button */}
         <div className="flex flex-wrap items-end justify-between border-b border-[#E2E8F0] gap-3">
-          <div className="flex gap-4 sm:gap-7 overflow-x-auto pb-1 sm:pb-0">
+          <div className="flex min-w-0 flex-nowrap gap-3 pb-1 sm:gap-7 sm:pb-0">
             {['All', 'Prescriptions', 'Lab Reports', 'X-Rays'].map((item) => (
               <button
                 key={item}
@@ -212,16 +222,16 @@ export default function RecordsPage() {
         {loading ? (
           <div className="mt-10 text-center text-[13px] text-[#94A3B8]">Loading records…</div>
         ) : (
-          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 pb-6">
+          <div className="mt-4 flex flex-wrap items-start justify-start gap-4 pb-6 sm:gap-5">
             {shown.map((doc, i) => (
               <article
                 key={`${doc.title}-${i}`}
-                className="group grid grid-rows-[140px_auto] overflow-hidden rounded-lg border border-[#E2E8F0] bg-white transition hover:border-[#B9D8D5] hover:shadow-sm"
+                className="patient-card patient-card-interactive group grid h-[310px] w-[270px] shrink-0 grid-rows-[120px_1fr] overflow-hidden"
               >
                 <div className="overflow-hidden border-b border-[#E2E8F0] bg-[#F1F5F9] p-3">
-                  <DocumentThumb kind={doc.kind} />
+                  <DocumentThumb kind={doc.kind} illustrated />
                 </div>
-                <div className="p-4">
+                <div className="p-3">
                   <div className="flex items-center justify-between">
                     <span
                       className={`rounded px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] ${
@@ -236,11 +246,16 @@ export default function RecordsPage() {
                     </span>
                     <span className="text-[10px] tabular-nums text-[#94A3B8]">{doc.date}</span>
                   </div>
-                  <h3 className="mt-2.5 text-[14px] font-semibold tracking-[-0.01em] text-[#0F172A]">
+                  <h3 className="mt-2.5 line-clamp-2 min-h-[42px] text-sm font-semibold tracking-[-0.01em] text-[#0F172A]">
                     {doc.title}
                   </h3>
-                  <p className="mt-1 text-[10px] font-medium text-[#64748B]">{doc.doctor}</p>
-                  <p className="mt-2 line-clamp-1 text-[10px] text-[#94A3B8]">{doc.note}</p>
+                  <div className="mt-2 flex min-w-0 items-center gap-2">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-[10px] font-semibold text-[#0D9488]" aria-hidden="true">
+                      {getProviderInitials(doc.doctor)}
+                    </span>
+                    <p className="truncate text-xs font-medium text-[#64748B]">{doc.doctor}</p>
+                  </div>
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#64748B]">{doc.note}</p>
                 </div>
               </article>
             ))}
@@ -263,21 +278,21 @@ export default function RecordsPage() {
             </div>
             <form onSubmit={handleUpload} className="flex flex-col gap-3">
               <div>
-                <label className="block text-[11px] font-semibold text-[#64748B] mb-1">Title</label>
+                <label className="block text-xs font-semibold text-[#64748B] mb-1">Title</label>
                 <input
                   required
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                   placeholder="e.g. Blood Sugar Panel"
-                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-[13px] text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
+                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-[#64748B] mb-1">Type</label>
+                <label className="block text-xs font-semibold text-[#64748B] mb-1">Type</label>
                 <select
                   value={form.type}
                   onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as DocumentType }))}
-                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-[13px] text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
+                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
                 >
                   <option>Prescription</option>
                   <option>Lab Report</option>
@@ -285,7 +300,7 @@ export default function RecordsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                <label className="block text-xs font-semibold text-[#64748B] mb-1">
                   Doctor / Facility
                 </label>
                 <input
@@ -293,11 +308,11 @@ export default function RecordsPage() {
                   value={form.doctor}
                   onChange={(e) => setForm((f) => ({ ...f, doctor: e.target.value }))}
                   placeholder="e.g. Dr. Anjali Karki"
-                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-[13px] text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
+                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-semibold text-[#64748B] mb-1">
+                <label className="block text-xs font-semibold text-[#64748B] mb-1">
                   Note <span className="font-normal text-[#94A3B8]">(optional)</span>
                 </label>
                 <textarea
@@ -305,7 +320,7 @@ export default function RecordsPage() {
                   onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
                   rows={2}
                   placeholder="Short summary…"
-                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-[13px] text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488] resize-none"
+                  className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488] resize-none"
                 />
               </div>
               <button
