@@ -221,19 +221,29 @@ export default function DashboardPage() {
   };
 
   const triggerReminderAlert = async () => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      let perm = Notification.permission;
-      if (perm === 'default') {
-        perm = await Notification.requestPermission();
-      }
-      if (perm === 'granted') {
+    const message = 'Time to take Metformin 500 mg — Evening dose after meal!';
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      alert(message);
+      return;
+    }
+    let perm = Notification.permission;
+    if (perm === 'default') {
+      perm = await Notification.requestPermission();
+    }
+    if (perm === 'granted') {
+      try {
         new Notification('MedBuddy Dose Reminder', {
-          body: 'Time to take Metformin 500 mg — Evening dose after meal!',
+          body: message,
           icon: '/logo-robot.png',
         });
-      } else {
-        alert('Time to take Metformin 500 mg — Evening dose after meal! (Enable desktop notifications in your browser settings to see native banners)');
+      } catch (err) {
+        console.error('Failed to show reminder notification:', err);
+        alert(message);
       }
+    } else {
+      alert(
+        `${message} (Enable desktop notifications in your browser settings to see native banners)`
+      );
     }
   };
 
@@ -382,7 +392,7 @@ export default function DashboardPage() {
               ))}
             </div>
 
-            {/* Upcoming follow-up card */}
+          {/* Upcoming follow-up card */}
             <div className="mt-5">
               <div className="patient-card p-4">
               <div className="flex items-center justify-between">

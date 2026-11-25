@@ -230,6 +230,11 @@ function DoctorPatientContent() {
     { id: 2, name: 'Pantoprazole', dose: '40 mg', times: [true, false, false], meal: 'Before meal' },
     { id: 3, name: 'Azithromycin', dose: '250 mg', times: [true, false, true], meal: 'After meal' },
   ]);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [booked, setBooked] = useState(false);
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [callType, setCallType] = useState<'video' | 'audio' | 'chat'>('video');
 
   // Load all available patients for quick switching
   useEffect(() => {
@@ -568,8 +573,8 @@ function DoctorPatientContent() {
               className="h-9 w-full sm:w-[220px] rounded-md border border-[#CBD5E1] bg-white px-3 text-[11px] font-medium normal-case tracking-normal text-[#475569] shadow-xs"
             >
               <option value="">Choose a treatment plan…</option>
-              {templates.map((t) => (
-                <option key={t[0]} value={t[0]}>
+              {templates.map((t, i) => (
+                <option key={`${t[0]}-${i}`} value={t[0]}>
                   {t[0]} ({t[3]})
                 </option>
               ))}

@@ -23,6 +23,10 @@ export interface PatientDetail {
   emergency_contact_name: string | null;
   emergency_contact_phone: string | null;
   weekly_adherence: number | null;
+  blood_pressure_target_upper: number | null;
+  blood_pressure_target_lower: number | null;
+  weight_kg: number | null;
+  daily_steps: number | null;
 }
 
 export interface DoctorDetail {
@@ -98,6 +102,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             emergency_contact_name: 'Maya Sharma',
             emergency_contact_phone: '+977 981-234-5678',
             weekly_adherence: 88,
+            blood_pressure_target_upper: null,
+            blood_pressure_target_lower: null,
+            weight_kg: null,
+            daily_steps: null,
           });
         }
       } else if (profile.role === 'Doctor') {

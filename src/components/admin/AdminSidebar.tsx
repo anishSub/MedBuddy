@@ -18,6 +18,7 @@ const adminNavItems: AdminNavItem[] = [
   { href: '/admin/overview', label: 'Clinic Overview', icon: 'home' },
   { href: '/admin/follow-ups', label: 'Follow-Up Queue', icon: 'calendar' },
   { href: '/admin/verification', label: 'Doctor Verification', icon: 'shield' },
+  { href: '/admin/analytics', label: 'Analytics', icon: 'calendar' },
   { href: '/admin/users', label: 'All Users', icon: 'users' },
 ];
 

@@ -153,73 +153,6 @@ export default function DoctorDashboardPage() {
         ))}
       </div>
 
-      <div className="mt-7">
-        {/* Appointments Section */}
-        <div>
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="text-[15px] sm:text-[16px] font-semibold text-[#0F172A]">
-                Today’s appointments
-              </h2>
-              <p className="mt-0.5 text-[10px] text-[#94A3B8]">
-                {todayLabel}
-                {usingMock && (
-                  <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
-                )}
-              </p>
-            </div>
-            <button
-              onClick={() => setScheduleOpen(true)}
-              className="text-[10px] font-semibold text-[#0D9488] hover:underline"
-            >
-              View full schedule
-            </button>
-          </div>
-
-          <div className="mt-3.5 sm:mt-4 border-y border-[#E2E8F0] overflow-x-auto">
-            <div className="min-w-[500px]">
-              <div className="grid grid-cols-[.65fr_1.2fr_1.7fr_1fr_70px] gap-3 bg-[#F8FAFC] px-4 py-2.5 text-[9px] font-semibold uppercase tracking-[.07em] text-[#94A3B8]">
-                <span>Time</span>
-                <span>Patient</span>
-                <span>Visit</span>
-                <span>Status</span>
-                <span />
-              </div>
-              {loading ? (
-                <div className="border-t border-[#E2E8F0] px-4 py-4 text-[10px] text-[#94A3B8]">
-                  Loading appointments…
-                </div>
-              ) : (
-                appointments.map((item) => (
-                  <div
-                    key={item[0]}
-                    className="grid h-[52px] grid-cols-[.65fr_1.2fr_1.7fr_1fr_70px] items-center gap-3 border-t border-[#E2E8F0] px-4 text-[10px]"
-                  >
-                    <span className="font-semibold tabular-nums text-[#334155]">{item[0]}</span>
-                    <span className="font-semibold text-[#0F172A]">{item[1]}</span>
-                    <span className="text-[#64748B]">{item[2]}</span>
-                    <span
-                      className={
-                        item[3] === 'Next'
-                          ? 'font-semibold text-[#0D9488]'
-                          : 'text-[#64748B]'
-                      }
-                    >
-                      {item[3]}
-                    </span>
-                    <Link
-                      href={item[5] ? `/doctor/patient?id=${item[5]}` : '/doctor/patient'}
-                      className="font-semibold text-[#0D9488] hover:underline"
-                    >
-                      Open
-                    </Link>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-
         {/* Needs Attention Section */}
         <section className="mt-7">
           <div className="flex flex-wrap items-end justify-between gap-2">
@@ -286,6 +219,75 @@ export default function DoctorDashboardPage() {
             </div>
           </div>
         </section>
+
+      <div className="mt-7">
+        {/* Appointments Section */}
+        <div>
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-[15px] sm:text-[16px] font-semibold text-[#0F172A]">
+                Today’s appointments
+              </h2>
+              <p className="mt-0.5 text-[10px] text-[#94A3B8]">
+                {todayLabel}
+                {usingMock && (
+                  <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => setScheduleOpen(true)}
+              className="text-[10px] font-semibold text-[#0D9488] hover:underline"
+            >
+              View full schedule
+            </button>
+          </div>
+
+          <div className="mt-3.5 sm:mt-4 border-y border-[#E2E8F0] overflow-x-auto">
+            <div className="min-w-[500px]">
+              <div className="grid grid-cols-[.65fr_1.2fr_1.7fr_1fr_70px] gap-3 bg-[#F8FAFC] px-4 py-2.5 text-[9px] font-semibold uppercase tracking-[.07em] text-[#94A3B8]">
+                <span>Time</span>
+                <span>Patient</span>
+                <span>Visit</span>
+                <span>Status</span>
+                <span />
+              </div>
+              {loading ? (
+                <div className="border-t border-[#E2E8F0] px-4 py-4 text-[10px] text-[#94A3B8]">
+                  Loading appointments…
+                </div>
+              ) : (
+                appointments.map((item, index) => (
+                  <div
+                    key={`${item[0]}-${index}`}
+                    className="grid h-[52px] grid-cols-[.65fr_1.2fr_1.7fr_1fr_70px] items-center gap-3 border-t border-[#E2E8F0] px-4 text-[10px]"
+                  >
+                    <span className="font-semibold tabular-nums text-[#334155]">{item[0]}</span>
+                    <span className="font-semibold text-[#0F172A]">{item[1]}</span>
+                    <span className="text-[#64748B]">{item[2]}</span>
+                    <span
+                      className={
+                        item[3] === 'Next'
+                          ? 'font-semibold text-[#0D9488]'
+                          : 'text-[#64748B]'
+                      }
+                    >
+                      {item[3]}
+                    </span>
+                    <Link
+                      href={item[5] ? `/doctor/patient?id=${item[5]}` : '/doctor/patient'}
+                      className="font-semibold text-[#0D9488] hover:underline"
+                    >
+                      Open
+                    </Link>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+
       </div>
 
       {scheduleOpen && (

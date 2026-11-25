@@ -63,8 +63,24 @@ CREATE TABLE IF NOT EXISTS patient_details (
     emergency_contact_phone TEXT,
     primary_doctor_id UUID REFERENCES profiles(id),
     weekly_adherence INTEGER DEFAULT 88,
+    blood_pressure_target_upper INTEGER, -- target systolic, e.g. 120
+    blood_pressure_target_lower INTEGER, -- target diastolic, e.g. 80
+    weight_kg NUMERIC,
+    daily_steps INTEGER,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- 4b. FOOD & WATER DAILY LOG TABLE (today's intake, patient-facing tracker)
+CREATE TABLE IF NOT EXISTS food_water_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    patient_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    log_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    water_ml INTEGER,
+    water_time TIME,
+    food_note TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE(patient_id, log_date)
 );
 
 -- 5. DOCTOR DETAILS TABLE

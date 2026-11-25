@@ -21,6 +21,11 @@ interface PatientSidebarProps {
 const navItems: NavItem[] = [
   { href: '/dashboard', label: 'Overview', icon: 'home' },
   { href: '/records', label: 'Medical Records', icon: 'records' },
+  { href: '/goals', label: 'Goals', icon: 'edit' },
+  { href: '/appointments', label: 'My Appointments', icon: 'calendar' },
+  { href: '/book-appointment', label: 'Book Appointment', icon: 'stethoscope' },
+  { href: '/medicine', label: 'Medicine Tracker', icon: 'clock' },
+  { href: '/emergency', label: 'Emergency', icon: 'phone' },
   { href: '/health-pass', label: 'QR Health Pass', icon: 'qr' },
 ];
 

@@ -24,15 +24,15 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Patient Details
-INSERT INTO patient_details (profile_id, patient_code, age, gender, blood_group, allergies, emergency_contact_name, emergency_contact_relation, emergency_contact_phone, weekly_adherence)
+INSERT INTO patient_details (profile_id, patient_code, age, gender, blood_group, allergies, emergency_contact_name, emergency_contact_relation, emergency_contact_phone, weekly_adherence, blood_pressure_target_upper, blood_pressure_target_lower, weight_kg, daily_steps)
 VALUES
-    ('a0000000-0000-0000-0000-000000000001', 'CT-2048', 64, 'Male', 'O+', ARRAY['Penicillin'], 'Maya Sharma', 'Daughter', '+977 981-234-5678', 88),
-    ('a0000000-0000-0000-0000-000000000002', 'CT-1987', 58, 'Female', 'B+', ARRAY['Sulfa'], 'Rajan Gurung', 'Son', '+977 984-625-0199', 92),
-    ('a0000000-0000-0000-0000-000000000003', 'CT-2186', 42, 'Male', 'A+', ARRAY[]::TEXT[], 'Sabita Thapa', 'Wife', '+977 986-315-7611', 52),
-    ('a0000000-0000-0000-0000-000000000004', 'CT-1934', 61, 'Female', 'AB+', ARRAY[]::TEXT[], 'Ashok Rai', 'Son', '+977 981-998-1123', 76),
-    ('a0000000-0000-0000-0000-000000000005', 'CT-2231', 35, 'Male', 'O-', ARRAY[]::TEXT[], 'Dolma Lama', 'Sister', '+977 984-112-9989', 95),
-    ('a0000000-0000-0000-0000-000000000006', 'CT-2076', 49, 'Female', 'B-', ARRAY['Aspirin'], 'Suman Maharjan', 'Husband', '+977 980-334-7767', 84),
-    ('a0000000-0000-0000-0000-000000000007', 'CT-1812', 53, 'Male', 'O+', ARRAY[]::TEXT[], 'Sunita KC', 'Wife', '+977 986-554-3322', 89)
+    ('a0000000-0000-0000-0000-000000000001', 'CT-2048', 64, 'Male', 'O+', ARRAY['Penicillin'], 'Maya Sharma', 'Daughter', '+977 981-234-5678', 88, 122, 78, 69, 8000),
+    ('a0000000-0000-0000-0000-000000000002', 'CT-1987', 58, 'Female', 'B+', ARRAY['Sulfa'], 'Rajan Gurung', 'Son', '+977 984-625-0199', 92, 120, 80, 62, 10000),
+    ('a0000000-0000-0000-0000-000000000003', 'CT-2186', 42, 'Male', 'A+', ARRAY[]::TEXT[], 'Sabita Thapa', 'Wife', '+977 986-315-7611', 52, 128, 82, 60, 6000),
+    ('a0000000-0000-0000-0000-000000000004', 'CT-1934', 61, 'Female', 'AB+', ARRAY[]::TEXT[], 'Ashok Rai', 'Son', '+977 981-998-1123', 76, 118, 76, 74, 9000),
+    ('a0000000-0000-0000-0000-000000000005', 'CT-2231', 35, 'Male', 'O-', ARRAY[]::TEXT[], 'Dolma Lama', 'Sister', '+977 984-112-9989', 95, 116, 74, 66, 7000),
+    ('a0000000-0000-0000-0000-000000000006', 'CT-2076', 49, 'Female', 'B-', ARRAY['Aspirin'], 'Suman Maharjan', 'Husband', '+977 980-334-7767', 84, 130, 84, 80, 5000),
+    ('a0000000-0000-0000-0000-000000000007', 'CT-1812', 53, 'Male', 'O+', ARRAY[]::TEXT[], 'Sunita KC', 'Wife', '+977 986-554-3322', 89, 124, 79, 57, 11000)
 ON CONFLICT (patient_code) DO NOTHING;
 
 -- 3. Doctor Details

@@ -16,7 +16,7 @@ export function Logo({ href = '/', className = '' }: LogoProps) {
       alt="MedBuddy"
       width={2172}
       height={724}
-      className={`h-11 w-auto object-contain ${className}`}
+      className={`h-14 w-auto object-contain ${className}`}
     />
   );
 

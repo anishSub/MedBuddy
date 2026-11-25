@@ -26,7 +26,10 @@ export type IconName =
   | 'user'
   | 'stethoscope'
   | 'phone'
-  | 'heart';
+  | 'heart'
+  | 'video'
+  | 'audio'
+  | 'chat';
 
 export type UserRole = 'Patient' | 'Doctor' | 'Admin';
 export type AccountStatus = 'Active' | 'Pending' | 'Suspended';

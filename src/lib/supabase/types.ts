@@ -67,6 +67,10 @@ export interface Database {
           emergency_contact_phone: string | null;
           primary_doctor_id: string | null;
           weekly_adherence: number | null;
+          blood_pressure_target_upper: number | null;
+          blood_pressure_target_lower: number | null;
+          weight_kg: number | null;
+          daily_steps: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -83,6 +87,10 @@ export interface Database {
           emergency_contact_phone?: string | null;
           primary_doctor_id?: string | null;
           weekly_adherence?: number | null;
+          blood_pressure_target_upper?: number | null;
+          blood_pressure_target_lower?: number | null;
+          weight_kg?: number | null;
+          daily_steps?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -99,6 +107,10 @@ export interface Database {
           emergency_contact_phone?: string | null;
           primary_doctor_id?: string | null;
           weekly_adherence?: number | null;
+          blood_pressure_target_upper?: number | null;
+          blood_pressure_target_lower?: number | null;
+          weight_kg?: number | null;
+          daily_steps?: number | null;
           created_at?: string;
           updated_at?: string;
         };

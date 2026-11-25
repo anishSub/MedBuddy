@@ -124,6 +124,75 @@ export const patientService = {
     return data || [];
   },
 
+  async getMedicationLogs(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+    const { data, error } = await supabase
+      .from('medication_logs')
+      .select('*')
+      .eq('patient_id', patientProfileId)
+      .order('log_date', { ascending: true })
+      .order('slot_time', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async updateGoals(
+    patientProfileId = 'a0000000-0000-0000-0000-000000000001',
+    goals: {
+      blood_pressure_target_upper?: number | null;
+      blood_pressure_target_lower?: number | null;
+      weight_kg?: number | null;
+      daily_steps?: number | null;
+    } = {}
+  ) {
+    const { data, error } = await supabase
+      .from('patient_details')
+      .update({ ...goals, updated_at: new Date().toISOString() })
+      .eq('profile_id', patientProfileId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getFoodWaterLog(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+      .from('food_water_logs')
+      .select('*')
+      .eq('patient_id', patientProfileId)
+      .eq('log_date', today)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async upsertFoodWaterLog(
+    patientProfileId: string,
+    log: { water_ml?: number | null; food_note?: string | null; water_time?: string | null }
+  ) {
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+      .from('food_water_logs')
+      .upsert(
+        {
+          patient_id: patientProfileId,
+          log_date: today,
+          water_ml: log.water_ml,
+          water_time: log.water_time,
+          food_note: log.food_note,
+        },
+        { onConflict: 'patient_id, log_date' }
+      )
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
   async toggleLog(
     patientProfileId: string,
     medicationId: string,
@@ -149,6 +218,18 @@ export const patientService = {
 
     if (error) throw error;
     return data;
+  },
+
+  async getAppointments(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+    const { data, error } = await supabase
+      .from('appointments')
+      .select('*, doctor:profiles!appointments_doctor_id_fkey(full_name)')
+      .eq('patient_id', patientProfileId)
+      .order('appointment_date', { ascending: false })
+      .order('appointment_time', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
   },
 
   async getUpcomingAppointment(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
