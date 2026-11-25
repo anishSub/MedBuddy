@@ -60,11 +60,21 @@ The default demo session in `AuthContext.tsx:121` is Ramesh Sharma (`a0000000-�
 | `b0000000-0000-0000-0000-000000000007` | Dr. Rojina Tamang | `+977 981-223-9900` | `Rojina@123` | Pending | `09d7c210-6b29-46d2-bae0-922780f8e5c6` |
 | `b0000000-0000-0000-0000-000000000008` | Dr. Samir Khadka | `+977 986-001-4455` | `Samir@123` | Pending | `3d932c6c-6e58-4b4c-a48d-10d71dd745e3` |
 
-### Admin
+### Admin (Clinic Administrator)
 
-| Profile ID | Name | Phone | Password | Status |
-|---|---|---|---|---|
-| `c0000000-0000-0000-0000-000000000001` | Nisha Aryal | `+977 980-887-1265` | `Nisha@123` | Active |
+The dedicated admin login screen was merged into the main login page (`/login` or `/`). You can log in as Admin directly from the Patient login page using either method:
+
+| Profile ID | Name | Phone / Username | Password | Status | Destination |
+|---|---|---|---|---|---|
+| `c0000000-0000-0000-0000-000000000001` | Nisha Aryal | `+977 980-887-1265` (or `admin` / `9808871265`) | `Nisha@123` (or `Admin@123`) | Active | `/admin/overview` |
+
+#### How to log in as Admin:
+1. **1-Click Demo Button**: On the login page, scroll down to **"Quick 1-Click Demo Profiles (Supabase Live)"** and click **`⚙️ Nisha Aryal (Clinic Admin)`**.
+2. **Manual Form Login**:
+   - Stay on the default **Patient** tab.
+   - Enter **Mobile Number**: `+977 980-887-1265` (or simply type `admin`).
+   - Enter **Password**: `Nisha@123` or `Admin@123`.
+   - Click **Sign in**. The app automatically detects the Admin role and routes you to `/admin/overview`.
 
 ## Patient details
 
