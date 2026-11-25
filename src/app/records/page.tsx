@@ -169,7 +169,7 @@ export default function RecordsPage() {
   }
 
   return (
-    <PatientShell title="Medical Records" eyebrow="Documents & reports" compact wideSidebar>
+    <PatientShell title="Medical Records" eyebrow="Documents & reports" compact>
       <main className="flex-1 min-h-0 flex flex-col overflow-y-auto bg-[#F8FAFC] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         {/* Tab bar + upload button */}
         <div className="flex flex-wrap items-end justify-between border-b border-[#E2E8F0] gap-3">
@@ -222,7 +222,7 @@ export default function RecordsPage() {
         {loading ? (
           <div className="mt-10 text-center text-[13px] text-[#94A3B8]">Loading records…</div>
         ) : (
-          <div className="mt-4 flex flex-wrap items-start gap-4 pb-6 sm:gap-5">
+          <div className="mt-4 flex flex-wrap items-start justify-start gap-4 pb-6 sm:gap-5">
             {shown.map((doc, i) => (
               <article
                 key={`${doc.title}-${i}`}
