@@ -5,50 +5,30 @@ interface DocumentThumbProps {
   illustrated?: boolean;
 }
 
+const RX_IMAGE_SRC =
+  'https://upload.wikimedia.org/wikipedia/commons/e/ea/Medical_prescription_issued_by_Bimaristan_Qalawun.jpg';
+const LAB_IMAGE_SRC =
+  'https://upload.wikimedia.org/wikipedia/commons/7/77/US_Navy_040616-N-4565G-004_Advanced_laboratory_technician_Hospital_Corpsman_2nd_Class_John_Zettlemoyer_views_a_blood_sample_through_a_forensics_microscope.jpg';
+const XRAY_IMAGE_SRC = 'https://upload.wikimedia.org/wikipedia/commons/d/d4/A_chest_X-ray.jpg';
+
+const THUMB_IMAGES: Record<string, { src: string; alt: string }> = {
+  rx: { src: RX_IMAGE_SRC, alt: 'Medical prescription' },
+  lab: { src: LAB_IMAGE_SRC, alt: 'Medical laboratory blood sample' },
+  xray: { src: XRAY_IMAGE_SRC, alt: 'Chest X-ray' },
+};
+
 export function DocumentThumb({ kind, illustrated = false }: DocumentThumbProps) {
-  if (illustrated && kind === 'rx') {
+  const image = THUMB_IMAGES[kind];
+
+  if (image) {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-md">
-        <Image
-          src="/document-prescription.svg"
-          alt="Illustration of a prescription"
-          fill
-          sizes="270px"
-          className="object-cover"
-        />
+        <Image src={image.src} alt={image.alt} fill sizes="270px" className="object-cover" />
       </div>
     );
   }
 
-  if (kind === 'xray') {
-    return (
-      <div className="relative h-full w-full bg-[#22303C]">
-        <div className="absolute inset-x-[31%] top-[12%] h-[76%] rounded-[44%] border border-slate-400/40 bg-[radial-gradient(ellipse_at_center,#8493a0_0%,#3a4b59_50%,#263641_72%)]" />
-        <div className="absolute left-1/2 top-[18%] h-[62%] w-px bg-slate-300/30" />
-      </div>
-    );
-  }
-
-  if (kind === 'lab') {
-    return (
-      <div className="h-full w-full bg-[#F7F7F4] p-5">
-        <div className="h-2 w-20 rounded bg-[#94A3B8]/40" />
-        <div className="mt-3 h-px bg-[#CBD5E1]" />
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <span
-              key={i}
-              className={`h-1.5 rounded ${i % 5 === 0 ? 'bg-[#F59E0B]/40' : 'bg-[#CBD5E1]'}`}
-            />
-          ))}
-        </div>
-        <div className="mt-5 h-10 border border-[#CBD5E1]">
-          <div className="mt-5 h-px -rotate-6 bg-[#0D9488]/50" />
-        </div>
-      </div>
-    );
-  }
-
+  // Fallback for unknown kinds — generic medical graphic
   return (
     <div className="h-full w-full rotate-[-1deg] bg-[#FFFEFA] p-5 shadow-sm">
       <div className="flex items-center gap-2 border-b border-[#8CCBC4] pb-2">
