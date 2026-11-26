@@ -16,7 +16,7 @@ const CALL_TYPES: { id: CallType; label: string; icon: IconName }[] = [
 export default function BookAppointmentPage() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [callType, setCallType] = useState<CallType>("video");
+  const [callType] = useState<CallType>("video");
   const [booked, setBooked] = useState(false);
 
   const confirmBooking = () => {
@@ -27,7 +27,6 @@ export default function BookAppointmentPage() {
     setBooked(false);
     setDate("");
     setTime("");
-    setCallType("video");
   };
 
   const callTypeLabel =
@@ -77,18 +76,17 @@ export default function BookAppointmentPage() {
                   <p>Call type</p>
                   <div className="flex gap-2">
                     {CALL_TYPES.map((c) => (
-                      <button
+                      <span
                         key={c.id}
-                        onClick={() => setCallType(c.id)}
-                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-2 text-[11px] font-semibold transition ${
+                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-2 text-[11px] font-semibold ${
                           callType === c.id
                             ? "border-[#0D9488] bg-[#E6F4F2] text-[#0F766E]"
-                            : "border-[#CBD5E1] text-[#64748B] hover:bg-slate-50"
+                            : "border-[#CBD5E1] text-[#64748B]"
                         }`}
                       >
                         <Icon name={c.icon} size={14} />
                         {c.label}
-                      </button>
+                      </span>
                     ))}
                   </div>
                 </div>

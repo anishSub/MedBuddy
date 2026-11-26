@@ -69,6 +69,33 @@ const KIND_MAP: Record<DocumentType, DocumentKind> = {
   "X-Ray": "xray",
 };
 
+const MEDICAL_IMAGES: { src: string; alt: string }[] = [
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Medical_prescription_issued_by_Bimaristan_Qalawun.jpg",
+    alt: "Medical prescription",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Picking_up_prescriptions_at_Ochsner_Medical_Center_11_May_2020_-_02.jpg",
+    alt: "Prescription pickup at pharmacy",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/7/77/US_Navy_040616-N-4565G-004_Advanced_laboratory_technician_Hospital_Corpsman_2nd_Class_John_Zettlemoyer_views_a_blood_sample_through_a_forensics_microscope.jpg",
+    alt: "Medical laboratory blood sample",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Laboratory_Airmen_ensure_healthy_force_150113-F-FV476-030.jpg",
+    alt: "Laboratory blood sample",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/d/d4/A_chest_X-ray.jpg",
+    alt: "Chest X-ray",
+  },
+  {
+    src: "https://upload.wikimedia.org/wikipedia/commons/6/60/Xray-40y-male-chest-with-cvc.jpg",
+    alt: "Chest X-ray with line",
+  },
+];
+
 function mapRecordToDoc(r: {
   type: string;
   record_date: string;
@@ -238,7 +265,13 @@ export default function RecordsPage() {
                 className="patient-card patient-card-interactive group grid h-[310px] w-[270px] shrink-0 grid-rows-[120px_1fr] overflow-hidden"
               >
                 <div className="overflow-hidden border-b border-[#E2E8F0] bg-[#F1F5F9] p-3">
-                  <DocumentThumb kind={doc.kind} illustrated />
+                  <DocumentThumb
+                    key={`${doc.title}-${i}`}
+                    kind={doc.kind}
+                    illustrated
+                    src={MEDICAL_IMAGES[i % MEDICAL_IMAGES.length].src}
+                    alt={MEDICAL_IMAGES[i % MEDICAL_IMAGES.length].alt}
+                  />
                 </div>
                 <div className="p-3">
                   <div className="flex items-center justify-between">

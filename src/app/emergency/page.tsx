@@ -61,25 +61,30 @@ const HOSPITALS = [
 
 function NumberCard({ title, number, icon, bg, text }: NumberCard) {
   return (
-    <a
-      href={`tel:${number}`}
-      className="patient-card flex min-h-[84px] items-center gap-3 transition hover:bg-[#F8FAFC]"
-    >
-      <div
-        className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${bg} ${text}`}
-        aria-hidden="true"
+    <div className="patient-card flex min-h-[84px] flex-col transition hover:bg-[#F8FAFC]">
+      <a href={`tel:${number}`} className="flex flex-1 items-center gap-3 p-3">
+        <div
+          className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${bg} ${text}`}
+          aria-hidden="true"
+        >
+          <Icon name={icon} size={16} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
+            {title}
+          </p>
+          <p className="mt-0.5 text-[18px] font-bold leading-tight text-[#0F172A] tabular-nums">
+            {number}
+          </p>
+        </div>
+      </a>
+      <a
+        href={`tel:${number}`}
+        className="m-3 flex h-9 items-center justify-center rounded-md bg-[#0D9488] text-[11px] font-semibold text-white transition hover:bg-[#0F766E]"
       >
-        <Icon name={icon} size={16} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
-          {title}
-        </p>
-        <p className="mt-0.5 text-[18px] font-bold leading-tight text-[#0F172A] tabular-nums">
-          {number}
-        </p>
-      </div>
-    </a>
+        Call Now
+      </a>
+    </div>
   );
 }
 

@@ -3,6 +3,8 @@ import Image from "next/image";
 interface DocumentThumbProps {
   kind: "rx" | "lab" | "xray" | string;
   illustrated?: boolean;
+  src?: string;
+  alt?: string;
 }
 
 const RX_IMAGE_SRC =
@@ -21,8 +23,12 @@ const THUMB_IMAGES: Record<string, { src: string; alt: string }> = {
 export function DocumentThumb({
   kind,
   illustrated = false,
+  src,
+  alt,
 }: DocumentThumbProps) {
-  const image = THUMB_IMAGES[kind];
+  const image = src
+    ? { src, alt: alt ?? "Medical document" }
+    : THUMB_IMAGES[kind];
 
   if (image) {
     return (
