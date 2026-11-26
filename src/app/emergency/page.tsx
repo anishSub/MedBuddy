@@ -60,7 +60,7 @@ function NumberCard({ title, number, icon, bg, text }: NumberCard) {
   return (
     <a
       href={`tel:${number}`}
-      className="patient-card flex items-center gap-3 transition hover:bg-[#F8FAFC]"
+      className="patient-card flex min-h-[84px] items-center gap-3 transition hover:bg-[#F8FAFC]"
     >
       <div
         className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${bg} ${text}`}
