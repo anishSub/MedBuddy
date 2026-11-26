@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/common/Icon";
 import { doctorService, patientService } from "@/lib/supabase/services";
@@ -72,6 +72,9 @@ export default function DoctorScanPage() {
   const [usingMock, setUsingMock] = useState(false);
   const [patient, setPatient] = useState<ScannedPatient>(MOCK_PATIENT);
   const [inputCode, setInputCode] = useState("");
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
 
   async function lookup(code: string) {
     setLoading(true);
@@ -160,6 +163,28 @@ export default function DoctorScanPage() {
                 : "Scan Health Pass (Simulate)"}
           </button>
 
+          {/* Upload photos - next step after scan */}
+          <button
+            onClick={() => setUploadOpen(true)}
+            className="mt-4 flex h-11 w-full max-w-[400px] items-center justify-center gap-2 rounded-lg border border-[#CBD5E1] bg-white text-sm font-semibold text-[#334155] transition hover:bg-slate-50"
+          >
+            <Icon name="upload" size={16} />
+            Next
+          </button>
+
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              setUploadedPhotos(files.map((f) => f.name));
+              setUploadOpen(false);
+            }}
+          />
+
           {/* Manual lookup input */}
           <form
             onSubmit={(e) => {
@@ -183,6 +208,13 @@ export default function DoctorScanPage() {
               {loading ? "Searching…" : "Look Up"}
             </button>
           </form>
+
+          {uploadedPhotos.length > 0 && (
+            <p className="mt-3 text-center text-xs text-[#64748B]">
+              {uploadedPhotos.length} photo(s) attached:{" "}
+              {uploadedPhotos.join(", ")}
+            </p>
+          )}
 
           {/* Quick test chips */}
           <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 max-w-[420px]">
