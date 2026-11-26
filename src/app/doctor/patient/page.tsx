@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Suspense, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Icon } from '@/components/common/Icon';
-import { DocumentThumb } from '@/components/patient/DocumentThumb';
-import { useAuth } from '@/context/AuthContext';
-import { doctorService, patientService } from '@/lib/supabase/services';
+import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Icon } from "@/components/common/Icon";
+import { DocumentThumb } from "@/components/patient/DocumentThumb";
+import { useAuth } from "@/context/AuthContext";
+import { doctorService, patientService } from "@/lib/supabase/services";
 
 type PatientView = {
   profile_id: string;
@@ -21,14 +21,14 @@ type PatientView = {
 
 // Fallback mock data shown when DB has no matching patient yet
 const MOCK_PATIENT: PatientView = {
-  profile_id: 'a0000000-0000-0000-0000-000000000001',
-  full_name: 'Ramesh Sharma',
-  patient_code: 'CT-2048',
+  profile_id: "a0000000-0000-0000-0000-000000000001",
+  full_name: "Ramesh Sharma",
+  patient_code: "CT-2048",
   age: 64,
-  gender: 'Male',
-  blood_group: 'O+',
+  gender: "Male",
+  blood_group: "O+",
   weekly_adherence: 88,
-  avatar_initials: 'RS',
+  avatar_initials: "RS",
 };
 
 type PatientContextRow = {
@@ -44,7 +44,7 @@ type PatientContextRow = {
 function mapPatient(r: PatientContextRow): PatientView {
   return {
     profile_id: r.profile_id,
-    full_name: r.profiles?.full_name ?? 'Unknown patient',
+    full_name: r.profiles?.full_name ?? "Unknown patient",
     patient_code: r.patient_code,
     age: r.age,
     gender: r.gender,
@@ -76,12 +76,12 @@ type MedicalRecordRow = {
 
 function mapMedication(m: MedicationRow): PatientMed {
   const slots = [
-    m.morning ? 'Morning' : null,
-    m.afternoon ? 'Afternoon' : null,
-    m.night ? 'Night' : null,
+    m.morning ? "Morning" : null,
+    m.afternoon ? "Afternoon" : null,
+    m.night ? "Night" : null,
   ]
     .filter(Boolean)
-    .join(', ');
+    .join(", ");
   return [m.name, slots ? `${m.dosage} · ${slots}` : m.dosage];
 }
 
@@ -91,15 +91,15 @@ function mapRecord(r: MedicalRecordRow): PatientUpload {
 
 // Fallback mock data shown when medication/record queries fail or return empty
 const MOCK_ACTIVE_MEDS: PatientMed[] = [
-  ['Metformin', '500 mg · Morning, Night'],
-  ['Amlodipine', '5 mg · Morning'],
-  ['Atorvastatin', '10 mg · Night'],
-  ['Calcium + D3', '500 mg · Afternoon'],
+  ["Metformin", "500 mg · Morning, Night"],
+  ["Amlodipine", "5 mg · Morning"],
+  ["Atorvastatin", "10 mg · Night"],
+  ["Calcium + D3", "500 mg · Afternoon"],
 ];
 
 const MOCK_UPLOADS: PatientUpload[] = [
-  ['Lab Report', 'HbA1c & Glucose Panel', '21 Jun 2024', 'lab'],
-  ['X-Ray', 'Chest X-Ray — PA View', '18 Apr 2024', 'xray'],
+  ["Lab Report", "HbA1c & Glucose Panel", "21 Jun 2024", "lab"],
+  ["X-Ray", "Chest X-Ray — PA View", "18 Apr 2024", "xray"],
 ];
 
 type PreviewMed = [name: string, dosage: string, timing: string];
@@ -113,54 +113,54 @@ type RxTemplateItem = [
 ];
 
 const GENERIC_MEDS: PreviewMed[] = [
-  ['Primary medicine', 'Standard dose', '1 - 0 - 1'],
-  ['Supportive medicine', 'Standard dose', '0 - 0 - 1'],
+  ["Primary medicine", "Standard dose", "1 - 0 - 1"],
+  ["Supportive medicine", "Standard dose", "0 - 0 - 1"],
 ];
 
 // Fallback mock data shown when DB has no templates yet
 const MOCK_TEMPLATES: RxTemplateItem[] = [
   [
-    'Viral Fever 1-0-1',
-    '3 medicines',
-    'Paracetamol · Cetirizine · Pantoprazole',
-    'General Medicine',
-    'Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.',
+    "Viral Fever 1-0-1",
+    "3 medicines",
+    "Paracetamol · Cetirizine · Pantoprazole",
+    "General Medicine",
+    "Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.",
     [
-      ['Paracetamol', '500 mg', '1 - 0 - 1'],
-      ['Cetirizine', '10 mg', '0 - 0 - 1'],
-      ['Pantoprazole', '40 mg', '1 - 0 - 0'],
+      ["Paracetamol", "500 mg", "1 - 0 - 1"],
+      ["Cetirizine", "10 mg", "0 - 0 - 1"],
+      ["Pantoprazole", "40 mg", "1 - 0 - 0"],
     ],
   ],
   [
-    'Gastritis Regimen',
-    '2 medicines',
-    'Pantoprazole · Antacid suspension',
-    'Gastroenterology',
-    'Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.',
+    "Gastritis Regimen",
+    "2 medicines",
+    "Pantoprazole · Antacid suspension",
+    "Gastroenterology",
+    "Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.",
     GENERIC_MEDS,
   ],
   [
-    'Post-Op Care',
-    '4 medicines',
-    'Antibiotic · Analgesic · PPI · Supplement',
-    'Surgery',
-    'Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.',
+    "Post-Op Care",
+    "4 medicines",
+    "Antibiotic · Analgesic · PPI · Supplement",
+    "Surgery",
+    "Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.",
     GENERIC_MEDS,
   ],
   [
-    'Hypertension Review',
-    '3 medicines',
-    'Amlodipine · Losartan · Atorvastatin',
-    'Cardiology',
-    'Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.',
+    "Hypertension Review",
+    "3 medicines",
+    "Amlodipine · Losartan · Atorvastatin",
+    "Cardiology",
+    "Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.",
     GENERIC_MEDS,
   ],
   [
-    'Diabetes Follow-Up',
-    '3 medicines',
-    'Metformin · Sitagliptin · Calcium D3',
-    'Endocrinology',
-    'Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.',
+    "Diabetes Follow-Up",
+    "3 medicines",
+    "Metformin · Sitagliptin · Calcium D3",
+    "Endocrinology",
+    "Take medicines after meals. Maintain hydration and return if symptoms persist beyond three days.",
     GENERIC_MEDS,
   ],
 ];
@@ -177,8 +177,14 @@ type TemplateRow = {
 function mapTemplate(r: TemplateRow): RxTemplateItem {
   const json = Array.isArray(r.medications_json) ? r.medications_json : [];
   const meds: PreviewMed[] = json
-    .filter((m): m is Record<string, unknown> => typeof m === 'object' && m !== null)
-    .map((m) => [String(m.name ?? ''), String(m.dosage ?? ''), String(m.timing ?? '')]);
+    .filter(
+      (m): m is Record<string, unknown> => typeof m === "object" && m !== null
+    )
+    .map((m) => [
+      String(m.name ?? ""),
+      String(m.dosage ?? ""),
+      String(m.timing ?? ""),
+    ]);
   return [
     r.title,
     r.medicines_count,
@@ -200,18 +206,20 @@ type BuilderMed = {
 function DoctorPatientContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const patientParam = searchParams.get('code') || searchParams.get('id') || 'CT-2048';
-  const templateParam = searchParams.get('template');
+  const patientParam =
+    searchParams.get("code") || searchParams.get("id") || "CT-2048";
+  const templateParam = searchParams.get("template");
 
   const { user } = useAuth();
   const [patient, setPatient] = useState<PatientView>(MOCK_PATIENT);
   const [allPatients, setAllPatients] = useState<PatientView[]>([]);
   const [templates, setTemplates] = useState<RxTemplateItem[]>(MOCK_TEMPLATES);
-  const [templateChoice, setTemplateChoice] = useState('');
+  const [templateChoice, setTemplateChoice] = useState("");
   const [loading, setLoading] = useState(true);
   const [usingMockPatient, setUsingMockPatient] = useState(false);
   const [usingMockTemplates, setUsingMockTemplates] = useState(false);
-  const [medications, setMedications] = useState<PatientMed[]>(MOCK_ACTIVE_MEDS);
+  const [medications, setMedications] =
+    useState<PatientMed[]>(MOCK_ACTIVE_MEDS);
   const [records, setRecords] = useState<PatientUpload[]>(MOCK_UPLOADS);
   const [medsLoading, setMedsLoading] = useState(true);
   const [recordsLoading, setRecordsLoading] = useState(true);
@@ -222,19 +230,37 @@ function DoctorPatientContent() {
   const [published, setPublished] = useState(false);
   const [saving, setSaving] = useState(false);
   const [notes, setNotes] = useState(
-    'Continue Metformin with food. Increase water intake and monitor fasting glucose weekly.'
+    "Continue Metformin with food. Increase water intake and monitor fasting glucose weekly."
   );
-  const [followUp, setFollowUp] = useState('2024-07-22');
+  const [followUp, setFollowUp] = useState("2024-07-22");
   const [meds, setMeds] = useState<BuilderMed[]>([
-    { id: 1, name: 'Paracetamol', dose: '500 mg', times: [true, false, true], meal: 'After meal' },
-    { id: 2, name: 'Pantoprazole', dose: '40 mg', times: [true, false, false], meal: 'Before meal' },
-    { id: 3, name: 'Azithromycin', dose: '250 mg', times: [true, false, true], meal: 'After meal' },
+    {
+      id: 1,
+      name: "Paracetamol",
+      dose: "500 mg",
+      times: [true, false, true],
+      meal: "After meal",
+    },
+    {
+      id: 2,
+      name: "Pantoprazole",
+      dose: "40 mg",
+      times: [true, false, false],
+      meal: "Before meal",
+    },
+    {
+      id: 3,
+      name: "Azithromycin",
+      dose: "250 mg",
+      times: [true, false, true],
+      meal: "After meal",
+    },
   ]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [booked, setBooked] = useState(false);
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [callType, setCallType] = useState<'video' | 'audio' | 'chat'>('video');
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [callType, setCallType] = useState<"video" | "audio" | "chat">("video");
 
   // Load all available patients for quick switching
   useEffect(() => {
@@ -347,10 +373,10 @@ function DoctorPatientContent() {
       ...prev,
       {
         id: Date.now(),
-        name: 'New Medicine',
-        dose: '100 mg',
+        name: "New Medicine",
+        dose: "100 mg",
         times: [true, false, false],
-        meal: 'After meal',
+        meal: "After meal",
       },
     ]);
   };
@@ -371,17 +397,19 @@ function DoctorPatientContent() {
 
   const applyTemplate = (title: string, currentTemplates = templates) => {
     setTemplateChoice(title);
-    const template = currentTemplates.find((t) => t[0].toLowerCase() === title.toLowerCase());
+    const template = currentTemplates.find(
+      (t) => t[0].toLowerCase() === title.toLowerCase()
+    );
     if (!template) return;
     setMeds(
       template[5].map(([name, dosage, timing], i) => {
-        const parts = timing.split('-');
+        const parts = timing.split("-");
         return {
           id: Date.now() + i,
           name,
           dose: dosage,
-          times: [0, 1, 2].map((pos) => parts[pos]?.trim() === '1'),
-          meal: 'After meal',
+          times: [0, 1, 2].map((pos) => parts[pos]?.trim() === "1"),
+          meal: "After meal",
         };
       })
     );
@@ -397,7 +425,7 @@ function DoctorPatientContent() {
       await doctorService.savePrescription({
         patient_id: patient.profile_id,
         doctor_id: user.id,
-        title: 'New Prescription',
+        title: "New Prescription",
         notes,
         next_follow_up_date: followUp || undefined,
         medications: meds.map((m) => ({
@@ -411,7 +439,7 @@ function DoctorPatientContent() {
       });
       setPublished(true);
     } catch {
-      alert('Could not save prescription. Please try again.');
+      alert("Could not save prescription. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -423,7 +451,9 @@ function DoctorPatientContent() {
       <aside className="w-full shrink-0 border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-5 sm:px-6 sm:py-6 xl:w-[38%] xl:overflow-y-auto xl:border-b-0 xl:border-r">
         <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#64748B]">
           Clinical context
-          {loading && <span className="ml-2 normal-case tracking-normal">Loading…</span>}
+          {loading && (
+            <span className="ml-2 normal-case tracking-normal">Loading…</span>
+          )}
           {usingMockPatient && (
             <span className="ml-2 text-[10px] normal-case tracking-normal text-amber-500 font-medium">
               (demo data)
@@ -435,20 +465,20 @@ function DoctorPatientContent() {
         <div className="patient-card mt-4 p-4">
           <div className="flex items-center">
             <div className="grid h-11 w-11 sm:h-12 sm:w-12 place-items-center rounded-full bg-[#DDEBE9] text-[13px] font-semibold text-[#0F766E] shrink-0">
-              {patient.avatar_initials ?? '??'}
+              {patient.avatar_initials ?? "??"}
             </div>
             <div className="ml-3 min-w-0 flex-1">
               <h1 className="text-base sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A] truncate">
                 {patient.full_name}
               </h1>
               <p className="mt-1 text-xs text-[#64748B]">
-                #{patient.patient_code} · {patient.age ?? '—'} years · {patient.gender ?? '—'} ·{' '}
-                {patient.blood_group ?? '—'}
+                #{patient.patient_code} · {patient.age ?? "—"} years ·{" "}
+                {patient.gender ?? "—"} · {patient.blood_group ?? "—"}
               </p>
             </div>
             <div className="ml-auto text-right shrink-0">
               <p className="text-xl sm:text-[22px] font-semibold tracking-[-0.04em] tabular-nums text-[#0D9488]">
-                {patient.weekly_adherence ?? '—'}%
+                {patient.weekly_adherence ?? "—"}%
               </p>
               <p className="text-[11px] text-[#64748B]">Adherence</p>
             </div>
@@ -457,7 +487,9 @@ function DoctorPatientContent() {
           {/* Quick patient switcher dropdown */}
           {allPatients.length > 0 && (
             <div className="mt-4 flex flex-col gap-2 rounded-lg bg-[#F1F5F9] p-2 text-sm">
-              <span className="font-semibold text-[#475569]">Select patient:</span>
+              <span className="font-semibold text-[#475569]">
+                Select patient:
+              </span>
               <select
                 value={patient.patient_code}
                 onChange={(e) => {
@@ -469,7 +501,8 @@ function DoctorPatientContent() {
               >
                 {allPatients.map((p) => (
                   <option key={p.profile_id} value={p.patient_code}>
-                    {p.full_name} (#{p.patient_code}) · {p.age ? `${p.age}y` : ''} {p.blood_group || ''}
+                    {p.full_name} (#{p.patient_code}) ·{" "}
+                    {p.age ? `${p.age}y` : ""} {p.blood_group || ""}
                   </option>
                 ))}
               </select>
@@ -480,15 +513,19 @@ function DoctorPatientContent() {
         {/* Active meds */}
         <div className="mt-5">
           <div className="mb-3 flex justify-between">
-            <h2 className="text-base font-semibold text-[#0F172A]">Active medications</h2>
+            <h2 className="text-base font-semibold text-[#0F172A]">
+              Active medications
+            </h2>
             <span className="text-xs text-[#64748B]">
               {medsLoading ? (
-                'Loading…'
+                "Loading…"
               ) : (
                 <>
-                  {medsError ? 'Unavailable' : `${medications.length} current`}{' '}
+                  {medsError ? "Unavailable" : `${medications.length} current`}{" "}
                   {usingMockMeds && (
-                    <span className="text-amber-500 font-medium">(demo data)</span>
+                    <span className="text-amber-500 font-medium">
+                      (demo data)
+                    </span>
                   )}
                 </>
               )}
@@ -501,8 +538,12 @@ function DoctorPatientContent() {
                 className="patient-card mb-2 flex items-center gap-2 px-3 py-3 last:mb-0"
               >
                 <span className="h-2 w-2 shrink-0 rounded-full bg-[#10B981]" />
-                <p className="min-w-0 text-sm font-semibold text-[#334155]">{name}</p>
-                <p className="ml-auto text-right text-xs tabular-nums text-[#64748B]">{dose}</p>
+                <p className="min-w-0 text-sm font-semibold text-[#334155]">
+                  {name}
+                </p>
+                <p className="ml-auto text-right text-xs tabular-nums text-[#64748B]">
+                  {dose}
+                </p>
               </div>
             ))}
         </div>
@@ -510,7 +551,9 @@ function DoctorPatientContent() {
         {/* Recent uploads */}
         <div className="mt-5">
           <div className="mb-3 sm:mb-4 flex justify-between">
-            <h2 className="text-base font-semibold text-[#0F172A]">Recent uploads</h2>
+            <h2 className="text-base font-semibold text-[#0F172A]">
+              Recent uploads
+            </h2>
             <Link
               href="/records"
               className="text-xs font-semibold text-[#0D9488] hover:underline"
@@ -519,7 +562,9 @@ function DoctorPatientContent() {
             </Link>
           </div>
           {recordsLoading ? (
-            <p className="border-t border-[#E2E8F0] py-3 text-[10px] text-[#94A3B8]">Loading…</p>
+            <p className="border-t border-[#E2E8F0] py-3 text-[10px] text-[#94A3B8]">
+              Loading…
+            </p>
           ) : (
             records.map(([type, title, date, kind]) => (
               <div
@@ -533,18 +578,28 @@ function DoctorPatientContent() {
                   <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0D9488]">
                     {type}
                   </span>
-                  <p className="mt-0.5 truncate text-sm font-semibold text-[#334155]">{title}</p>
+                  <p className="mt-0.5 truncate text-sm font-semibold text-[#334155]">
+                    {title}
+                  </p>
                   <p className="mt-0.5 text-xs text-[#64748B]">{date}</p>
                 </div>
-                <Icon name="arrow" size={14} className="ml-auto text-[#94A3B8] shrink-0" />
+                <Icon
+                  name="arrow"
+                  size={14}
+                  className="ml-auto text-[#94A3B8] shrink-0"
+                />
               </div>
             ))
           )}
           {recordsError && (
-            <p className="mt-2 text-[9px] text-[#94A3B8]">Could not load records.</p>
+            <p className="mt-2 text-[9px] text-[#94A3B8]">
+              Could not load records.
+            </p>
           )}
           {usingMockRecords && (
-            <p className="mt-2 text-[9px] text-amber-500 font-medium">(demo data)</p>
+            <p className="mt-2 text-[9px] text-amber-500 font-medium">
+              (demo data)
+            </p>
           )}
         </div>
       </aside>
@@ -608,14 +663,17 @@ function DoctorPatientContent() {
                 />
                 <div className="flex gap-2 sm:gap-3">
                   {med.times.map((checked, i) => (
-                    <label key={i} className="grid gap-0.5 text-center text-[8px] text-[#94A3B8]">
+                    <label
+                      key={i}
+                      className="grid gap-0.5 text-center text-[8px] text-[#94A3B8]"
+                    >
                       <input
                         type="checkbox"
                         checked={checked}
                         onChange={() => toggleTime(med.id, i)}
                         className="h-3.5 w-3.5 sm:h-4 sm:w-4 accent-[#0D9488]"
                       />
-                      {['M', 'A', 'N'][i]}
+                      {["M", "A", "N"][i]}
                     </label>
                   ))}
                 </div>
@@ -680,10 +738,10 @@ function DoctorPatientContent() {
           >
             <Icon name="check" size={15} />
             {saving
-              ? 'Saving…'
+              ? "Saving…"
               : published
-              ? 'Prescription published!'
-              : 'Publish Prescription & Trigger Reminders'}
+                ? "Prescription published!"
+                : "Publish Prescription & Trigger Reminders"}
           </button>
         </div>
       </div>

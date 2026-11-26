@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { AdminHeader } from '@/components/admin/AdminHeader';
-import { StatusPill } from '@/components/common/StatusPill';
-import { Icon } from '@/components/common/Icon';
-import { adminService } from '@/lib/supabase/services';
-import type { VerificationStatus } from '@/lib/supabase/types';
+import { useState, useEffect } from "react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
+import { StatusPill } from "@/components/common/StatusPill";
+import { Icon } from "@/components/common/Icon";
+import { adminService } from "@/lib/supabase/services";
+import type { VerificationStatus } from "@/lib/supabase/types";
 
 type DoctorRow = {
   id: string;
@@ -19,29 +19,71 @@ type DoctorRow = {
 
 // Fallback data shown when the DB is empty or unreachable
 const MOCK_DOCTORS: DoctorRow[] = [
-  { id: 'mock-1', name: 'Dr. Pratik Manandhar', specialization: 'Internal Medicine', nmc: 'NMC 24871', licenseFile: 'license-pratik.pdf', registered: '23 Jun 2024', status: 'Pending' },
-  { id: 'mock-2', name: 'Dr. Sneha Poudel', specialization: 'Dermatology', nmc: 'NMC 31209', licenseFile: 'license-sneha.pdf', registered: '23 Jun 2024', status: 'Pending' },
-  { id: 'mock-3', name: 'Dr. Aayush Shahi', specialization: 'Paediatrics', nmc: 'NMC 29714', licenseFile: 'license-aayush.pdf', registered: '23 Jun 2024', status: 'Pending' },
-  { id: 'mock-4', name: 'Dr. Rojina Tamang', specialization: 'Obstetrics & Gynaecology', nmc: 'NMC 26583', licenseFile: 'license-rojina.pdf', registered: '23 Jun 2024', status: 'Pending' },
-  { id: 'mock-5', name: 'Dr. Samir Khadka', specialization: 'General Practice', nmc: 'NMC 33410', licenseFile: 'license-samir.pdf', registered: '23 Jun 2024', status: 'Pending' },
+  {
+    id: "mock-1",
+    name: "Dr. Pratik Manandhar",
+    specialization: "Internal Medicine",
+    nmc: "NMC 24871",
+    licenseFile: "license-pratik.pdf",
+    registered: "23 Jun 2024",
+    status: "Pending",
+  },
+  {
+    id: "mock-2",
+    name: "Dr. Sneha Poudel",
+    specialization: "Dermatology",
+    nmc: "NMC 31209",
+    licenseFile: "license-sneha.pdf",
+    registered: "23 Jun 2024",
+    status: "Pending",
+  },
+  {
+    id: "mock-3",
+    name: "Dr. Aayush Shahi",
+    specialization: "Paediatrics",
+    nmc: "NMC 29714",
+    licenseFile: "license-aayush.pdf",
+    registered: "23 Jun 2024",
+    status: "Pending",
+  },
+  {
+    id: "mock-4",
+    name: "Dr. Rojina Tamang",
+    specialization: "Obstetrics & Gynaecology",
+    nmc: "NMC 26583",
+    licenseFile: "license-rojina.pdf",
+    registered: "23 Jun 2024",
+    status: "Pending",
+  },
+  {
+    id: "mock-5",
+    name: "Dr. Samir Khadka",
+    specialization: "General Practice",
+    nmc: "NMC 33410",
+    licenseFile: "license-samir.pdf",
+    registered: "23 Jun 2024",
+    status: "Pending",
+  },
 ];
 
 function formatDate(value: string) {
-  if (!value) return '—';
-  return new Date(value).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   });
 }
 
 export default function DoctorVerificationPage() {
   const [doctors, setDoctors] = useState<DoctorRow[]>([]);
-  const [decisions, setDecisions] = useState<Record<string, VerificationStatus>>({});
+  const [decisions, setDecisions] = useState<
+    Record<string, VerificationStatus>
+  >({});
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<DoctorRow | null>(null);
 
   useEffect(() => {
@@ -55,13 +97,13 @@ export default function DoctorVerificationPage() {
         }
         setDoctors(
           rows
-            .filter((d) => d.verification_status === 'Pending')
+            .filter((d) => d.verification_status === "Pending")
             .map((d) => ({
               id: d.id,
-              name: d.profile?.full_name ?? '—',
+              name: d.profile?.full_name ?? "—",
               specialization: d.specialization,
               nmc: d.nmc_number,
-              licenseFile: d.license_file_name ?? '—',
+              licenseFile: d.license_file_name ?? "—",
               registered: formatDate(d.created_at),
               status: d.verification_status as VerificationStatus,
             }))
@@ -77,7 +119,9 @@ export default function DoctorVerificationPage() {
 
   async function handleDecision(row: DoctorRow, next: VerificationStatus) {
     if (usingMock) {
-      alert('Demo data — connect to the database to record verification decisions.');
+      alert(
+        "Demo data — connect to the database to record verification decisions."
+      );
       return;
     }
     setSavingId(row.id);
@@ -85,7 +129,7 @@ export default function DoctorVerificationPage() {
       await adminService.updateDoctorVerification(row.id, next);
       setDecisions((prev) => ({ ...prev, [row.id]: next }));
     } catch {
-      alert('Could not save verification decision. Please try again.');
+      alert("Could not save verification decision. Please try again.");
     } finally {
       setSavingId(null);
     }
@@ -94,7 +138,7 @@ export default function DoctorVerificationPage() {
   const query = search.trim().toLowerCase();
   const visibleDoctors = doctors.filter(
     (doctor) =>
-      query === '' ||
+      query === "" ||
       doctor.name.toLowerCase().includes(query) ||
       doctor.nmc.toLowerCase().includes(query) ||
       doctor.specialization.toLowerCase().includes(query)
@@ -110,7 +154,8 @@ export default function DoctorVerificationPage() {
               New Registration Requests
             </h2>
             <p className="mt-1 text-[11px] text-[#64748B]">
-              Review NMC details and submitted license documents before granting access.
+              Review NMC details and submitted license documents before granting
+              access.
             </p>
           </div>
           <div className="flex h-8 sm:h-9 items-center gap-2 rounded-md border border-[#CBD5E1] px-3 text-[10px] text-[#64748B] bg-white shadow-xs">
@@ -142,10 +187,10 @@ export default function DoctorVerificationPage() {
               visibleDoctors.map((doctor) => {
                 const decision = decisions[doctor.id];
                 const initials = doctor.name
-                  .split(' ')
+                  .split(" ")
                   .slice(1)
                   .map((x) => x[0])
-                  .join('');
+                  .join("");
 
                 return (
                   <div
@@ -157,13 +202,17 @@ export default function DoctorVerificationPage() {
                         {initials}
                       </div>
                       <div>
-                        <p className="text-[11px] font-semibold text-[#0F172A]">{doctor.name}</p>
+                        <p className="text-[11px] font-semibold text-[#0F172A]">
+                          {doctor.name}
+                        </p>
                         <p className="mt-0.5 text-[9px] text-[#94A3B8]">
                           Registered {doctor.registered}
                         </p>
                       </div>
                     </div>
-                    <span className="text-[10px] text-[#475569]">{doctor.specialization}</span>
+                    <span className="text-[10px] text-[#475569]">
+                      {doctor.specialization}
+                    </span>
                     <span className="text-[10px] font-medium tabular-nums text-[#334155]">
                       {doctor.nmc}
                     </span>
@@ -184,14 +233,14 @@ export default function DoctorVerificationPage() {
                     </span>
                     <div className="flex justify-end gap-2">
                       <button
-                        onClick={() => handleDecision(doctor, 'Rejected')}
+                        onClick={() => handleDecision(doctor, "Rejected")}
                         disabled={savingId === doctor.id}
                         className="h-8 rounded-md border border-[#CBD5E1] px-2.5 sm:px-3 text-[9px] font-semibold text-[#64748B] shadow-xs hover:bg-slate-50"
                       >
                         Reject
                       </button>
                       <button
-                        onClick={() => handleDecision(doctor, 'Confirmed')}
+                        onClick={() => handleDecision(doctor, "Confirmed")}
                         disabled={savingId === doctor.id}
                         className="h-8 rounded-md bg-[#0D9488] px-2.5 sm:px-3 text-[9px] font-semibold text-white shadow-xs transition hover:bg-[#0F766E]"
                       >
@@ -208,12 +257,15 @@ export default function DoctorVerificationPage() {
         <div className="mt-5 flex flex-wrap items-center justify-between gap-2">
           <p className="text-[10px] text-[#94A3B8]">
             {loading ? (
-              'Loading…'
+              "Loading…"
             ) : (
               <>
-                Showing {visibleDoctors.length} pending request{visibleDoctors.length === 1 ? '' : 's'}
+                Showing {visibleDoctors.length} pending request
+                {visibleDoctors.length === 1 ? "" : "s"}
                 {usingMock && (
-                  <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
+                  <span className="ml-2 text-[10px] text-amber-500 font-medium">
+                    (demo data)
+                  </span>
                 )}
               </>
             )}
@@ -238,7 +290,9 @@ export default function DoctorVerificationPage() {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-[14px] font-semibold text-[#0F172A]">Doctor details</h3>
+              <h3 className="text-[14px] font-semibold text-[#0F172A]">
+                Doctor details
+              </h3>
               <button
                 onClick={() => setSelected(null)}
                 className="text-[10px] font-semibold text-[#64748B] hover:text-[#0F172A]"
@@ -258,7 +312,9 @@ export default function DoctorVerificationPage() {
               <dt className="text-[#94A3B8]">Registered</dt>
               <dd className="text-[#334155]">{selected.registered}</dd>
               <dt className="text-[#94A3B8]">Status</dt>
-              <dd className="text-[#334155]">{decisions[selected.id] || selected.status}</dd>
+              <dd className="text-[#334155]">
+                {decisions[selected.id] || selected.status}
+              </dd>
               <dt className="text-[#94A3B8]">ID</dt>
               <dd className="break-all text-[#334155]">{selected.id}</dd>
             </dl>

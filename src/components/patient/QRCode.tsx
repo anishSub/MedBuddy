@@ -3,7 +3,7 @@ interface QRCodeProps {
   seed?: string;
 }
 
-export function QRCode({ seed = 'CT-2048' }: QRCodeProps) {
+export function QRCode({ seed = "CT-2048" }: QRCodeProps) {
   let hash = 0;
   for (let i = 0; i < seed.length; i += 1) {
     hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
@@ -36,12 +36,12 @@ export function QRCode({ seed = 'CT-2048' }: QRCodeProps) {
   return (
     <div
       className="grid h-[210px] w-[210px] gap-[2px] bg-white p-3"
-      style={{ gridTemplateColumns: 'repeat(17, minmax(0, 1fr))' }}
+      style={{ gridTemplateColumns: "repeat(17, minmax(0, 1fr))" }}
       role="img"
       aria-label="Illustrative QR pattern for patient health pass"
     >
       {cells.map((dark, index) => (
-        <span key={index} className={dark ? 'bg-[#0F172A]' : 'bg-white'} />
+        <span key={index} className={dark ? "bg-[#0F172A]" : "bg-white"} />
       ))}
     </div>
   );

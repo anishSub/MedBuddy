@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { PatientShell } from '@/components/patient/PatientShell';
-import { Icon } from '@/components/common/Icon';
-import type { IconName } from '@/types';
+import { PatientShell } from "@/components/patient/PatientShell";
+import { Icon } from "@/components/common/Icon";
+import type { IconName } from "@/types";
 
 // Dummy numbers — edit these for your local numbers
 const DUMMY = {
-  ambulance: '+977 100-00000',
-  hospitals: '+977 100-00001',
-  emergencyLine: '+977 100-00002',
-  careTakerOffice: '+977 100-00003',
+  ambulance: "+977 100-00000",
+  hospitals: "+977 100-00001",
+  emergencyLine: "+977 100-00002",
+  careTakerOffice: "+977 100-00003",
 };
 
 interface NumberCard {
@@ -22,38 +22,41 @@ interface NumberCard {
 
 const NUMBER_CARDS: NumberCard[] = [
   {
-    title: 'Ambulance',
+    title: "Ambulance",
     number: DUMMY.ambulance,
-    icon: 'phone',
-    bg: 'bg-[#ECFDF5]',
-    text: 'text-[#059669]',
+    icon: "phone",
+    bg: "bg-[#ECFDF5]",
+    text: "text-[#059669]",
   },
   {
-    title: 'Hospitals near you',
+    title: "Hospitals near you",
     number: DUMMY.hospitals,
-    icon: 'heart',
-    bg: 'bg-[#EFF6FF]',
-    text: 'text-[#2563EB]',
+    icon: "heart",
+    bg: "bg-[#EFF6FF]",
+    text: "text-[#2563EB]",
   },
   {
-    title: 'Emergency line',
+    title: "Emergency line",
     number: DUMMY.emergencyLine,
-    icon: 'phone',
-    bg: 'bg-[#FEE2E2]',
-    text: 'text-[#B91C1C]',
+    icon: "phone",
+    bg: "bg-[#FEE2E2]",
+    text: "text-[#B91C1C]",
   },
   {
-    title: 'Care taker office',
+    title: "Care taker office",
     number: DUMMY.careTakerOffice,
-    icon: 'users',
-    bg: 'bg-[#FFF7ED]',
-    text: 'text-[#B45309]',
+    icon: "users",
+    bg: "bg-[#FFF7ED]",
+    text: "text-[#B45309]",
   },
 ];
 
 const HOSPITALS = [
-  { name: 'Pokhara Provincial Hospital', detail: 'Western Regional Hospital, Pokhara' },
-  { name: 'Manipal Teaching Hospital', detail: 'Pokhara' },
+  {
+    name: "Pokhara Provincial Hospital",
+    detail: "Western Regional Hospital, Pokhara",
+  },
+  { name: "Manipal Teaching Hospital", detail: "Pokhara" },
 ];
 
 function NumberCard({ title, number, icon, bg, text }: NumberCard) {
@@ -100,10 +103,16 @@ export default function EmergencyPage() {
             {HOSPITALS.map((h, i) => (
               <li key={i} className="patient-card flex items-center gap-3 p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#F1F5F9]">
-                  <Icon name="stethoscope" size={16} className="text-[#0D9488]" />
+                  <Icon
+                    name="stethoscope"
+                    size={16}
+                    className="text-[#0D9488]"
+                  />
                 </div>
                 <div>
-                  <p className="text-[13px] font-semibold text-[#0F172A]">{h.name}</p>
+                  <p className="text-[13px] font-semibold text-[#0F172A]">
+                    {h.name}
+                  </p>
                   <p className="text-xs text-[#64748B]">{h.detail}</p>
                 </div>
               </li>

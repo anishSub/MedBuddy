@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import { DoctorSidebar } from '@/components/doctor/DoctorSidebar';
-import { DoctorTopBar } from '@/components/doctor/DoctorTopBar';
+import type { ReactNode } from "react";
+import { DoctorSidebar } from "@/components/doctor/DoctorSidebar";
+import { DoctorTopBar } from "@/components/doctor/DoctorTopBar";
 
 export default function DoctorLayout({ children }: { children: ReactNode }) {
   return (

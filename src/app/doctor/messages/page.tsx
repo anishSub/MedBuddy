@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Icon } from '@/components/common/Icon';
-import type { IconName } from '@/types';
+import { useState } from "react";
+import { Icon } from "@/components/common/Icon";
+import type { IconName } from "@/types";
 
 type Message = {
   id: string;
-  from: 'doctor' | 'patient';
+  from: "doctor" | "patient";
   text: string;
   time: string;
 };
@@ -23,37 +23,67 @@ type Conversation = {
 
 const CONVERSATIONS: Conversation[] = [
   {
-    id: 'c1',
-    patient: 'Ramesh Sharma',
-    patientCode: 'CT-2048',
-    doctor: 'Dr. Adhikari',
-    department: 'Cardiology',
-    freeTime: 'Today · 04:30 PM',
+    id: "c1",
+    patient: "Ramesh Sharma",
+    patientCode: "CT-2048",
+    doctor: "Dr. Adhikari",
+    department: "Cardiology",
+    freeTime: "Today · 04:30 PM",
     messages: [
-      { id: 'm1', from: 'patient', text: 'I felt chest tightness while climbing stairs this morning.', time: '09:12 AM' },
-      { id: 'm2', from: 'doctor', text: 'Noted. Keep resting and share your BP reading at the next visit.', time: '09:20 AM' },
-      { id: 'm3', from: 'patient', text: 'The reading was 150/95.', time: '09:25 AM' },
-      { id: 'm4', from: 'doctor', text: 'Thank you — I have added it to your record.', time: '09:27 AM' },
+      {
+        id: "m1",
+        from: "patient",
+        text: "I felt chest tightness while climbing stairs this morning.",
+        time: "09:12 AM",
+      },
+      {
+        id: "m2",
+        from: "doctor",
+        text: "Noted. Keep resting and share your BP reading at the next visit.",
+        time: "09:20 AM",
+      },
+      {
+        id: "m3",
+        from: "patient",
+        text: "The reading was 150/95.",
+        time: "09:25 AM",
+      },
+      {
+        id: "m4",
+        from: "doctor",
+        text: "Thank you — I have added it to your record.",
+        time: "09:27 AM",
+      },
     ],
   },
   {
-    id: 'c2',
-    patient: 'Sita Rai',
-    patientCode: 'CT-2049',
-    doctor: 'Dr. Bimal',
-    department: 'Endocrinology',
-    freeTime: 'Tomorrow · 10:00 AM',
+    id: "c2",
+    patient: "Sita Rai",
+    patientCode: "CT-2049",
+    doctor: "Dr. Bimal",
+    department: "Endocrinology",
+    freeTime: "Tomorrow · 10:00 AM",
     messages: [
-      { id: 'm5', from: 'patient', text: 'My sugar levels were high again this week.', time: '08:05 AM' },
-      { id: 'm6', from: 'doctor', text: 'Please continue Metformin and monitor fasting glucose.', time: '08:14 AM' },
+      {
+        id: "m5",
+        from: "patient",
+        text: "My sugar levels were high again this week.",
+        time: "08:05 AM",
+      },
+      {
+        id: "m6",
+        from: "doctor",
+        text: "Please continue Metformin and monitor fasting glucose.",
+        time: "08:14 AM",
+      },
     ],
   },
 ];
 
 const CALL_TYPES = [
-  { id: 'video', label: 'Video call', icon: 'video' as IconName },
-  { id: 'audio', label: 'Audio call', icon: 'audio' as IconName },
-  { id: 'chat', label: 'Live chat', icon: 'chat' as IconName },
+  { id: "video", label: "Video call", icon: "video" as IconName },
+  { id: "audio", label: "Audio call", icon: "audio" as IconName },
+  { id: "chat", label: "Live chat", icon: "chat" as IconName },
 ];
 
 function getPatientInitials(name: string) {
@@ -62,18 +92,19 @@ function getPatientInitials(name: string) {
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
-    .join('');
+    .join("");
 }
 
 export default function DoctorMessagesPage() {
   const [selectedId, setSelectedId] = useState(CONVERSATIONS[0].id);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [booked, setBooked] = useState(false);
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [callType, setCallType] = useState<'video' | 'audio' | 'chat'>('video');
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [callType, setCallType] = useState<"video" | "audio" | "chat">("video");
 
-  const selected = CONVERSATIONS.find((c) => c.id === selectedId) ?? CONVERSATIONS[0];
+  const selected =
+    CONVERSATIONS.find((c) => c.id === selectedId) ?? CONVERSATIONS[0];
   const doctorAvatar = (
     <div className="grid h-11 w-11 place-items-center rounded-full bg-[#E6F4F2] text-[#0D9488]">
       <Icon name="stethoscope" size={20} />
@@ -108,16 +139,22 @@ export default function DoctorMessagesPage() {
                 key={c.id}
                 onClick={() => setSelectedId(c.id)}
                 className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-[#F8FAFC] ${
-                  c.id === selectedId ? 'bg-[#E6F4F2]' : ''
+                  c.id === selectedId ? "bg-[#E6F4F2]" : ""
                 }`}
               >
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#DDEBE9] text-xs font-semibold text-[#0F766E]">
                   {getPatientInitials(c.patient)}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold text-[#0F172A]">{c.patient}</span>
-                  <span className="mt-0.5 block text-xs text-[#64748B]">{c.department}</span>
-                  <span className="mt-0.5 block text-xs text-[#64748B]">Free: {c.freeTime}</span>
+                  <span className="block truncate text-sm font-semibold text-[#0F172A]">
+                    {c.patient}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-[#64748B]">
+                    {c.department}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-[#64748B]">
+                    Free: {c.freeTime}
+                  </span>
                 </span>
               </button>
             ))}
@@ -131,9 +168,12 @@ export default function DoctorMessagesPage() {
               <Icon name="stethoscope" size={20} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-[#0F172A]">{selected.doctor}</p>
+              <p className="text-sm font-semibold text-[#0F172A]">
+                {selected.doctor}
+              </p>
               <p className="mt-0.5 text-xs text-[#64748B]">
-                {selected.patient} · {selected.department} · Free: {selected.freeTime}
+                {selected.patient} · {selected.department} · Free:{" "}
+                {selected.freeTime}
               </p>
             </div>
             <button
@@ -146,16 +186,21 @@ export default function DoctorMessagesPage() {
 
           <div className="space-y-2 px-4 py-4">
             {selected.messages.map((m) => (
-              <div key={m.id} className={`flex ${m.from === 'doctor' ? 'justify-end' : 'justify-start'}`}>
+              <div
+                key={m.id}
+                className={`flex ${m.from === "doctor" ? "justify-end" : "justify-start"}`}
+              >
                 <div
                   className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-5 sm:max-w-[75%] ${
-                    m.from === 'doctor'
-                      ? 'bg-[#E6F4F2] text-[#0F172A]'
-                      : 'bg-[#F1F5F9] text-[#334155]'
+                    m.from === "doctor"
+                      ? "bg-[#E6F4F2] text-[#0F172A]"
+                      : "bg-[#F1F5F9] text-[#334155]"
                   }`}
                 >
                   {m.text}
-                  <span className="mt-1 block text-[11px] opacity-70">{m.time}</span>
+                  <span className="mt-1 block text-[11px] opacity-70">
+                    {m.time}
+                  </span>
                 </div>
               </div>
             ))}
@@ -174,7 +219,9 @@ export default function DoctorMessagesPage() {
           >
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-[15px] font-semibold text-[#0F172A]">Book consultation</h2>
+                <h2 className="text-[15px] font-semibold text-[#0F172A]">
+                  Book consultation
+                </h2>
                 <p className="mt-0.5 text-[10px] text-[#94A3B8]">
                   {selected.doctor} · {selected.patient}
                 </p>
@@ -213,11 +260,13 @@ export default function DoctorMessagesPage() {
                   {CALL_TYPES.map((c) => (
                     <button
                       key={c.id}
-                      onClick={() => setCallType(c.id as 'video' | 'audio' | 'chat')}
+                      onClick={() =>
+                        setCallType(c.id as "video" | "audio" | "chat")
+                      }
                       className={`flex flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-2 text-[11px] font-semibold transition ${
                         callType === c.id
-                          ? 'border-[#0D9488] bg-[#E6F4F2] text-[#0F766E]'
-                          : 'border-[#CBD5E1] text-[#64748B] hover:bg-slate-50'
+                          ? "border-[#0D9488] bg-[#E6F4F2] text-[#0F766E]"
+                          : "border-[#CBD5E1] text-[#64748B] hover:bg-slate-50"
                       }`}
                     >
                       <Icon name={c.icon} size={14} />
@@ -235,7 +284,7 @@ export default function DoctorMessagesPage() {
               }}
               className="mt-4 h-9 w-full rounded-md bg-[#0D9488] text-[13px] font-semibold text-white transition hover:bg-[#0F766E]"
             >
-              {booked ? 'Booked ✓' : 'Confirm booking'}
+              {booked ? "Booked ✓" : "Confirm booking"}
             </button>
           </div>
         </div>

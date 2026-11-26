@@ -1,11 +1,11 @@
-import { supabase } from './client';
+import { supabase } from "./client";
 import type {
   UserRole,
   AccountStatus,
   VerificationStatus,
   AppointmentStatus,
   DocumentKind,
-} from './types';
+} from "./types";
 
 // ==============================================================================
 // 1. AUTH & PROFILE SERVICE
@@ -13,9 +13,9 @@ import type {
 export const authService = {
   async getProfiles() {
     const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("profiles")
+      .select("*")
+      .order("created_at", { ascending: false });
     if (error) throw error;
     return data;
   },
@@ -23,9 +23,9 @@ export const authService = {
   async loginOrRegister(fullName: string, phone: string, role: UserRole) {
     // 1. Try finding existing profile by phone
     const { data: existing, error: findError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('phone', phone)
+      .from("profiles")
+      .select("*")
+      .eq("phone", phone)
       .maybeSingle();
 
     if (findError) throw findError;
@@ -37,21 +37,21 @@ export const authService = {
 
     // 2. Create new profile
     const initials = fullName
-      .split(' ')
-      .filter((n) => n !== 'Dr.')
+      .split(" ")
+      .filter((n) => n !== "Dr.")
       .map((n) => n[0])
       .slice(0, 2)
-      .join('')
+      .join("")
       .toUpperCase();
 
     const { data: newProfile, error: insertError } = await supabase
-      .from('profiles')
+      .from("profiles")
       .insert({
         full_name: fullName,
         phone,
         role,
-        avatar_initials: initials || 'MB',
-        status: 'Active',
+        avatar_initials: initials || "MB",
+        status: "Active",
       })
       .select()
       .single();
@@ -59,25 +59,25 @@ export const authService = {
     if (insertError) throw insertError;
 
     // If patient, create patient_details record
-    if (role === 'Patient') {
+    if (role === "Patient") {
       const code = `CT-${Math.floor(1000 + Math.random() * 9000)}`;
-      await supabase.from('patient_details').insert({
+      await supabase.from("patient_details").insert({
         profile_id: newProfile.id,
         patient_code: code,
         age: 45,
-        blood_group: 'O+',
+        blood_group: "O+",
         allergies: [],
       });
     }
 
     // If doctor, create doctor_details record
-    if (role === 'Doctor') {
+    if (role === "Doctor") {
       const nmc = `NMC ${Math.floor(10000 + Math.random() * 90000)}`;
-      await supabase.from('doctor_details').insert({
+      await supabase.from("doctor_details").insert({
         profile_id: newProfile.id,
-        specialization: 'General Practice',
+        specialization: "General Practice",
         nmc_number: nmc,
-        verification_status: 'Pending',
+        verification_status: "Pending",
       });
     }
 
@@ -89,55 +89,61 @@ export const authService = {
 // 2. PATIENT SERVICE
 // ==============================================================================
 export const patientService = {
-  async getPatientProfile(patientCode = 'CT-2048') {
+  async getPatientProfile(patientCode = "CT-2048") {
     const { data, error } = await supabase
-      .from('patient_details')
-      .select('*, profiles!patient_details_profile_id_fkey(*)')
-      .eq('patient_code', patientCode)
+      .from("patient_details")
+      .select("*, profiles!patient_details_profile_id_fkey(*)")
+      .eq("patient_code", patientCode)
       .maybeSingle();
 
     if (error) throw error;
     return data;
   },
 
-  async getMedications(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+  async getMedications(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
     const { data, error } = await supabase
-      .from('medications')
-      .select('*')
-      .eq('patient_id', patientProfileId)
-      .eq('is_active', true)
-      .order('created_at', { ascending: true });
+      .from("medications")
+      .select("*")
+      .eq("patient_id", patientProfileId)
+      .eq("is_active", true)
+      .order("created_at", { ascending: true });
 
     if (error) throw error;
     return data || [];
   },
 
-  async getTodayLogs(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
-    const today = new Date().toISOString().split('T')[0];
+  async getTodayLogs(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
+    const today = new Date().toISOString().split("T")[0];
     const { data, error } = await supabase
-      .from('medication_logs')
-      .select('*')
-      .eq('patient_id', patientProfileId)
-      .eq('log_date', today);
+      .from("medication_logs")
+      .select("*")
+      .eq("patient_id", patientProfileId)
+      .eq("log_date", today);
 
     if (error) throw error;
     return data || [];
   },
 
-  async getMedicationLogs(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+  async getMedicationLogs(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
     const { data, error } = await supabase
-      .from('medication_logs')
-      .select('*')
-      .eq('patient_id', patientProfileId)
-      .order('log_date', { ascending: true })
-      .order('slot_time', { ascending: true });
+      .from("medication_logs")
+      .select("*")
+      .eq("patient_id", patientProfileId)
+      .order("log_date", { ascending: true })
+      .order("slot_time", { ascending: true });
 
     if (error) throw error;
     return data || [];
   },
 
   async updateGoals(
-    patientProfileId = 'a0000000-0000-0000-0000-000000000001',
+    patientProfileId = "a0000000-0000-0000-0000-000000000001",
     goals: {
       blood_pressure_target_upper?: number | null;
       blood_pressure_target_lower?: number | null;
@@ -146,9 +152,9 @@ export const patientService = {
     } = {}
   ) {
     const { data, error } = await supabase
-      .from('patient_details')
+      .from("patient_details")
       .update({ ...goals, updated_at: new Date().toISOString() })
-      .eq('profile_id', patientProfileId)
+      .eq("profile_id", patientProfileId)
       .select()
       .single();
 
@@ -156,13 +162,15 @@ export const patientService = {
     return data;
   },
 
-  async getFoodWaterLog(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
-    const today = new Date().toISOString().split('T')[0];
+  async getFoodWaterLog(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
+    const today = new Date().toISOString().split("T")[0];
     const { data, error } = await supabase
-      .from('food_water_logs')
-      .select('*')
-      .eq('patient_id', patientProfileId)
-      .eq('log_date', today)
+      .from("food_water_logs")
+      .select("*")
+      .eq("patient_id", patientProfileId)
+      .eq("log_date", today)
       .maybeSingle();
 
     if (error) throw error;
@@ -171,11 +179,15 @@ export const patientService = {
 
   async upsertFoodWaterLog(
     patientProfileId: string,
-    log: { water_ml?: number | null; food_note?: string | null; water_time?: string | null }
+    log: {
+      water_ml?: number | null;
+      food_note?: string | null;
+      water_time?: string | null;
+    }
   ) {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const { data, error } = await supabase
-      .from('food_water_logs')
+      .from("food_water_logs")
       .upsert(
         {
           patient_id: patientProfileId,
@@ -184,7 +196,7 @@ export const patientService = {
           water_time: log.water_time,
           food_note: log.food_note,
         },
-        { onConflict: 'patient_id, log_date' }
+        { onConflict: "patient_id, log_date" }
       )
       .select()
       .single();
@@ -199,9 +211,9 @@ export const patientService = {
     slotTime: string,
     isTaken: boolean
   ) {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const { data, error } = await supabase
-      .from('medication_logs')
+      .from("medication_logs")
       .upsert(
         {
           patient_id: patientProfileId,
@@ -211,7 +223,7 @@ export const patientService = {
           is_taken: isTaken,
           taken_at: isTaken ? new Date().toISOString() : null,
         },
-        { onConflict: 'medication_id,log_date,slot_time' }
+        { onConflict: "medication_id,log_date,slot_time" }
       )
       .select()
       .single();
@@ -220,25 +232,29 @@ export const patientService = {
     return data;
   },
 
-  async getAppointments(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+  async getAppointments(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
     const { data, error } = await supabase
-      .from('appointments')
-      .select('*, doctor:profiles!appointments_doctor_id_fkey(full_name)')
-      .eq('patient_id', patientProfileId)
-      .order('appointment_date', { ascending: false })
-      .order('appointment_time', { ascending: false });
+      .from("appointments")
+      .select("*, doctor:profiles!appointments_doctor_id_fkey(full_name)")
+      .eq("patient_id", patientProfileId)
+      .order("appointment_date", { ascending: false })
+      .order("appointment_time", { ascending: false });
 
     if (error) throw error;
     return data || [];
   },
 
-  async getUpcomingAppointment(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+  async getUpcomingAppointment(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
     const { data, error } = await supabase
-      .from('appointments')
-      .select('*, doctor:profiles!appointments_doctor_id_fkey(full_name)')
-      .eq('patient_id', patientProfileId)
-      .order('appointment_date', { ascending: true })
-      .order('appointment_time', { ascending: true })
+      .from("appointments")
+      .select("*, doctor:profiles!appointments_doctor_id_fkey(full_name)")
+      .eq("patient_id", patientProfileId)
+      .order("appointment_date", { ascending: true })
+      .order("appointment_time", { ascending: true })
       .limit(1)
       .maybeSingle();
 
@@ -246,11 +262,14 @@ export const patientService = {
     return data;
   },
 
-  async updateAppointmentStatus(appointmentId: string, status: AppointmentStatus) {
+  async updateAppointmentStatus(
+    appointmentId: string,
+    status: AppointmentStatus
+  ) {
     const { data, error } = await supabase
-      .from('appointments')
+      .from("appointments")
       .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', appointmentId)
+      .eq("id", appointmentId)
       .select()
       .single();
 
@@ -271,12 +290,12 @@ export const patientService = {
     }>
   ) {
     const { data: rx, error: rxErr } = await supabase
-      .from('prescriptions')
+      .from("prescriptions")
       .insert({
         patient_id: patientProfileId,
-        title: 'Prescription Scan (Nepali Rx)',
-        image_url: '/prescription-nepal.png',
-        status: 'active',
+        title: "Prescription Scan (Nepali Rx)",
+        image_url: "/prescription-nepal.png",
+        status: "active",
       })
       .select()
       .single();
@@ -297,7 +316,7 @@ export const patientService = {
     }));
 
     const { data: meds, error: medErr } = await supabase
-      .from('medications')
+      .from("medications")
       .insert(medRows)
       .select();
 
@@ -305,12 +324,14 @@ export const patientService = {
     return { prescription: rx, medications: meds };
   },
 
-  async getMedicalRecords(patientProfileId = 'a0000000-0000-0000-0000-000000000001') {
+  async getMedicalRecords(
+    patientProfileId = "a0000000-0000-0000-0000-000000000001"
+  ) {
     const { data, error } = await supabase
-      .from('medical_records')
-      .select('*')
-      .eq('patient_id', patientProfileId)
-      .order('created_at', { ascending: false });
+      .from("medical_records")
+      .select("*")
+      .eq("patient_id", patientProfileId)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data || [];
@@ -325,13 +346,13 @@ export const patientService = {
     note?: string;
   }) {
     const { data, error } = await supabase
-      .from('medical_records')
+      .from("medical_records")
       .insert({
         ...record,
-        record_date: new Date().toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
+        record_date: new Date().toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
         }),
       })
       .select()
@@ -348,27 +369,28 @@ export const patientService = {
 export const doctorService = {
   async getDashboardAppointments() {
     const { data, error } = await supabase
-      .from('appointments')
-      .select('*, profiles!appointments_patient_id_fkey(full_name, phone)')
-      .order('appointment_time', { ascending: true });
+      .from("appointments")
+      .select("*, profiles!appointments_patient_id_fkey(full_name, phone)")
+      .order("appointment_time", { ascending: true });
 
     if (error) throw error;
     return data || [];
   },
 
-  async getPatientContext(patientCodeOrId = 'CT-2048') {
+  async getPatientContext(patientCodeOrId = "CT-2048") {
     const trimmed = patientCodeOrId.trim();
-    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-      trimmed
-    );
+    const isUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        trimmed
+      );
     let query = supabase
-      .from('patient_details')
-      .select('*, profiles!patient_details_profile_id_fkey(*)');
+      .from("patient_details")
+      .select("*, profiles!patient_details_profile_id_fkey(*)");
 
     if (isUuid) {
-      query = query.eq('profile_id', trimmed);
+      query = query.eq("profile_id", trimmed);
     } else {
-      query = query.ilike('patient_code', trimmed);
+      query = query.ilike("patient_code", trimmed);
     }
 
     const { data, error } = await query.maybeSingle();
@@ -379,9 +401,9 @@ export const doctorService = {
 
   async getAllPatients() {
     const { data, error } = await supabase
-      .from('patient_details')
-      .select('*, profiles!patient_details_profile_id_fkey(*)')
-      .order('patient_code', { ascending: true });
+      .from("patient_details")
+      .select("*, profiles!patient_details_profile_id_fkey(*)")
+      .order("patient_code", { ascending: true });
 
     if (error) throw error;
     return data || [];
@@ -389,9 +411,9 @@ export const doctorService = {
 
   async getRxTemplates() {
     const { data, error } = await supabase
-      .from('rx_templates')
-      .select('*')
-      .order('created_at', { ascending: true });
+      .from("rx_templates")
+      .select("*")
+      .order("created_at", { ascending: true });
 
     if (error) throw error;
     return data || [];
@@ -407,13 +429,13 @@ export const doctorService = {
     doctor_id?: string;
   }) {
     const { data, error } = await supabase
-      .from('rx_templates')
+      .from("rx_templates")
       .insert({
         ...template,
-        updated_date: new Date().toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
+        updated_date: new Date().toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
         }),
       })
       .select()
@@ -440,7 +462,7 @@ export const doctorService = {
   }) {
     // 1. Insert prescription
     const { data: rx, error: rxErr } = await supabase
-      .from('prescriptions')
+      .from("prescriptions")
       .insert({
         patient_id: data.patient_id,
         doctor_id: data.doctor_id,
@@ -466,7 +488,9 @@ export const doctorService = {
         meal_timing: m.meal_timing,
       }));
 
-      const { error: medErr } = await supabase.from('medications').insert(medRows);
+      const { error: medErr } = await supabase
+        .from("medications")
+        .insert(medRows);
       if (medErr) throw medErr;
     }
 
@@ -480,17 +504,23 @@ export const doctorService = {
 export const adminService = {
   async getOverviewStats() {
     const [appointmentsRes, doctorsRes] = await Promise.all([
-      supabase.from('appointments').select('status'),
-      supabase.from('doctor_details').select('verification_status'),
+      supabase.from("appointments").select("status"),
+      supabase.from("doctor_details").select("verification_status"),
     ]);
 
     const appointments = appointmentsRes.data || [];
     const doctors = doctorsRes.data || [];
 
     const totalScheduled = appointments.length;
-    const confirmed = appointments.filter((a) => a.status === 'Confirmed').length;
-    const reschedule = appointments.filter((a) => a.status === 'Reschedule Requested').length;
-    const pendingDoctors = doctors.filter((d) => d.verification_status === 'Pending').length;
+    const confirmed = appointments.filter(
+      (a) => a.status === "Confirmed"
+    ).length;
+    const reschedule = appointments.filter(
+      (a) => a.status === "Reschedule Requested"
+    ).length;
+    const pendingDoctors = doctors.filter(
+      (d) => d.verification_status === "Pending"
+    ).length;
 
     return {
       scheduled: totalScheduled || 24,
@@ -502,9 +532,11 @@ export const adminService = {
 
   async getFollowUpQueue() {
     const { data, error } = await supabase
-      .from('appointments')
-      .select('*, patient:profiles!appointments_patient_id_fkey(full_name), doctor:profiles!appointments_doctor_id_fkey(full_name)')
-      .order('appointment_time', { ascending: true });
+      .from("appointments")
+      .select(
+        "*, patient:profiles!appointments_patient_id_fkey(full_name), doctor:profiles!appointments_doctor_id_fkey(full_name)"
+      )
+      .order("appointment_time", { ascending: true });
 
     if (error) throw error;
     return data || [];
@@ -512,9 +544,9 @@ export const adminService = {
 
   async updateAppointmentStatus(id: string, status: AppointmentStatus) {
     const { data, error } = await supabase
-      .from('appointments')
+      .from("appointments")
       .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -524,9 +556,11 @@ export const adminService = {
 
   async getAllUsers() {
     const { data, error } = await supabase
-      .from('profiles')
-      .select('*, patient_details!patient_details_profile_id_fkey(patient_code), doctor_details!doctor_details_profile_id_fkey(nmc_number)')
-      .order('created_at', { ascending: false });
+      .from("profiles")
+      .select(
+        "*, patient_details!patient_details_profile_id_fkey(patient_code), doctor_details!doctor_details_profile_id_fkey(nmc_number)"
+      )
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data || [];
@@ -534,9 +568,9 @@ export const adminService = {
 
   async toggleUserAccountStatus(profileId: string, status: AccountStatus) {
     const { data, error } = await supabase
-      .from('profiles')
+      .from("profiles")
       .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', profileId)
+      .eq("id", profileId)
       .select()
       .single();
 
@@ -546,9 +580,9 @@ export const adminService = {
 
   async getDoctorVerifications() {
     const { data, error } = await supabase
-      .from('doctor_details')
-      .select('*, profile:profiles!doctor_details_profile_id_fkey(*)')
-      .order('created_at', { ascending: false });
+      .from("doctor_details")
+      .select("*, profile:profiles!doctor_details_profile_id_fkey(*)")
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data || [];
@@ -559,12 +593,12 @@ export const adminService = {
     verification_status: VerificationStatus
   ) {
     const { data, error } = await supabase
-      .from('doctor_details')
+      .from("doctor_details")
       .update({
         verification_status,
         verified_at: new Date().toISOString(),
       })
-      .eq('id', doctorDetailId)
+      .eq("id", doctorDetailId)
       .select()
       .single();
 

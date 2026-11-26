@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Icon } from '@/components/common/Icon';
-import { StatusPill } from '@/components/common/StatusPill';
+import { useState } from "react";
+import { Icon } from "@/components/common/Icon";
+import { StatusPill } from "@/components/common/StatusPill";
 
 type AppointmentRow = [
   time: string,
@@ -15,8 +15,22 @@ type AppointmentRow = [
 
 // Fallback mock data showing booked appointments
 const MOCK_BOOKED_APPOINTMENTS: AppointmentRow[] = [
-  ['04:30 PM', 'Ramesh Sharma', 'Cardiology follow-up', 'Confirmed', 'Cardiology', 'a0000000-0000-0000-0000-000000000001'],
-  ['10:00 AM', 'Sita Rai', 'Endocrinology follow-up', 'Confirmed', 'Endocrinology', 'a0000000-0000-0000-0000-000000000002'],
+  [
+    "04:30 PM",
+    "Ramesh Sharma",
+    "Cardiology follow-up",
+    "Confirmed",
+    "Cardiology",
+    "a0000000-0000-0000-0000-000000000001",
+  ],
+  [
+    "10:00 AM",
+    "Sita Rai",
+    "Endocrinology follow-up",
+    "Confirmed",
+    "Endocrinology",
+    "a0000000-0000-0000-0000-000000000002",
+  ],
 ];
 
 function getPatientInitials(name: string) {
@@ -25,7 +39,7 @@ function getPatientInitials(name: string) {
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
-    .join('');
+    .join("");
 }
 
 export default function DoctorAppointmentsPage() {
@@ -56,7 +70,9 @@ export default function DoctorAppointmentsPage() {
                 {getPatientInitials(item[1])}
               </span>
               <div className="min-w-0">
-                <p className="truncate text-base font-semibold text-[#0F172A]">{item[1]}</p>
+                <p className="truncate text-base font-semibold text-[#0F172A]">
+                  {item[1]}
+                </p>
                 <p className="mt-0.5 text-sm text-[#64748B]">{item[4]}</p>
               </div>
             </div>

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { PatientShell } from '@/components/patient/PatientShell';
-import { useAuth } from '@/context/AuthContext';
-import { patientService } from '@/lib/supabase/services';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PatientShell } from "@/components/patient/PatientShell";
+import { useAuth } from "@/context/AuthContext";
+import { patientService } from "@/lib/supabase/services";
 
 interface MedLogRow {
   medication_id: string;
@@ -21,12 +21,12 @@ interface MedInfo {
   night: boolean;
 }
 
-const DEFAULT_PATIENT_ID = 'a0000000-0000-0000-0000-000000000001';
+const DEFAULT_PATIENT_ID = "a0000000-0000-0000-0000-000000000001";
 
 function localYmd(d: Date): string {
   const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
 
@@ -60,7 +60,7 @@ function streakDays(takenDates: string[]): number {
 function formatDate(iso: string) {
   const d = new Date(`${iso}T00:00:00`);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 export default function MedicinePage() {
@@ -68,7 +68,9 @@ export default function MedicinePage() {
   const [meds, setMeds] = useState<MedInfo[]>([]);
   const [logs, setLogs] = useState<MedLogRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [viewMonth, setViewMonth] = useState<string>(() => localYmd(new Date()));
+  const [viewMonth, setViewMonth] = useState<string>(() =>
+    localYmd(new Date())
+  );
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -82,7 +84,7 @@ export default function MedicinePage() {
       setMeds(medData as MedInfo[]);
       setLogs(logData as MedLogRow[]);
     } catch (err) {
-      console.warn('Could not load medication data:', err);
+      console.warn("Could not load medication data:", err);
     } finally {
       setLoading(false);
     }
@@ -144,7 +146,9 @@ export default function MedicinePage() {
       const takenDates = logs
         .filter((l) => l.medication_id === m.id && l.is_taken)
         .map((l) => l.log_date);
-      const daysThisWeek = [...weekDates].filter((d) => takenDates.includes(d)).length;
+      const daysThisWeek = [...weekDates].filter((d) =>
+        takenDates.includes(d)
+      ).length;
       return {
         id: m.id,
         name: m.name,
@@ -162,9 +166,9 @@ export default function MedicinePage() {
     return meds.map((m) => {
       const slots = (
         [
-          ['Morning', m.morning],
-          ['Afternoon', m.afternoon],
-          ['Night', m.night],
+          ["Morning", m.morning],
+          ["Afternoon", m.afternoon],
+          ["Night", m.night],
         ] as const
       )
         .filter(([, scheduled]) => scheduled)
@@ -185,9 +189,9 @@ export default function MedicinePage() {
 
   const monthLabel = useMemo(
     () =>
-      new Date(`${viewMonth}T00:00:00`).toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric',
+      new Date(`${viewMonth}T00:00:00`).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
       }),
     [viewMonth]
   );
@@ -229,13 +233,17 @@ export default function MedicinePage() {
                           {st.name}
                         </p>
                         {st.dosage && (
-                          <p className="truncate text-[11px] text-[#64748B]">{st.dosage}</p>
+                          <p className="truncate text-[11px] text-[#64748B]">
+                            {st.dosage}
+                          </p>
                         )}
                       </div>
                       <p className="shrink-0 text-[11px] font-semibold text-[#059669]">
                         ✅ {st.daysThisWeek}/7 days this week
                         {st.streak > 0 && (
-                          <span className="ml-2 font-normal text-[#94A3B8]">streak {st.streak}</span>
+                          <span className="ml-2 font-normal text-[#94A3B8]">
+                            streak {st.streak}
+                          </span>
                         )}
                       </p>
                     </div>
@@ -250,7 +258,9 @@ export default function MedicinePage() {
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
-                    onClick={() => setViewMonth(monthStartOf(addDaysIso(viewMonth, -1)))}
+                    onClick={() =>
+                      setViewMonth(monthStartOf(addDaysIso(viewMonth, -1)))
+                    }
                     className="grid h-7 w-7 place-items-center rounded-md text-[#64748B] transition hover:bg-slate-100"
                     aria-label="Previous month"
                   >
@@ -261,18 +271,22 @@ export default function MedicinePage() {
                   </p>
                   <button
                     type="button"
-                    onClick={() => setViewMonth(monthStartOf(addDaysIso(viewMonth, 31)))}
+                    onClick={() =>
+                      setViewMonth(monthStartOf(addDaysIso(viewMonth, 31)))
+                    }
                     className="grid h-7 w-7 place-items-center rounded-md text-[#64748B] transition hover:bg-slate-100"
                     aria-label="Next month"
                   >
                     ›
                   </button>
                 </div>
-                <p className="text-[10px] text-[#94A3B8]">Tap a day for details</p>
+                <p className="text-[10px] text-[#94A3B8]">
+                  Tap a day for details
+                </p>
               </div>
 
               <div className="mt-2.5 grid grid-cols-7 gap-1.5">
-                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((letter, i) => (
+                {["M", "T", "W", "T", "F", "S", "S"].map((letter, i) => (
                   <span
                     key={`wd-${i}`}
                     className="text-center text-[9px] font-medium text-[#94A3B8]"
@@ -286,7 +300,10 @@ export default function MedicinePage() {
                   const cells = [];
                   for (let i = 0; i < pad; i++) {
                     cells.push(
-                      <span key={`pad-${i}`} className="h-8 rounded-md bg-transparent" />
+                      <span
+                        key={`pad-${i}`}
+                        className="h-8 rounded-md bg-transparent"
+                      />
                     );
                   }
                   for (const d of tracker.dayStates) {
@@ -294,20 +311,26 @@ export default function MedicinePage() {
                     const isSelected = d.date === selectedDate;
                     const stateClass =
                       d.expected === 0
-                        ? 'bg-[#E2E8F0]'
+                        ? "bg-[#E2E8F0]"
                         : d.taken === d.expected
-                          ? 'bg-[#E6F4F2]'
+                          ? "bg-[#E6F4F2]"
                           : d.taken > 0
-                            ? 'bg-[#FFFBEB]'
-                            : 'bg-[#FEE2E2]';
+                            ? "bg-[#FFFBEB]"
+                            : "bg-[#FEE2E2]";
                     cells.push(
                       <button
                         key={d.date}
                         type="button"
-                        onClick={() => setSelectedDate(d.date === selectedDate ? null : d.date)}
+                        onClick={() =>
+                          setSelectedDate(
+                            d.date === selectedDate ? null : d.date
+                          )
+                        }
                         className={`grid h-8 place-items-center rounded-md transition ${stateClass} ${
-                          isToday ? 'ring-2 ring-[#0D9488] ring-offset-1 ring-offset-white' : ''
-                        } ${isSelected ? 'ring-2 ring-[#059669]' : ''}`}
+                          isToday
+                            ? "ring-2 ring-[#0D9488] ring-offset-1 ring-offset-white"
+                            : ""
+                        } ${isSelected ? "ring-2 ring-[#059669]" : ""}`}
                         aria-label={`${formatDate(d.date)} — ${d.taken}/${d.expected} doses taken`}
                         title={
                           d.expected === 0
@@ -334,12 +357,14 @@ export default function MedicinePage() {
                 </p>
                 {dayDetail.map((m) => (
                   <p key={m.name} className="mt-0.5 text-[11px] text-[#475569]">
-                    {m.name} ·{' '}
+                    {m.name} ·{" "}
                     {m.scheduledCount > 0
                       ? m.slots
-                          .map((s) => `${s.slot}: ${s.taken ? 'taken' : 'missed'}`)
-                          .join(' · ')
-                      : 'Not scheduled'}
+                          .map(
+                            (s) => `${s.slot}: ${s.taken ? "taken" : "missed"}`
+                          )
+                          .join(" · ")
+                      : "Not scheduled"}
                   </p>
                 ))}
               </div>

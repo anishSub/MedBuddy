@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { Icon } from '@/components/common/Icon';
-import { QRCode } from './QRCode';
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { Icon } from "@/components/common/Icon";
+import { QRCode } from "./QRCode";
 
 interface HealthPassModalProps {
   onClose?: () => void;
@@ -11,38 +11,44 @@ interface HealthPassModalProps {
   inline?: boolean;
 }
 
-export function HealthPassModal({ onClose, inline = false }: HealthPassModalProps) {
+export function HealthPassModal({
+  onClose,
+  inline = false,
+}: HealthPassModalProps) {
   const router = useRouter();
   const { user, patientDetail } = useAuth();
 
-  const name = user?.full_name || 'Patient';
-  const patientCode = patientDetail?.patient_code || '—';
-  const bloodGroup = patientDetail?.blood_group || 'Not recorded';
+  const name = user?.full_name || "Patient";
+  const patientCode = patientDetail?.patient_code || "—";
+  const bloodGroup = patientDetail?.blood_group || "Not recorded";
   const allergies = patientDetail?.allergies?.length
-    ? patientDetail.allergies.join(', ')
-    : 'None recorded';
-  const emergencyName = patientDetail?.emergency_contact_name || 'Not recorded';
-  const emergencyPhone = patientDetail?.emergency_contact_phone || 'Not recorded';
+    ? patientDetail.allergies.join(", ")
+    : "None recorded";
+  const emergencyName = patientDetail?.emergency_contact_name || "Not recorded";
+  const emergencyPhone =
+    patientDetail?.emergency_contact_phone || "Not recorded";
 
   const handleClose = () => {
     if (onClose) {
       onClose();
     } else {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   };
 
   const downloadPass = () => {
     const details = [
-      'MedBuddy Health Pass',
+      "MedBuddy Health Pass",
       `Patient: ${name}`,
       `Patient ID: ${patientCode}`,
       `Blood Group: ${bloodGroup}`,
       `Allergy: ${allergies}`,
       `Emergency Contact: ${emergencyName}, ${emergencyPhone}`,
-    ].join('\n');
-    const url = URL.createObjectURL(new Blob([details], { type: 'text/plain' }));
-    const anchor = document.createElement('a');
+    ].join("\n");
+    const url = URL.createObjectURL(
+      new Blob([details], { type: "text/plain" })
+    );
+    const anchor = document.createElement("a");
     anchor.href = url;
     anchor.download = `medbuddy-health-pass-${patientCode}.txt`;
     anchor.click();
@@ -52,7 +58,7 @@ export function HealthPassModal({ onClose, inline = false }: HealthPassModalProp
   const card = (
     <div
       className={`relative w-full max-w-[570px] overflow-hidden rounded-xl border border-[#CBD5E1] bg-white shadow-2xl ${
-        inline ? '' : 'my-auto'
+        inline ? "" : "my-auto"
       }`}
     >
       <div className="flex items-start justify-between border-b border-[#E2E8F0] px-5 sm:px-7 py-4 sm:py-5">
@@ -109,8 +115,12 @@ export function HealthPassModal({ onClose, inline = false }: HealthPassModalProp
             <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#64748B]">
               Emergency contact
             </p>
-            <p className="mt-1.5 text-sm font-semibold text-[#334155]">{emergencyName}</p>
-            <p className="mt-0.5 text-xs tabular-nums text-[#64748B]">{emergencyPhone}</p>
+            <p className="mt-1.5 text-sm font-semibold text-[#334155]">
+              {emergencyName}
+            </p>
+            <p className="mt-0.5 text-xs tabular-nums text-[#64748B]">
+              {emergencyPhone}
+            </p>
           </div>
         </div>
       </div>

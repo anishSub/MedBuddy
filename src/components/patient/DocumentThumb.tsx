@@ -1,29 +1,39 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 interface DocumentThumbProps {
-  kind: 'rx' | 'lab' | 'xray' | string;
+  kind: "rx" | "lab" | "xray" | string;
   illustrated?: boolean;
 }
 
 const RX_IMAGE_SRC =
-  'https://upload.wikimedia.org/wikipedia/commons/e/ea/Medical_prescription_issued_by_Bimaristan_Qalawun.jpg';
+  "https://upload.wikimedia.org/wikipedia/commons/e/ea/Medical_prescription_issued_by_Bimaristan_Qalawun.jpg";
 const LAB_IMAGE_SRC =
-  'https://upload.wikimedia.org/wikipedia/commons/7/77/US_Navy_040616-N-4565G-004_Advanced_laboratory_technician_Hospital_Corpsman_2nd_Class_John_Zettlemoyer_views_a_blood_sample_through_a_forensics_microscope.jpg';
-const XRAY_IMAGE_SRC = 'https://upload.wikimedia.org/wikipedia/commons/d/d4/A_chest_X-ray.jpg';
+  "https://upload.wikimedia.org/wikipedia/commons/7/77/US_Navy_040616-N-4565G-004_Advanced_laboratory_technician_Hospital_Corpsman_2nd_Class_John_Zettlemoyer_views_a_blood_sample_through_a_forensics_microscope.jpg";
+const XRAY_IMAGE_SRC =
+  "https://upload.wikimedia.org/wikipedia/commons/d/d4/A_chest_X-ray.jpg";
 
 const THUMB_IMAGES: Record<string, { src: string; alt: string }> = {
-  rx: { src: RX_IMAGE_SRC, alt: 'Medical prescription' },
-  lab: { src: LAB_IMAGE_SRC, alt: 'Medical laboratory blood sample' },
-  xray: { src: XRAY_IMAGE_SRC, alt: 'Chest X-ray' },
+  rx: { src: RX_IMAGE_SRC, alt: "Medical prescription" },
+  lab: { src: LAB_IMAGE_SRC, alt: "Medical laboratory blood sample" },
+  xray: { src: XRAY_IMAGE_SRC, alt: "Chest X-ray" },
 };
 
-export function DocumentThumb({ kind, illustrated = false }: DocumentThumbProps) {
+export function DocumentThumb({
+  kind,
+  illustrated = false,
+}: DocumentThumbProps) {
   const image = THUMB_IMAGES[kind];
 
   if (image) {
     return (
       <div className="relative h-full w-full overflow-hidden rounded-md">
-        <Image src={image.src} alt={image.alt} fill sizes="270px" className="object-cover" />
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          sizes="270px"
+          className="object-cover"
+        />
       </div>
     );
   }
@@ -42,7 +52,10 @@ export function DocumentThumb({ kind, illustrated = false }: DocumentThumbProps)
           <div
             key={i}
             className="h-px bg-[#47637D]/45"
-            style={{ width: `${w}%`, transform: `rotate(${i % 2 ? -1 : 1}deg)` }}
+            style={{
+              width: `${w}%`,
+              transform: `rotate(${i % 2 ? -1 : 1}deg)`,
+            }}
           />
         ))}
       </div>

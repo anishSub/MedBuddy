@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import { PatientSidebar } from './PatientSidebar';
-import { PatientHeader } from './PatientHeader';
+import type { ReactNode } from "react";
+import { PatientSidebar } from "./PatientSidebar";
+import { PatientHeader } from "./PatientHeader";
 
 interface PatientShellProps {
   title: string;
@@ -19,7 +19,9 @@ export function PatientShell({
   return (
     <div
       className={`w-full min-h-screen flex flex-col bg-white ${
-        compact ? 'md:flex-row md:h-screen md:overflow-hidden' : 'lg:flex-row lg:h-screen lg:overflow-hidden'
+        compact
+          ? "md:flex-row md:h-screen md:overflow-hidden"
+          : "lg:flex-row lg:h-screen lg:overflow-hidden"
       }`}
     >
       <PatientSidebar compact={compact} />

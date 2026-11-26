@@ -6,17 +6,17 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type UserRole = 'Patient' | 'Doctor' | 'Admin';
-export type AccountStatus = 'Active' | 'Pending' | 'Suspended';
-export type VerificationStatus = 'Pending' | 'Confirmed' | 'Rejected';
+export type UserRole = "Patient" | "Doctor" | "Admin";
+export type AccountStatus = "Active" | "Pending" | "Suspended";
+export type VerificationStatus = "Pending" | "Confirmed" | "Rejected";
 export type AppointmentStatus =
-  | 'Confirmed'
-  | 'Pending'
-  | 'Reschedule Requested'
-  | 'Checked in'
-  | 'Completed'
-  | 'Next';
-export type DocumentKind = 'rx' | 'lab' | 'xray';
+  | "Confirmed"
+  | "Pending"
+  | "Reschedule Requested"
+  | "Checked in"
+  | "Completed"
+  | "Next";
+export type DocumentKind = "rx" | "lab" | "xray";
 
 export interface Database {
   public: {

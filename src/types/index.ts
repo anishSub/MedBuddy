@@ -1,45 +1,45 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 export type IconName =
-  | 'home'
-  | 'scan'
-  | 'records'
-  | 'qr'
-  | 'bell'
-  | 'chevron'
-  | 'check'
-  | 'clock'
-  | 'calendar'
-  | 'upload'
-  | 'plus'
-  | 'zoomIn'
-  | 'zoomOut'
-  | 'edit'
-  | 'file'
-  | 'shield'
-  | 'users'
-  | 'lock'
-  | 'eye'
-  | 'eyeOff'
-  | 'arrow'
-  | 'x'
-  | 'user'
-  | 'stethoscope'
-  | 'phone'
-  | 'heart'
-  | 'video'
-  | 'audio'
-  | 'chat';
+  | "home"
+  | "scan"
+  | "records"
+  | "qr"
+  | "bell"
+  | "chevron"
+  | "check"
+  | "clock"
+  | "calendar"
+  | "upload"
+  | "plus"
+  | "zoomIn"
+  | "zoomOut"
+  | "edit"
+  | "file"
+  | "shield"
+  | "users"
+  | "lock"
+  | "eye"
+  | "eyeOff"
+  | "arrow"
+  | "x"
+  | "user"
+  | "stethoscope"
+  | "phone"
+  | "heart"
+  | "video"
+  | "audio"
+  | "chat";
 
-export type UserRole = 'Patient' | 'Doctor' | 'Admin';
-export type AccountStatus = 'Active' | 'Pending' | 'Suspended';
+export type UserRole = "Patient" | "Doctor" | "Admin";
+export type AccountStatus = "Active" | "Pending" | "Suspended";
 export type AppointmentStatus =
-  | 'Confirmed'
-  | 'Pending'
-  | 'Reschedule Requested'
-  | 'Checked in'
-  | 'Completed'
-  | 'Next';
+  | "Confirmed"
+  | "Pending"
+  | "Reschedule Requested"
+  | "Checked in"
+  | "Completed"
+  | "Next";
 
 export interface MedicineScheduleItem {
   time: string;
@@ -49,19 +49,19 @@ export interface MedicineScheduleItem {
 }
 
 export interface DocumentItem {
-  type: 'Prescription' | 'Lab Report' | 'X-Ray';
+  type: "Prescription" | "Lab Report" | "X-Ray";
   date: string;
   title: string;
   doctor: string;
   note: string;
-  kind: 'rx' | 'lab' | 'xray';
+  kind: "rx" | "lab" | "xray";
 }
 
 export interface AppointmentItem {
   time: string;
   patient: string;
   visit: string;
-  status: 'Checked in' | 'Next' | 'Confirmed' | 'Pending';
+  status: "Checked in" | "Next" | "Confirmed" | "Pending";
 }
 
 export interface FollowUpItem {
@@ -70,7 +70,7 @@ export interface FollowUpItem {
   id: string;
   doctor: string;
   department: string;
-  status: 'Confirmed' | 'Pending' | 'Reschedule Requested';
+  status: "Confirmed" | "Pending" | "Reschedule Requested";
 }
 
 export interface DoctorRequestItem {
@@ -82,9 +82,9 @@ export interface DoctorRequestItem {
 
 export interface UserAccountItem {
   name: string;
-  role: 'Patient' | 'Doctor' | 'Admin';
+  role: "Patient" | "Doctor" | "Admin";
   id: string;
   phone: string;
   lastActive: string;
-  status: 'Active' | 'Pending' | 'Suspended';
+  status: "Active" | "Pending" | "Suspended";
 }

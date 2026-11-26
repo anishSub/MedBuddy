@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import type { IconName } from '@/types';
+import type { ReactNode } from "react";
+import type { IconName } from "@/types";
 
 interface IconProps {
   name: IconName;
@@ -7,7 +7,7 @@ interface IconProps {
   className?: string;
 }
 
-export function Icon({ name, size = 18, className = '' }: IconProps) {
+export function Icon({ name, size = 18, className = "" }: IconProps) {
   const paths: Record<IconName, ReactNode> = {
     home: (
       <>

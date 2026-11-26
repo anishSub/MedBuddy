@@ -7,22 +7,28 @@ MedBuddy is a modern healthcare web application built with **Next.js (App Router
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ (tested with Node.js 24)
 - npm, pnpm, or yarn
 
 ### Installation
+
 Dependencies are already installed. If running in a fresh clone:
+
 ```bash
 npm install
 ```
 
 ### Running the Development Server
+
 ```bash
 npm run dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Building for Production
+
 ```bash
 npm run build
 npm start
@@ -92,18 +98,18 @@ MedBuddy/
 
 ## 🗺️ Route Mapping
 
-| Route | View | Description |
-|---|---|---|
-| `/` or `/login` | **Welcome / Login** | Role selector (`Patient`, `Doctor`, `Admin`) and sign in / sign up |
-| `/dashboard` | **Patient Overview** | Today's medicine schedule, weekly adherence chart, upcoming follow-up |
-| `/scan` | **Prescription Scanner** | Image viewer with zoom, Nepali prescription preview, schedule table |
-| `/records` | **Medical Records** | Filterable records (All, Prescriptions, Lab Reports, X-Rays) |
-| `/health-pass` | **QR Health Pass** | Verified emergency health pass with text download |
-| `/doctor/dashboard` | **Doctor Dashboard** | Appointment stats, today's schedule, priority clinical alerts |
-| `/doctor/patient` | **Clinical Record & Rx** | Patient context, active meds, and interactive Prescription Builder |
-| `/doctor/scan` | **Doctor QR Lookup** | Camera scanner interface and verified patient identity modal |
-| `/doctor/templates` | **Rx Templates** | Standard clinical regimens (Viral Fever, Gastritis, Post-Op, etc.) |
-| `/admin/overview` | **Clinic Overview** | Departmental stats and today's follow-up list |
-| `/admin/follow-ups` | **Follow-Up Queue** | Patient coordination queue with interactive status confirmations |
-| `/admin/users` | **User Directory** | Searchable patient, doctor, and admin accounts with suspend/restore |
-| `/admin/verification`| **Doctor Verification**| NMC registrations and license document approval workflow |
+| Route                 | View                     | Description                                                           |
+| --------------------- | ------------------------ | --------------------------------------------------------------------- |
+| `/` or `/login`       | **Welcome / Login**      | Role selector (`Patient`, `Doctor`, `Admin`) and sign in / sign up    |
+| `/dashboard`          | **Patient Overview**     | Today's medicine schedule, weekly adherence chart, upcoming follow-up |
+| `/scan`               | **Prescription Scanner** | Image viewer with zoom, Nepali prescription preview, schedule table   |
+| `/records`            | **Medical Records**      | Filterable records (All, Prescriptions, Lab Reports, X-Rays)          |
+| `/health-pass`        | **QR Health Pass**       | Verified emergency health pass with text download                     |
+| `/doctor/dashboard`   | **Doctor Dashboard**     | Appointment stats, today's schedule, priority clinical alerts         |
+| `/doctor/patient`     | **Clinical Record & Rx** | Patient context, active meds, and interactive Prescription Builder    |
+| `/doctor/scan`        | **Doctor QR Lookup**     | Camera scanner interface and verified patient identity modal          |
+| `/doctor/templates`   | **Rx Templates**         | Standard clinical regimens (Viral Fever, Gastritis, Post-Op, etc.)    |
+| `/admin/overview`     | **Clinic Overview**      | Departmental stats and today's follow-up list                         |
+| `/admin/follow-ups`   | **Follow-Up Queue**      | Patient coordination queue with interactive status confirmations      |
+| `/admin/users`        | **User Directory**       | Searchable patient, doctor, and admin accounts with suspend/restore   |
+| `/admin/verification` | **Doctor Verification**  | NMC registrations and license document approval workflow              |

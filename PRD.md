@@ -1,4 +1,3 @@
-
 Product Requirements Document
 MedBuddy
 Document ID PRD-001

@@ -1,72 +1,72 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { PatientShell } from '@/components/patient/PatientShell';
-import { DocumentThumb } from '@/components/patient/DocumentThumb';
-import { Icon } from '@/components/common/Icon';
-import { useAuth } from '@/context/AuthContext';
-import { patientService } from '@/lib/supabase/services';
-import type { DocumentItem } from '@/types';
+import { useState, useEffect } from "react";
+import { PatientShell } from "@/components/patient/PatientShell";
+import { DocumentThumb } from "@/components/patient/DocumentThumb";
+import { Icon } from "@/components/common/Icon";
+import { useAuth } from "@/context/AuthContext";
+import { patientService } from "@/lib/supabase/services";
+import type { DocumentItem } from "@/types";
 
-type DocumentKind = 'rx' | 'lab' | 'xray';
-type DocumentType = 'Prescription' | 'Lab Report' | 'X-Ray';
+type DocumentKind = "rx" | "lab" | "xray";
+type DocumentType = "Prescription" | "Lab Report" | "X-Ray";
 
 // Fallback mock data shown when DB has no records yet
 const MOCK_DOCUMENTS: DocumentItem[] = [
   {
-    type: 'Prescription',
-    date: '24 Jun 2024',
-    title: 'Cardiology Follow-up',
-    doctor: 'Dr. Sushil Adhikari',
-    note: 'Continue current medication; review in 4 weeks.',
-    kind: 'rx',
+    type: "Prescription",
+    date: "24 Jun 2024",
+    title: "Cardiology Follow-up",
+    doctor: "Dr. Sushil Adhikari",
+    note: "Continue current medication; review in 4 weeks.",
+    kind: "rx",
   },
   {
-    type: 'Lab Report',
-    date: '21 Jun 2024',
-    title: 'HbA1c & Glucose Panel',
-    doctor: 'Norvic Laboratory',
-    note: 'HbA1c improved to 6.8%. Maintain diet plan.',
-    kind: 'lab',
+    type: "Lab Report",
+    date: "21 Jun 2024",
+    title: "HbA1c & Glucose Panel",
+    doctor: "Norvic Laboratory",
+    note: "HbA1c improved to 6.8%. Maintain diet plan.",
+    kind: "lab",
   },
   {
-    type: 'Prescription',
-    date: '06 May 2024',
-    title: 'Diabetes Review',
-    doctor: 'Dr. Anjali Karki',
-    note: 'Metformin dose adjusted to twice daily.',
-    kind: 'rx',
+    type: "Prescription",
+    date: "06 May 2024",
+    title: "Diabetes Review",
+    doctor: "Dr. Anjali Karki",
+    note: "Metformin dose adjusted to twice daily.",
+    kind: "rx",
   },
   {
-    type: 'X-Ray',
-    date: '18 Apr 2024',
-    title: 'Chest X-Ray — PA View',
-    doctor: 'Patan Hospital',
-    note: 'No active pulmonary lesion identified.',
-    kind: 'xray',
+    type: "X-Ray",
+    date: "18 Apr 2024",
+    title: "Chest X-Ray — PA View",
+    doctor: "Patan Hospital",
+    note: "No active pulmonary lesion identified.",
+    kind: "xray",
   },
   {
-    type: 'Lab Report',
-    date: '14 Apr 2024',
-    title: 'Lipid Profile',
-    doctor: 'National Path Lab',
-    note: 'LDL slightly elevated; repeat after 3 months.',
-    kind: 'lab',
+    type: "Lab Report",
+    date: "14 Apr 2024",
+    title: "Lipid Profile",
+    doctor: "National Path Lab",
+    note: "LDL slightly elevated; repeat after 3 months.",
+    kind: "lab",
   },
   {
-    type: 'Prescription',
-    date: '02 Mar 2024',
-    title: 'General Medicine Visit',
-    doctor: 'Dr. Bimal Shrestha',
-    note: 'Blood pressure stable. Continue Amlodipine.',
-    kind: 'rx',
+    type: "Prescription",
+    date: "02 Mar 2024",
+    title: "General Medicine Visit",
+    doctor: "Dr. Bimal Shrestha",
+    note: "Blood pressure stable. Continue Amlodipine.",
+    kind: "rx",
   },
 ];
 
 const KIND_MAP: Record<DocumentType, DocumentKind> = {
-  Prescription: 'rx',
-  'Lab Report': 'lab',
-  'X-Ray': 'xray',
+  Prescription: "rx",
+  "Lab Report": "lab",
+  "X-Ray": "xray",
 };
 
 function mapRecordToDoc(r: {
@@ -82,19 +82,19 @@ function mapRecordToDoc(r: {
     date: r.record_date,
     title: r.title,
     doctor: r.doctor,
-    note: r.note ?? '',
-    kind: (r.kind as DocumentKind) || KIND_MAP[r.type as DocumentType] || 'rx',
+    note: r.note ?? "",
+    kind: (r.kind as DocumentKind) || KIND_MAP[r.type as DocumentType] || "rx",
   };
 }
 
 function getProviderInitials(name: string) {
   return name
-    .replace(/^(Dr\.|Doctor)\s*/i, '')
+    .replace(/^(Dr\.|Doctor)\s*/i, "")
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
-    .join('');
+    .join("");
 }
 
 export default function RecordsPage() {
@@ -102,16 +102,16 @@ export default function RecordsPage() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState("All");
 
   // Upload modal state
   const [showUpload, setShowUpload] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
-    title: '',
-    type: 'Prescription' as DocumentType,
-    doctor: '',
-    note: '',
+    title: "",
+    type: "Prescription" as DocumentType,
+    doctor: "",
+    note: "",
   });
 
   useEffect(() => {
@@ -136,10 +136,10 @@ export default function RecordsPage() {
   }, [user]);
 
   const shown = documents.filter((doc) => {
-    if (filter === 'All') return true;
-    if (filter === 'Prescriptions') return doc.type === 'Prescription';
-    if (filter === 'Lab Reports') return doc.type === 'Lab Report';
-    if (filter === 'X-Rays') return doc.type === 'X-Ray';
+    if (filter === "All") return true;
+    if (filter === "Prescriptions") return doc.type === "Prescription";
+    if (filter === "Lab Reports") return doc.type === "Lab Report";
+    if (filter === "X-Rays") return doc.type === "X-Ray";
     return true;
   });
 
@@ -157,12 +157,15 @@ export default function RecordsPage() {
         note: form.note,
       });
       // Prepend newly saved record to list (always real from here on)
-      setDocuments((prev) => [mapRecordToDoc(newRecord as Parameters<typeof mapRecordToDoc>[0]), ...prev]);
+      setDocuments((prev) => [
+        mapRecordToDoc(newRecord as Parameters<typeof mapRecordToDoc>[0]),
+        ...prev,
+      ]);
       setUsingMock(false);
       setShowUpload(false);
-      setForm({ title: '', type: 'Prescription', doctor: '', note: '' });
+      setForm({ title: "", type: "Prescription", doctor: "", note: "" });
     } catch {
-      alert('Could not save record. Please try again.');
+      alert("Could not save record. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -174,14 +177,14 @@ export default function RecordsPage() {
         {/* Tab bar + upload button */}
         <div className="flex flex-wrap items-end justify-between border-b border-[#E2E8F0] gap-3">
           <div className="flex min-w-0 flex-nowrap gap-3 pb-1 sm:gap-7 sm:pb-0">
-            {['All', 'Prescriptions', 'Lab Reports', 'X-Rays'].map((item) => (
+            {["All", "Prescriptions", "Lab Reports", "X-Rays"].map((item) => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
                 className={`relative h-10 sm:h-11 text-[12px] font-semibold shrink-0 transition ${
                   filter === item
-                    ? 'text-[#0D9488] after:absolute after:inset-x-0 after:bottom-[-1px] after:h-0.5 after:bg-[#0D9488]'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? "text-[#0D9488] after:absolute after:inset-x-0 after:bottom-[-1px] after:h-0.5 after:bg-[#0D9488]"
+                    : "text-[#64748B] hover:text-[#0F172A]"
                 }`}
               >
                 {item}
@@ -201,14 +204,18 @@ export default function RecordsPage() {
         <div className="mt-4 sm:mt-5 flex items-center justify-between">
           <p className="text-[12px] text-[#64748B]">
             {loading ? (
-              'Loading…'
+              "Loading…"
             ) : (
               <>
-                <span className="font-semibold text-[#334155]">{shown.length} records</span>
-                {' for '}
-                {user?.full_name ?? 'you'}
+                <span className="font-semibold text-[#334155]">
+                  {shown.length} records
+                </span>
+                {" for "}
+                {user?.full_name ?? "you"}
                 {usingMock && (
-                  <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
+                  <span className="ml-2 text-[10px] text-amber-500 font-medium">
+                    (demo data)
+                  </span>
                 )}
               </>
             )}
@@ -220,7 +227,9 @@ export default function RecordsPage() {
 
         {/* Grid */}
         {loading ? (
-          <div className="mt-10 text-center text-[13px] text-[#94A3B8]">Loading records…</div>
+          <div className="mt-10 text-center text-[13px] text-[#94A3B8]">
+            Loading records…
+          </div>
         ) : (
           <div className="mt-4 flex flex-wrap items-start justify-start gap-4 pb-6 sm:gap-5">
             {shown.map((doc, i) => (
@@ -235,27 +244,36 @@ export default function RecordsPage() {
                   <div className="flex items-center justify-between">
                     <span
                       className={`rounded px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] ${
-                        doc.type === 'Lab Report'
-                          ? 'bg-[#EFF6FF] text-[#2563EB]'
-                          : doc.type === 'X-Ray'
-                          ? 'bg-[#F1F5F9] text-[#475569]'
-                          : 'bg-[#E6F4F2] text-[#0D9488]'
+                        doc.type === "Lab Report"
+                          ? "bg-[#EFF6FF] text-[#2563EB]"
+                          : doc.type === "X-Ray"
+                            ? "bg-[#F1F5F9] text-[#475569]"
+                            : "bg-[#E6F4F2] text-[#0D9488]"
                       }`}
                     >
                       {doc.type}
                     </span>
-                    <span className="text-[10px] tabular-nums text-[#94A3B8]">{doc.date}</span>
+                    <span className="text-[10px] tabular-nums text-[#94A3B8]">
+                      {doc.date}
+                    </span>
                   </div>
                   <h3 className="mt-2.5 line-clamp-2 min-h-[42px] text-sm font-semibold tracking-[-0.01em] text-[#0F172A]">
                     {doc.title}
                   </h3>
                   <div className="mt-2 flex min-w-0 items-center gap-2">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-[10px] font-semibold text-[#0D9488]" aria-hidden="true">
+                    <span
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-[10px] font-semibold text-[#0D9488]"
+                      aria-hidden="true"
+                    >
                       {getProviderInitials(doc.doctor)}
                     </span>
-                    <p className="truncate text-xs font-medium text-[#64748B]">{doc.doctor}</p>
+                    <p className="truncate text-xs font-medium text-[#64748B]">
+                      {doc.doctor}
+                    </p>
                   </div>
-                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#64748B]">{doc.note}</p>
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#64748B]">
+                    {doc.note}
+                  </p>
                 </div>
               </article>
             ))}
@@ -268,7 +286,9 @@ export default function RecordsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-sm rounded-xl bg-white shadow-xl p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-[15px] font-semibold text-[#0F172A]">Add Medical Record</h2>
+              <h2 className="text-[15px] font-semibold text-[#0F172A]">
+                Add Medical Record
+              </h2>
               <button
                 onClick={() => setShowUpload(false)}
                 className="text-[#94A3B8] hover:text-[#0F172A]"
@@ -278,20 +298,31 @@ export default function RecordsPage() {
             </div>
             <form onSubmit={handleUpload} className="flex flex-col gap-3">
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1">Title</label>
+                <label className="block text-xs font-semibold text-[#64748B] mb-1">
+                  Title
+                </label>
                 <input
                   required
                   value={form.title}
-                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, title: e.target.value }))
+                  }
                   placeholder="e.g. Blood Sugar Panel"
                   className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-[#64748B] mb-1">Type</label>
+                <label className="block text-xs font-semibold text-[#64748B] mb-1">
+                  Type
+                </label>
                 <select
                   value={form.type}
-                  onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as DocumentType }))}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      type: e.target.value as DocumentType,
+                    }))
+                  }
                   className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
                 >
                   <option>Prescription</option>
@@ -306,18 +337,23 @@ export default function RecordsPage() {
                 <input
                   required
                   value={form.doctor}
-                  onChange={(e) => setForm((f) => ({ ...f, doctor: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, doctor: e.target.value }))
+                  }
                   placeholder="e.g. Dr. Anjali Karki"
                   className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488]"
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-[#64748B] mb-1">
-                  Note <span className="font-normal text-[#94A3B8]">(optional)</span>
+                  Note{" "}
+                  <span className="font-normal text-[#94A3B8]">(optional)</span>
                 </label>
                 <textarea
                   value={form.note}
-                  onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, note: e.target.value }))
+                  }
                   rows={2}
                   placeholder="Short summary…"
                   className="w-full rounded-md border border-[#E2E8F0] px-3 py-2 text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0D9488] resize-none"
@@ -328,7 +364,7 @@ export default function RecordsPage() {
                 disabled={uploading}
                 className="mt-1 w-full rounded-md bg-[#0D9488] py-2.5 text-[13px] font-semibold text-white hover:bg-[#0F766E] disabled:opacity-60 transition"
               >
-                {uploading ? 'Saving…' : 'Save Record'}
+                {uploading ? "Saving…" : "Save Record"}
               </button>
             </form>
           </div>

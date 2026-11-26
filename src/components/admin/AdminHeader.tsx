@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { NotificationMenu } from '@/components/common/NotificationMenu';
-import { useAuth } from '@/context/AuthContext';
+import { NotificationMenu } from "@/components/common/NotificationMenu";
+import { useAuth } from "@/context/AuthContext";
 
 interface AdminHeaderProps {
   title: string;
@@ -24,7 +24,7 @@ export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
       <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
         <NotificationMenu inverse />
         <div className="grid h-9 sm:h-10 w-9 sm:w-10 place-items-center rounded-full bg-white/15 text-xs font-semibold text-white">
-          {user?.avatar_initials || 'NA'}
+          {user?.avatar_initials || "NA"}
         </div>
       </div>
     </header>

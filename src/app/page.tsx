@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Logo } from '@/components/common/Logo';
-import { Icon } from '@/components/common/Icon';
-import { useAuth } from '@/context/AuthContext';
-import type { IconName, UserRole } from '@/types';
+import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Logo } from "@/components/common/Logo";
+import { Icon } from "@/components/common/Icon";
+import { useAuth } from "@/context/AuthContext";
+import type { IconName, UserRole } from "@/types";
 
 const FEATURES: { icon: IconName; title: string; copy: string }[] = [
   {
-    icon: 'shield',
-    title: 'Your health, protected',
-    copy: 'Your medical information stays private and secure.',
+    icon: "shield",
+    title: "Your health, protected",
+    copy: "Your medical information stays private and secure.",
   },
   {
-    icon: 'users',
-    title: 'Care for your family',
+    icon: "users",
+    title: "Care for your family",
     copy: "Keep your loved ones' health organized in one place.",
   },
   {
-    icon: 'calendar',
-    title: 'Stay connected',
-    copy: 'Stay on top of medicines and doctor appointments.',
+    icon: "calendar",
+    title: "Stay connected",
+    copy: "Stay on top of medicines and doctor appointments.",
   },
 ];
 
@@ -31,10 +31,10 @@ export default function LoginPage() {
   const { login, signUp } = useAuth();
 
   const [isSignUp, setIsSignUp] = useState(false);
-  const [role, setRole] = useState<UserRole>('Patient');
-  const [fullName, setFullName] = useState('Ramesh Sharma');
-  const [phone, setPhone] = useState('+977 981-234-5678');
-  const [password, setPassword] = useState('Ramesh@123');
+  const [role, setRole] = useState<UserRole>("Patient");
+  const [fullName, setFullName] = useState("Ramesh Sharma");
+  const [phone, setPhone] = useState("+977 981-234-5678");
+  const [password, setPassword] = useState("Ramesh@123");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -42,18 +42,18 @@ export default function LoginPage() {
   const handleRoleChange = (newRole: UserRole) => {
     setRole(newRole);
     if (!isSignUp) {
-      if (newRole === 'Patient') {
-        setFullName('Ramesh Sharma');
-        setPhone('+977 981-234-5678');
-        setPassword('Ramesh@123');
-      } else if (newRole === 'Doctor') {
-        setFullName('Dr. Sushil Adhikari');
-        setPhone('+977 980-112-4482');
-        setPassword('Sushil@123');
+      if (newRole === "Patient") {
+        setFullName("Ramesh Sharma");
+        setPhone("+977 981-234-5678");
+        setPassword("Ramesh@123");
+      } else if (newRole === "Doctor") {
+        setFullName("Dr. Sushil Adhikari");
+        setPhone("+977 980-112-4482");
+        setPassword("Sushil@123");
       } else {
-        setFullName('Nisha Aryal');
-        setPhone('+977 980-887-1265');
-        setPassword('Nisha@123');
+        setFullName("Nisha Aryal");
+        setPhone("+977 980-887-1265");
+        setPassword("Nisha@123");
       }
     }
   };
@@ -67,29 +67,30 @@ export default function LoginPage() {
       let profile;
       if (isSignUp) {
         if (!fullName.trim()) {
-          throw new Error('Please enter your full name');
+          throw new Error("Please enter your full name");
         }
         if (!phone.trim()) {
-          throw new Error('Please enter your mobile number');
+          throw new Error("Please enter your mobile number");
         }
         profile = await signUp(fullName.trim(), phone.trim(), role, password);
       } else {
         if (!phone.trim()) {
-          throw new Error('Please enter your mobile number');
+          throw new Error("Please enter your mobile number");
         }
         profile = await login(phone.trim(), role, password);
       }
 
       // Route based on authenticated role
-      if (profile.role === 'Doctor') {
-        router.push('/doctor/dashboard');
-      } else if (profile.role === 'Admin') {
-        router.push('/admin/overview');
+      if (profile.role === "Doctor") {
+        router.push("/doctor/dashboard");
+      } else if (profile.role === "Admin") {
+        router.push("/admin/overview");
       } else {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Authentication failed';
+      const message =
+        err instanceof Error ? err.message : "Authentication failed";
       setErrorMsg(message);
     } finally {
       setLoading(false);
@@ -110,7 +111,8 @@ export default function LoginPage() {
             Your health, all in one place.
           </h1>
           <p className="mt-4 max-w-[400px] text-[14px] leading-relaxed text-[#64748B]">
-            Manage medicines, medical records, and doctor visits — simply and together.
+            Manage medicines, medical records, and doctor visits — simply and
+            together.
           </p>
 
           {/* Illustration card */}
@@ -120,8 +122,9 @@ export default function LoginPage() {
             <div
               className="pointer-events-none absolute inset-0 opacity-60"
               style={{
-                backgroundImage: 'radial-gradient(#CDE7E1 1px, transparent 1px)',
-                backgroundSize: '16px 16px',
+                backgroundImage:
+                  "radial-gradient(#CDE7E1 1px, transparent 1px)",
+                backgroundSize: "16px 16px",
               }}
             />
             <Image
@@ -154,8 +157,12 @@ export default function LoginPage() {
                   <Icon name={feature.icon} size={16} />
                 </div>
                 <div>
-                  <h3 className="text-[12.5px] font-semibold text-[#0F172A]">{feature.title}</h3>
-                  <p className="mt-0.5 text-[11.5px] leading-5 text-[#64748B]">{feature.copy}</p>
+                  <h3 className="text-[12.5px] font-semibold text-[#0F172A]">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-0.5 text-[11.5px] leading-5 text-[#64748B]">
+                    {feature.copy}
+                  </p>
                 </div>
               </div>
             ))}
@@ -170,10 +177,23 @@ export default function LoginPage() {
       {/* Right authentication panel */}
       <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 pt-0 pb-10 sm:px-10 lg:px-12">
         {/* Wave decoration */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40" aria-hidden="true">
-          <svg viewBox="0 0 400 160" preserveAspectRatio="none" className="h-full w-full">
-            <path d="M0 92c58-30 118 18 196-6 62-19 132 14 204-8v82H0Z" fill="#E8F5F2" />
-            <path d="M0 118c64-24 126 22 206 2 60-15 130 10 194-6v46H0Z" fill="#DCF0EB" />
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
+          aria-hidden="true"
+        >
+          <svg
+            viewBox="0 0 400 160"
+            preserveAspectRatio="none"
+            className="h-full w-full"
+          >
+            <path
+              d="M0 92c58-30 118 18 196-6 62-19 132 14 204-8v82H0Z"
+              fill="#E8F5F2"
+            />
+            <path
+              d="M0 118c64-24 126 22 206 2 60-15 130 10 194-6v46H0Z"
+              fill="#DCF0EB"
+            />
           </svg>
         </div>
         <div
@@ -198,12 +218,14 @@ export default function LoginPage() {
 
         <div className="relative z-10 w-full max-w-[460px] rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.07)] sm:p-8">
           <div className="mb-7">
-            <p className="text-xs font-semibold text-[#0D9488]">Welcome to MedBuddy</p>
+            <p className="text-xs font-semibold text-[#0D9488]">
+              Welcome to MedBuddy
+            </p>
             <h2 className="mt-1.5 text-[24px] font-semibold tracking-[-0.03em] text-[#0F172A] sm:text-[26px]">
-              {isSignUp ? 'Create your account' : 'Sign in to your account'}
+              {isSignUp ? "Create your account" : "Sign in to your account"}
             </h2>
             <p className="mt-2 text-sm text-[#64748B]">
-              {isSignUp ? 'Already registered? ' : "Don't have an account? "}
+              {isSignUp ? "Already registered? " : "Don't have an account? "}
               <button
                 type="button"
                 onClick={() => {
@@ -212,25 +234,28 @@ export default function LoginPage() {
                 }}
                 className="font-semibold text-[#0D9488] hover:underline"
               >
-                {isSignUp ? 'Sign in' : 'Create account'}
+                {isSignUp ? "Sign in" : "Create account"}
               </button>
             </p>
           </div>
 
           {/* Role selector */}
           <div className="mb-5 grid grid-cols-2 gap-1 rounded-xl bg-[#F1F5F9] p-1">
-            {(['Patient', 'Doctor'] as UserRole[]).map((item) => (
+            {(["Patient", "Doctor"] as UserRole[]).map((item) => (
               <button
                 type="button"
                 key={item}
                 onClick={() => handleRoleChange(item)}
                 className={`flex h-9 items-center justify-center gap-1.5 rounded-lg text-[12.5px] font-semibold transition ${
                   role === item
-                    ? 'bg-white text-[#0B5F57] shadow-[0_1px_2px_rgba(15,23,42,0.08)]'
-                    : 'text-[#64748B] hover:text-[#0F172A]'
+                    ? "bg-white text-[#0B5F57] shadow-[0_1px_2px_rgba(15,23,42,0.08)]"
+                    : "text-[#64748B] hover:text-[#0F172A]"
                 }`}
               >
-                <Icon name={item === 'Patient' ? 'user' : 'stethoscope'} size={14} />
+                <Icon
+                  name={item === "Patient" ? "user" : "stethoscope"}
+                  size={14}
+                />
                 {item}
               </button>
             ))}
@@ -290,7 +315,7 @@ export default function LoginPage() {
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8]"
                 />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-11 w-full rounded-lg border border-[#DDE5EA] bg-white pl-10 pr-11 text-sm font-normal text-[#0F172A] outline-none transition placeholder:text-[#94A3B8] focus:border-[#0D9488] focus:ring-2 focus:ring-[#CCFBF1]"
@@ -299,27 +324,40 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-3 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded text-[#94A3B8] transition hover:text-[#475569]"
                 >
-                  <Icon name={showPassword ? 'eyeOff' : 'eye'} size={17} />
+                  <Icon name={showPassword ? "eyeOff" : "eye"} size={17} />
                 </button>
               </div>
             </label>
 
             <p className="-mt-1 text-[11px] text-[#94A3B8]">
-              Demo password: first name + @123 (e.g. Ramesh@123, Sushil@123, Nisha@123). Admin phone:{' '}
-              <span className="font-medium text-[#475569]">+977 980-887-1265</span> or enter{' '}
-              <span className="font-medium text-[#475569]">admin</span>.
+              Demo password: first name + @123 (e.g. Ramesh@123, Sushil@123,
+              Nisha@123). Admin phone:{" "}
+              <span className="font-medium text-[#475569]">
+                +977 980-887-1265
+              </span>{" "}
+              or enter <span className="font-medium text-[#475569]">admin</span>
+              .
             </p>
 
             <label className="mt-1 flex items-start gap-2.5 text-[11px] leading-5 text-[#64748B]">
-              <input type="checkbox" defaultChecked className="mt-1 accent-[#0B5F57]" />
+              <input
+                type="checkbox"
+                defaultChecked
+                className="mt-1 accent-[#0B5F57]"
+              />
               <span>
-                I agree to the{' '}
-                <span className="font-semibold text-[#0D9488]">Terms of Service</span> and
-                acknowledge the{' '}
-                <span className="font-semibold text-[#0D9488]">Privacy Policy</span>.
+                I agree to the{" "}
+                <span className="font-semibold text-[#0D9488]">
+                  Terms of Service
+                </span>{" "}
+                and acknowledge the{" "}
+                <span className="font-semibold text-[#0D9488]">
+                  Privacy Policy
+                </span>
+                .
               </span>
             </label>
 
@@ -340,8 +378,8 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-4 text-center text-[10px] leading-relaxed text-[#94A3B8]">
-            By continuing, you consent to secure health data processing in accordance with
-            applicable Nepal regulations.
+            By continuing, you consent to secure health data processing in
+            accordance with applicable Nepal regulations.
           </p>
         </div>
       </div>

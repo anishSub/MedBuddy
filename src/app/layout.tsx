@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { AuthProvider } from '@/context/AuthContext';
+import type { Metadata } from "next";
+import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
-  title: 'MedBuddy - Connected Healthcare Platform',
+  title: "MedBuddy - Connected Healthcare Platform",
   description:
-    'A modern way for Nepali families and clinics to manage medicines, records, and follow-ups together.',
+    "A modern way for Nepali families and clinics to manage medicines, records, and follow-ups together.",
   icons: {
-    icon: '/favicon.png',
+    icon: "/favicon.png",
   },
 };
 

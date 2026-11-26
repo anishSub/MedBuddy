@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { PatientShell } from '@/components/patient/PatientShell';
-import { Icon } from '@/components/common/Icon';
-import { useAuth } from '@/context/AuthContext';
-import { patientService } from '@/lib/supabase/services';
-import type { AppointmentStatus } from '@/types';
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { PatientShell } from "@/components/patient/PatientShell";
+import { Icon } from "@/components/common/Icon";
+import { useAuth } from "@/context/AuthContext";
+import { patientService } from "@/lib/supabase/services";
+import type { AppointmentStatus } from "@/types";
 
 interface MedicationRow {
   id: string;
@@ -31,20 +31,22 @@ interface AppointmentRow {
 
 export default function DashboardPage() {
   const { user, patientDetail } = useAuth();
-  const patientProfileId = user?.id || 'a0000000-0000-0000-0000-000000000001';
+  const patientProfileId = user?.id || "a0000000-0000-0000-0000-000000000001";
 
   const [medications, setMedications] = useState<MedicationRow[]>([]);
-  const [takenKeys, setTakenKeys] = useState<Set<string>>(new Set(['e0000000-0000-0000-0000-000000000001_Morning']));
+  const [takenKeys, setTakenKeys] = useState<Set<string>>(
+    new Set(["e0000000-0000-0000-0000-000000000001_Morning"])
+  );
   const [appointment, setAppointment] = useState<AppointmentRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingAppt, setUpdatingAppt] = useState(false);
 
   // Today's formatted date string
   const todayFormatted = useMemo(() => {
-    return new Date().toLocaleDateString('en-US', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
     });
   }, []);
 
@@ -63,48 +65,48 @@ export default function DashboardPage() {
         // Fallback default medications
         setMedications([
           {
-            id: 'e0000000-0000-0000-0000-000000000001',
-            name: 'Metformin',
-            dosage: '500 mg',
-            form: 'Tablet',
+            id: "e0000000-0000-0000-0000-000000000001",
+            name: "Metformin",
+            dosage: "500 mg",
+            form: "Tablet",
             morning: true,
             afternoon: false,
             night: true,
-            meal_timing: 'After meal',
-            duration_days: '30 days',
+            meal_timing: "After meal",
+            duration_days: "30 days",
           },
           {
-            id: 'e0000000-0000-0000-0000-000000000002',
-            name: 'Amlodipine',
-            dosage: '5 mg',
-            form: 'Tablet',
+            id: "e0000000-0000-0000-0000-000000000002",
+            name: "Amlodipine",
+            dosage: "5 mg",
+            form: "Tablet",
             morning: true,
             afternoon: false,
             night: false,
-            meal_timing: 'After meal',
-            duration_days: '30 days',
+            meal_timing: "After meal",
+            duration_days: "30 days",
           },
           {
-            id: 'e0000000-0000-0000-0000-000000000003',
-            name: 'Calcium + D3',
-            dosage: '500 mg',
-            form: 'Tablet',
+            id: "e0000000-0000-0000-0000-000000000003",
+            name: "Calcium + D3",
+            dosage: "500 mg",
+            form: "Tablet",
             morning: false,
             afternoon: true,
             night: false,
-            meal_timing: 'After meal',
-            duration_days: '5 days',
+            meal_timing: "After meal",
+            duration_days: "5 days",
           },
           {
-            id: 'e0000000-0000-0000-0000-000000000004',
-            name: 'Atorvastatin',
-            dosage: '10 mg',
-            form: 'Tablet',
+            id: "e0000000-0000-0000-0000-000000000004",
+            name: "Atorvastatin",
+            dosage: "10 mg",
+            form: "Tablet",
             morning: false,
             afternoon: false,
             night: true,
-            meal_timing: 'After meal',
-            duration_days: '30 days',
+            meal_timing: "After meal",
+            duration_days: "30 days",
           },
         ]);
       }
@@ -119,7 +121,7 @@ export default function DashboardPage() {
         });
       } else {
         // default first dose taken
-        activeTaken.add('e0000000-0000-0000-0000-000000000001_Morning');
+        activeTaken.add("e0000000-0000-0000-0000-000000000001_Morning");
       }
       setTakenKeys(activeTaken);
 
@@ -127,7 +129,7 @@ export default function DashboardPage() {
         setAppointment(apptData as unknown as AppointmentRow);
       }
     } catch (err) {
-      console.warn('Could not load Supabase dashboard data:', err);
+      console.warn("Could not load Supabase dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -145,24 +147,24 @@ export default function DashboardPage() {
 
     return [
       {
-        time: 'Morning',
-        hour: '8:00 AM',
-        icon: '07:45',
-        slot: 'Morning',
+        time: "Morning",
+        hour: "8:00 AM",
+        icon: "07:45",
+        slot: "Morning",
         items: morningMeds,
       },
       {
-        time: 'Afternoon',
-        hour: '1:30 PM',
-        icon: '13:15',
-        slot: 'Afternoon',
+        time: "Afternoon",
+        hour: "1:30 PM",
+        icon: "13:15",
+        slot: "Afternoon",
         items: afternoonMeds,
       },
       {
-        time: 'Night',
-        hour: '8:30 PM',
-        icon: '20:15',
-        slot: 'Night',
+        time: "Night",
+        hour: "8:30 PM",
+        icon: "20:15",
+        slot: "Night",
         items: nightMeds,
       },
     ].filter((g) => g.items.length > 0);
@@ -201,9 +203,14 @@ export default function DashboardPage() {
 
     // Persist to Supabase medication_logs table
     try {
-      await patientService.toggleLog(patientProfileId, medicationId, slotTime, nextTaken);
+      await patientService.toggleLog(
+        patientProfileId,
+        medicationId,
+        slotTime,
+        nextTaken
+      );
     } catch (err) {
-      console.error('Failed to update medication log in Supabase:', err);
+      console.error("Failed to update medication log in Supabase:", err);
     }
   };
 
@@ -214,30 +221,30 @@ export default function DashboardPage() {
       await patientService.updateAppointmentStatus(appointment.id, newStatus);
       setAppointment({ ...appointment, status: newStatus });
     } catch (err) {
-      console.error('Failed to update appointment:', err);
+      console.error("Failed to update appointment:", err);
     } finally {
       setUpdatingAppt(false);
     }
   };
 
   const triggerReminderAlert = async () => {
-    const message = 'Time to take Metformin 500 mg — Evening dose after meal!';
-    if (typeof window === 'undefined' || !('Notification' in window)) {
+    const message = "Time to take Metformin 500 mg — Evening dose after meal!";
+    if (typeof window === "undefined" || !("Notification" in window)) {
       alert(message);
       return;
     }
     let perm = Notification.permission;
-    if (perm === 'default') {
+    if (perm === "default") {
       perm = await Notification.requestPermission();
     }
-    if (perm === 'granted') {
+    if (perm === "granted") {
       try {
-        new Notification('MedBuddy Dose Reminder', {
+        new Notification("MedBuddy Dose Reminder", {
           body: message,
-          icon: '/logo-robot.png',
+          icon: "/logo-robot.png",
         });
       } catch (err) {
-        console.error('Failed to show reminder notification:', err);
+        console.error("Failed to show reminder notification:", err);
         alert(message);
       }
     } else {
@@ -248,24 +255,32 @@ export default function DashboardPage() {
   };
 
   const adherenceRate = patientDetail?.weekly_adherence || 88;
-  const firstName = user?.full_name ? user.full_name.split(' ')[0] : 'Ramesh';
+  const firstName = user?.full_name ? user.full_name.split(" ")[0] : "Ramesh";
   const appointmentDate = appointment?.appointment_date
     ? new Date(`${appointment.appointment_date}T00:00:00`)
     : null;
-  const appointmentDateLabel = appointmentDate && !Number.isNaN(appointmentDate.getTime())
-    ? appointmentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    : null;
-  const doctorName = appointment?.doctor?.full_name || 'Dr. Sushil Adhikari';
+  const appointmentDateLabel =
+    appointmentDate && !Number.isNaN(appointmentDate.getTime())
+      ? appointmentDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })
+      : null;
+  const doctorName = appointment?.doctor?.full_name || "Dr. Sushil Adhikari";
   const doctorInitials = doctorName
-    .replace(/^Dr\.\s*/i, '')
+    .replace(/^Dr\.\s*/i, "")
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
-    .join('');
+    .join("");
 
   return (
-    <PatientShell title={`Good morning, ${firstName}`} eyebrow={todayFormatted} compact>
+    <PatientShell
+      title={`Good morning, ${firstName}`}
+      eyebrow={todayFormatted}
+      compact
+    >
       <main className="flex flex-1 min-h-0 flex-col overflow-y-auto bg-[#F8FAFC] xl:flex-row xl:overflow-hidden">
         {/* Schedule List Column */}
         <div className="w-full min-w-0 flex-1 px-4 py-5 sm:px-6 sm:py-6 xl:overflow-y-auto xl:px-7">
@@ -309,19 +324,25 @@ export default function DashboardPage() {
                 key={group.time}
                 className="relative flex flex-col sm:flex-row py-2.5 last:pb-0 gap-3 sm:gap-0"
               >
-                <div className={`relative z-10 sm:mr-3 mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border text-[7px] font-bold tabular-nums shadow-xs ${
-                  group.time === 'Morning'
-                    ? 'border-[#B8E9E0] bg-[#E8F8F5] text-[#0F766E]'
-                    : group.time === 'Afternoon'
-                      ? 'border-[#F4DFAC] bg-[#FFF7E5] text-[#B7791F]'
-                      : 'border-[#D7E2FC] bg-[#F1F5FF] text-[#4563A8]'
-                }`}>
+                <div
+                  className={`relative z-10 sm:mr-3 mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border text-[7px] font-bold tabular-nums shadow-xs ${
+                    group.time === "Morning"
+                      ? "border-[#B8E9E0] bg-[#E8F8F5] text-[#0F766E]"
+                      : group.time === "Afternoon"
+                        ? "border-[#F4DFAC] bg-[#FFF7E5] text-[#B7791F]"
+                        : "border-[#D7E2FC] bg-[#F1F5FF] text-[#4563A8]"
+                  }`}
+                >
                   {group.icon}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="mb-1.5 flex items-baseline gap-2">
-                    <h3 className="text-[12px] font-semibold text-[#0F172A]">{group.time}</h3>
-                    <span className="text-[10px] tabular-nums text-[#94A3B8]">{group.hour}</span>
+                    <h3 className="text-[12px] font-semibold text-[#0F172A]">
+                      {group.time}
+                    </h3>
+                    <span className="text-[10px] tabular-nums text-[#94A3B8]">
+                      {group.hour}
+                    </span>
                   </div>
                   {group.items.map((med) => {
                     const isTaken = takenKeys.has(`${med.id}_${group.slot}`);
@@ -334,7 +355,9 @@ export default function DashboardPage() {
                           <Icon name="plus" size={13} />
                         </div>
                         <div className="min-w-[120px] flex-1">
-                          <p className="text-[13px] font-semibold text-[#0F172A]">{med.name}</p>
+                          <p className="text-[13px] font-semibold text-[#0F172A]">
+                            {med.name}
+                          </p>
                           <p className="mt-0.5 text-[11px] tabular-nums text-[#64748B]">
                             {med.dosage} · 1 {med.form.toLowerCase()}
                           </p>
@@ -346,12 +369,12 @@ export default function DashboardPage() {
                           onClick={() => toggleTaken(med.id, group.slot)}
                           className={`ml-auto flex h-8 shrink-0 items-center gap-1 rounded-md border px-2.5 text-[11px] font-semibold transition sm:ml-0 ${
                             isTaken
-                              ? 'border-[#A7F3D0] bg-[#ECFDF5] text-[#059669]'
-                              : 'border-[#CBD5E1] bg-white text-[#475569] hover:bg-slate-50'
+                              ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#059669]"
+                              : "border-[#CBD5E1] bg-white text-[#475569] hover:bg-slate-50"
                           }`}
                         >
                           <Icon name="check" size={14} />
-                          {isTaken ? 'Taken' : 'Mark taken'}
+                          {isTaken ? "Taken" : "Mark taken"}
                         </button>
                       </div>
                     );
@@ -372,95 +395,120 @@ export default function DashboardPage() {
               <span className="text-3xl font-semibold leading-none tracking-[-0.05em] tabular-nums text-[#0F172A] sm:text-[36px]">
                 {adherenceRate}%
               </span>
-              <span className="pb-1 text-xs text-[#64748B]">of doses taken this week</span>
+              <span className="pb-1 text-xs text-[#64748B]">
+                of doses taken this week
+              </span>
             </div>
 
             {/* Bar Chart */}
             <div className="mt-3 flex h-[42px] items-end gap-1.5">
               {[78, 92, 86, 100, 70, 62, 24].map((v, i) => (
-                <div className="flex h-full flex-1 flex-col justify-end gap-1" key={i}>
-                  <div className="rounded-xs bg-[#D7ECE9]" style={{ height: `${v}%` }}>
+                <div
+                  className="flex h-full flex-1 flex-col justify-end gap-1"
+                  key={i}
+                >
+                  <div
+                    className="rounded-xs bg-[#D7ECE9]"
+                    style={{ height: `${v}%` }}
+                  >
                     <div
                       className="h-full rounded-xs bg-[#0D9488]"
                       style={{ opacity: i === 6 ? 0.35 : 1 }}
                     />
                   </div>
                   <span className="text-center text-[9px] text-[#94A3B8]">
-                    {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
+                    {["M", "T", "W", "T", "F", "S", "S"][i]}
                   </span>
                 </div>
               ))}
             </div>
 
-          {/* Upcoming follow-up card */}
+            {/* Upcoming follow-up card */}
             <div className="mt-5">
               <div className="patient-card p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[#F59E0B]">
-                  <Icon name="calendar" size={13} />
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.11em]">
-                    Upcoming follow-up
-                  </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-[#F59E0B]">
+                    <Icon name="calendar" size={13} />
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.11em]">
+                      Upcoming follow-up
+                    </p>
+                  </div>
+                  <span
+                    className={`text-[9px] font-semibold px-2 py-0.5 rounded-full ${
+                      appointment?.status === "Confirmed"
+                        ? "bg-[#ECFDF5] text-[#059669]"
+                        : "bg-[#FFFBEB] text-[#B45309]"
+                    }`}
+                  >
+                    {appointment?.status || "Confirmed"}
+                  </span>
                 </div>
-                <span
-                  className={`text-[9px] font-semibold px-2 py-0.5 rounded-full ${
-                    appointment?.status === 'Confirmed'
-                      ? 'bg-[#ECFDF5] text-[#059669]'
-                      : 'bg-[#FFFBEB] text-[#B45309]'
-                  }`}
-                >
-                  {appointment?.status || 'Confirmed'}
-                </span>
-              </div>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-xs font-semibold text-[#0D9488]" aria-hidden="true">
-                  {doctorInitials}
+                <div className="mt-4 flex items-center gap-3">
+                  <div
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-xs font-semibold text-[#0D9488]"
+                    aria-hidden="true"
+                  >
+                    {doctorInitials}
+                  </div>
+                  <h3 className="min-w-0 text-[15px] font-semibold tracking-[-0.02em] text-[#0F172A]">
+                    {doctorName}
+                  </h3>
                 </div>
-                <h3 className="min-w-0 text-[15px] font-semibold tracking-[-0.02em] text-[#0F172A]">
-                  {doctorName}
-                </h3>
-              </div>
-              <p className="mt-2 text-[13px] font-medium text-[#475569]">
-                {appointmentDateLabel && `${appointmentDateLabel} · `}
-                {appointment?.appointment_time || '10:30 AM'} ·{' '}
-                {appointment?.visit_type || 'Cardiology review'}
-              </p>
-              <p className="mt-1 text-[11px] text-[#64748B]">
-                {appointment?.department || 'Cardiology'} · Norvic Clinic, Thapathali
-              </p>
-              <div className="mt-3 flex gap-2">
-                <button
-                  disabled={updatingAppt}
-                  onClick={() => handleUpdateAppointment('Confirmed')}
-                  className="h-9 flex-1 rounded-md bg-[#0D9488] text-[11px] font-semibold text-white transition hover:bg-[#0F766E] disabled:opacity-60"
-                >
-                  {appointment?.status === 'Confirmed' ? 'Visit confirmed' : 'Confirm visit'}
-                </button>
-                <button
-                  disabled={updatingAppt}
-                  onClick={() => handleUpdateAppointment('Reschedule Requested')}
-                  className="h-9 flex-1 rounded-md border border-[#CBD5E1] text-[11px] font-semibold text-[#475569] transition hover:bg-slate-50 disabled:opacity-60"
-                >
-                  Reschedule
-                </button>
-              </div>
+                <p className="mt-2 text-[13px] font-medium text-[#475569]">
+                  {appointmentDateLabel && `${appointmentDateLabel} · `}
+                  {appointment?.appointment_time || "10:30 AM"} ·{" "}
+                  {appointment?.visit_type || "Cardiology review"}
+                </p>
+                <p className="mt-1 text-[11px] text-[#64748B]">
+                  {appointment?.department || "Cardiology"} · Norvic Clinic,
+                  Thapathali
+                </p>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    disabled={updatingAppt}
+                    onClick={() => handleUpdateAppointment("Confirmed")}
+                    className="h-9 flex-1 rounded-md bg-[#0D9488] text-[11px] font-semibold text-white transition hover:bg-[#0F766E] disabled:opacity-60"
+                  >
+                    {appointment?.status === "Confirmed"
+                      ? "Visit confirmed"
+                      : "Confirm visit"}
+                  </button>
+                  <button
+                    disabled={updatingAppt}
+                    onClick={() =>
+                      handleUpdateAppointment("Reschedule Requested")
+                    }
+                    className="h-9 flex-1 rounded-md border border-[#CBD5E1] text-[11px] font-semibold text-[#475569] transition hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    Reschedule
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Care team */}
             <div className="mt-4 flex items-center justify-between">
-              <p className="text-[11px] font-semibold text-[#334155]">Care team</p>
-              <button className="text-[9px] font-semibold text-[#0D9488] hover:underline">View all</button>
+              <p className="text-[11px] font-semibold text-[#334155]">
+                Care team
+              </p>
+              <button className="text-[9px] font-semibold text-[#0D9488] hover:underline">
+                View all
+              </button>
             </div>
             <div className="mt-2 flex items-center gap-2.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-2 py-2">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-[11px] font-semibold text-[#0D9488]" aria-hidden="true">
+              <div
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#E6F4F2] text-[11px] font-semibold text-[#0D9488]"
+                aria-hidden="true"
+              >
                 {doctorInitials}
               </div>
               <div className="min-w-0">
                 <p className="truncate text-[13px] font-semibold text-[#334155]">
                   {doctorName}
                 </p>
-                <p className="text-[11px] text-[#64748B]">Primary physician · Cardiology</p>
+                <p className="text-[11px] text-[#64748B]">
+                  Primary physician · Cardiology
+                </p>
               </div>
             </div>
           </div>

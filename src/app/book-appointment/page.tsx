@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { PatientShell } from '@/components/patient/PatientShell';
-import { Icon } from '@/components/common/Icon';
-import type { IconName } from '@/types';
+import { useState } from "react";
+import { PatientShell } from "@/components/patient/PatientShell";
+import { Icon } from "@/components/common/Icon";
+import type { IconName } from "@/types";
 
-type CallType = 'video' | 'audio' | 'chat';
+type CallType = "video" | "audio" | "chat";
 
 const CALL_TYPES: { id: CallType; label: string; icon: IconName }[] = [
-  { id: 'video', label: 'Video', icon: 'video' },
-  { id: 'audio', label: 'Audio', icon: 'audio' },
-  { id: 'chat', label: 'Live Chat', icon: 'chat' },
+  { id: "video", label: "Video", icon: "video" },
+  { id: "audio", label: "Audio", icon: "audio" },
+  { id: "chat", label: "Live Chat", icon: "chat" },
 ];
 
 export default function BookAppointmentPage() {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [callType, setCallType] = useState<CallType>('video');
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [callType, setCallType] = useState<CallType>("video");
   const [booked, setBooked] = useState(false);
 
   const confirmBooking = () => {
@@ -25,12 +25,13 @@ export default function BookAppointmentPage() {
 
   const resetBooking = () => {
     setBooked(false);
-    setDate('');
-    setTime('');
-    setCallType('video');
+    setDate("");
+    setTime("");
+    setCallType("video");
   };
 
-  const callTypeLabel = CALL_TYPES.find((c) => c.id === callType)?.label || 'Video';
+  const callTypeLabel =
+    CALL_TYPES.find((c) => c.id === callType)?.label || "Video";
 
   return (
     <PatientShell title="Book Appointment" compact>
@@ -46,14 +47,20 @@ export default function BookAppointmentPage() {
                 <Icon name="stethoscope" size={18} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[12px] font-semibold text-[#0F172A]">Dr. S. Adhikari</p>
-                <p className="mt-0.5 text-[10px] text-[#64748B]">Free: Today · 04:30 PM</p>
+                <p className="text-[12px] font-semibold text-[#0F172A]">
+                  Dr. S. Adhikari
+                </p>
+                <p className="mt-0.5 text-[10px] text-[#64748B]">
+                  Free: Today · 04:30 PM
+                </p>
               </div>
             </div>
 
             {booked ? (
               <div className="mt-5 rounded-md bg-[#ECFDF5] p-4 text-center">
-                <p className="text-[13px] font-semibold text-[#059669]">Booked ✓</p>
+                <p className="text-[13px] font-semibold text-[#059669]">
+                  Booked ✓
+                </p>
                 <p className="mt-1 text-[11px] text-[#475569]">
                   {callTypeLabel} consultation with Dr. S. Adhikari confirmed.
                 </p>
@@ -75,8 +82,8 @@ export default function BookAppointmentPage() {
                         onClick={() => setCallType(c.id)}
                         className={`flex flex-1 items-center justify-center gap-1.5 rounded-md border px-2 py-2 text-[11px] font-semibold transition ${
                           callType === c.id
-                            ? 'border-[#0D9488] bg-[#E6F4F2] text-[#0F766E]'
-                            : 'border-[#CBD5E1] text-[#64748B] hover:bg-slate-50'
+                            ? "border-[#0D9488] bg-[#E6F4F2] text-[#0F766E]"
+                            : "border-[#CBD5E1] text-[#64748B] hover:bg-slate-50"
                         }`}
                       >
                         <Icon name={c.icon} size={14} />

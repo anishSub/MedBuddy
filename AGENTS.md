@@ -10,26 +10,30 @@ This is a **small project** (39 source files, 1 package). The goal is correct, m
 
 Healthcare web app for patients, doctors, and clinic admins (Nepal context).
 
-| Fact | Value |
-|---|---|
-| Framework | Next.js 15, App Router (`src/app`) |
-| React | 19 |
-| Language | TypeScript, `strict: true` |
-| Styling | Tailwind CSS v4 (CSS-first: `@import "tailwindcss"` in `globals.css`) |
-| Data | Supabase JS v2 (`@supabase/supabase-js`) |
-| Package manager | npm (single package, no workspaces) |
-| Import alias | `@/*` → `./src/*` |
-| Source files | 39 under `src/` |
+| Fact            | Value                                                                 |
+| --------------- | --------------------------------------------------------------------- |
+| Framework       | Next.js 15, App Router (`src/app`)                                    |
+| React           | 19                                                                    |
+| Language        | TypeScript, `strict: true`                                            |
+| Styling         | Tailwind CSS v4 (CSS-first: `@import "tailwindcss"` in `globals.css`) |
+| Data            | Supabase JS v2 (`@supabase/supabase-js`)                              |
+| Package manager | npm (single package, no workspaces)                                   |
+| Import alias    | `@/*` → `./src/*`                                                     |
+| Source files    | 39 under `src/`                                                       |
 
 ### Commands that exist
 
 ```bash
-npm run dev     # next dev
-npm run build   # next build
-npm start       # next start
+npm run dev        # next dev
+npm run build      # next build
+npm start          # next start
+npm run lint       # next lint (ESLint via flat config eslint.config.mjs)
+npm run format     # prettier --write .
+npm run format:check  # prettier --check .
+npm run typecheck  # tsc --noEmit
 ```
 
-**There is no linter, no formatter, and no test runner.** `npm run lint` and `npm test` do not exist. Never run them. Never tell the user to run them. If you need to verify code, use `npx tsc --noEmit` (TypeScript is installed) and `npm run build`.
+**There is no test runner.** ESLint (flat config via `eslint.config.mjs`) and Prettier (`.prettierrc`, `.lintstagedrc`, husky pre-commit via lint-staged) now exist; `npm run lint`, `npm run format:check`, and `npm run typecheck` are the checks. If you need to verify code, use those or `npm run build`.
 
 ⚠️ **Never run `npm run build` while `npm run dev` is running.** Both write to `.next`; the running dev server keeps stale in-memory chunk IDs and the browser then fails with `__webpack_modules__[moduleId] is not a function`. Check with `lsof -nP -iTCP:3000 -sTCP:LISTEN` first. If it happened, stop dev, `rm -rf .next`, and restart.
 
@@ -40,11 +44,13 @@ npm start       # next start
 These rules exist because this codebase contains plausible-looking traps (see §4). Violating them is a bug.
 
 ### R1 — Never describe code you have not read in this session
+
 Before saying a file, route, component, export, table, or column exists, open it. When you report a fact, cite it: `src/lib/supabase/client.ts:3`.
 
 Do **not** infer that a file exists because the README says so. `README.md` is out of date on at least one point (it does not mention `src/context/AuthContext.tsx`). The filesystem is the source of truth.
 
 ### R2 — Never invent scripts, dependencies, env vars, or routes
+
 - Scripts and deps: verify in `package.json`.
 - Env vars: verify in `.env.local.example` and by `grep -rn "process.env" src`.
 - Routes: verify with `find src/app -name "page.tsx"`.
@@ -52,22 +58,27 @@ Do **not** infer that a file exists because the README says so. `README.md` is o
 If it is not there, it does not exist. Say so plainly.
 
 ### R3 — Report reality, not expectation
+
 - Quote command output as it happened. If a command failed, say it failed and paste the error.
 - If you did not run a command, say **"not run"**. Never imply verification you did not perform.
 - Never claim "the build passes", "types check", or "the DB works" without having run it in this session.
 
 ### R4 — Distinguish real data from mock data, every time
+
 Most page bodies currently render **hardcoded arrays** (e.g. `src/app/dashboard/page.tsx:8` defines `medicineGroups` as a literal). When describing behavior, say "hardcoded mock data", not "loads the patient's medications".
 
 Conversely, do not claim a page is mocked if it reads from `useAuth()`.
 
 ### R5 — Say "I don't know" instead of guessing
+
 If unsure which library version behaves how, stop and check `node_modules/@supabase/supabase-js/package.json` or the docs. A short "I don't know, let me check" is always better than a confident wrong answer.
 
 ### R6 — No invented history or intent
+
 Do not write comments, commit messages, or PR notes inventing reasons for code ("added for HIPAA compliance") unless you can point to where that is stated. There are **no git commits yet** in this repo.
 
 ### R7 — Keep `AGENTS.md` honest
+
 If a rule here becomes false (e.g. you add a test runner), update this file in the same change.
 
 ---
@@ -88,6 +99,7 @@ If a rule here becomes false (e.g. you add a test runner), update this file in t
 Read this section before touching data code. These are real, current-state issues — not hypotheticals.
 
 ### 4.1 The live database is applied and seeded
+
 Project `rgazcagnqduocafubkxp`: URL and publishable key are valid. `schema.sql` and `seed.sql` were applied in the Supabase SQL Editor. Verified via REST on 2026-11-24: all 10 tables return 200.
 
 Expected row counts: profiles 16, patient_details 7, doctor_details 8, prescriptions 1, medications 4, medication_logs 0, medical_records 6, appointments 7, rx_templates 5, audit_logs 0.
@@ -103,6 +115,7 @@ curl "$NEXT_PUBLIC_SUPABASE_URL/rest/v1/profiles?select=*&limit=1" \
 `seed.sql` is now idempotent (stable IDs + `ON CONFLICT (id) DO NOTHING` on appointments and rx_templates). RLS is still permissive — see §4.5.
 
 ### 4.2 Two data layers, both live
+
 - `src/context/AuthContext.tsx` — login, profile, session. Used by `src/app/layout.tsx`, `src/app/page.tsx`, `src/components/patient/HealthPassModal.tsx` and all three sidebars.
 - `src/lib/supabase/services.ts` (447 lines, 4 service objects) — imported by **all 11 data pages**: patient `dashboard`, `scan`, `records`; doctor `dashboard`, `patient`, `scan`, `templates`; admin `overview`, `follow-ups`, `users`, `verification`.
 
@@ -113,18 +126,20 @@ grep -rn "lib/supabase/services" src
 ```
 
 ### 4.3 Fake fallback numbers
+
 Several places return invented data when the DB is empty or unreachable. Do not mistake these for real values:
 
-| Location | Fake behavior |
-|---|---|
+| Location              | Fake behavior                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------- |
 | `services.ts:369-372` | `scheduled \|\| 24`, `confirmed \|\| 18`, `reschedule \|\| 3`, `pendingDoctors \|\| 2` |
-| `AuthContext.tsx:82` | Hardcoded patient code `CT-2048` |
-| `AuthContext.tsx:104` | Hardcoded doctor detail `NMC 18422` / `Confirmed` |
-| `AuthContext.tsx:130` | Default profile id `a0000000-0000-0000-0000-000000000001` |
+| `AuthContext.tsx:82`  | Hardcoded patient code `CT-2048`                                                       |
+| `AuthContext.tsx:104` | Hardcoded doctor detail `NMC 18422` / `Confirmed`                                      |
+| `AuthContext.tsx:130` | Default profile id `a0000000-0000-0000-0000-000000000001`                              |
 
 When you touch this, say clearly whether you removed, kept, or relied on the fallback.
 
 ### 4.4 Two different type modules — do not mix them
+
 - `src/types/index.ts` — **UI** types (`IconName`, `MedicineScheduleItem`, `DocumentItem`, …), imported as `@/types`.
 - `src/lib/supabase/types.ts` — **DB** types (`Json`, enums like `UserRole`, `AppointmentStatus`).
 - `services.ts` imports enums from `./types`; `AuthContext.tsx` imports `UserRole` from `@/types`.
@@ -132,6 +147,7 @@ When you touch this, say clearly whether you removed, kept, or relied on the fal
 `UserRole`, `AccountStatus`, and `AppointmentStatus` are duplicated in both files. If you change an enum, check **both** — a mismatch already broke the build once (`dashboard/page.tsx` imported `AppointmentStatus` from `@/types` before it was exported there).
 
 ### 4.5 Auth is not real auth
+
 Login is **phone-number lookup/insert into `profiles`**, not Supabase Auth. Session lives in `localStorage['medbuddy_user']`. There is no `auth.users` usage and no JWT.
 
 A demo password gate exists: `expectedPassword()` in `AuthContext.tsx` derives `<FirstName>@123` from the profile's `full_name` (strips `Dr.`). `login()` / `signUp()` / `switchDemoUser()` check it, and the login form passes it (with an eye toggle to reveal it). Phone input is normalised by `normalizePhone()` (zero-width/NBSP) plus a digits-only fallback, because pasted phone numbers can otherwise miss the lookup and hit the wrong demo profile. **The check runs in the browser only** — it is not stored or enforced server-side and is trivially bypassable.
@@ -141,9 +157,11 @@ RLS is enabled (`schema.sql:190-199`) but the policies are permissive (`schema.s
 Do not describe this as secure, authenticated, or production-ready.
 
 ### 4.6 Stale Supabase fallback
+
 `src/lib/supabase/client.ts:3-6` falls back to a **different** project (`txulntnihkqvscxknoei`) with a legacy anon JWT. It is dead code when `.env.local` is present, but it is a real trap: a missing env var would silently hit the wrong database. Known issue — flagged, not yet fixed.
 
 ### 4.7 README drift
+
 `README.md` omits `src/context/`, `src/lib/`, and `supabase/`. Treat it as a rough overview, never as a file listing.
 
 ---

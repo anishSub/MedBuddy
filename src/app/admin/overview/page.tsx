@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { AdminHeader } from '@/components/admin/AdminHeader';
-import { StatusPill } from '@/components/common/StatusPill';
-import { adminService } from '@/lib/supabase/services';
+import { useState, useEffect } from "react";
+import { AdminHeader } from "@/components/admin/AdminHeader";
+import { StatusPill } from "@/components/common/StatusPill";
+import { adminService } from "@/lib/supabase/services";
 
 type FollowUpRow = {
   id: string;
@@ -16,19 +16,21 @@ type FollowUpRow = {
 
 // Fallback data shown when the DB is empty or unreachable
 const MOCK_STATS: [string, string][] = [
-  ['24', 'Scheduled today'],
-  ['18', 'Confirmed'],
-  ['3', 'Reschedule requests'],
-  ['2', 'Pending doctors'],
+  ["24", "Scheduled today"],
+  ["18", "Confirmed"],
+  ["3", "Reschedule requests"],
+  ["2", "Pending doctors"],
 ];
 
 function downloadCsv(filename: string, headers: string[], rows: string[][]) {
   const escape = (value: string) => `"${value.replace(/"/g, '""')}"`;
   const csv = [headers, ...rows]
-    .map((row) => row.map(escape).join(','))
-    .join('\r\n');
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-  const link = document.createElement('a');
+    .map((row) => row.map(escape).join(","))
+    .join("\r\n");
+  const url = URL.createObjectURL(
+    new Blob([csv], { type: "text/csv;charset=utf-8;" })
+  );
+  const link = document.createElement("a");
   link.href = url;
   link.download = filename;
   document.body.appendChild(link);
@@ -38,13 +40,62 @@ function downloadCsv(filename: string, headers: string[], rows: string[][]) {
 }
 
 const MOCK_FOLLOW_UPS: FollowUpRow[] = [
-  { id: 'mock-0', time: '10:00 AM', patient: 'Maya Gurung', doctor: 'Dr. S. Adhikari', department: 'Cardiology', status: 'Confirmed' },
-  { id: 'mock-1', time: '10:30 AM', patient: 'Ramesh Sharma', doctor: 'Dr. S. Adhikari', department: 'Cardiology', status: 'Confirmed' },
-  { id: 'mock-2', time: '11:15 AM', patient: 'Bikash Thapa', doctor: 'Dr. A. Karki', department: 'General Medicine', status: 'Pending' },
-  { id: 'mock-3', time: '12:00 PM', patient: 'Sita Rai', doctor: 'Dr. B. Shrestha', department: 'Endocrinology', status: 'Reschedule Requested' },
-  { id: 'mock-4', time: '1:30 PM', patient: 'Kiran Lama', doctor: 'Dr. A. Karki', department: 'General Medicine', status: 'Confirmed' },
-  { id: 'mock-5', time: '2:15 PM', patient: 'Anu Maharjan', doctor: 'Dr. R. Joshi', department: 'Orthopaedics', status: 'Pending' },
-  { id: 'mock-6', time: '3:00 PM', patient: 'Nabin KC', doctor: 'Dr. B. Shrestha', department: 'Endocrinology', status: 'Confirmed' },
+  {
+    id: "mock-0",
+    time: "10:00 AM",
+    patient: "Maya Gurung",
+    doctor: "Dr. S. Adhikari",
+    department: "Cardiology",
+    status: "Confirmed",
+  },
+  {
+    id: "mock-1",
+    time: "10:30 AM",
+    patient: "Ramesh Sharma",
+    doctor: "Dr. S. Adhikari",
+    department: "Cardiology",
+    status: "Confirmed",
+  },
+  {
+    id: "mock-2",
+    time: "11:15 AM",
+    patient: "Bikash Thapa",
+    doctor: "Dr. A. Karki",
+    department: "General Medicine",
+    status: "Pending",
+  },
+  {
+    id: "mock-3",
+    time: "12:00 PM",
+    patient: "Sita Rai",
+    doctor: "Dr. B. Shrestha",
+    department: "Endocrinology",
+    status: "Reschedule Requested",
+  },
+  {
+    id: "mock-4",
+    time: "1:30 PM",
+    patient: "Kiran Lama",
+    doctor: "Dr. A. Karki",
+    department: "General Medicine",
+    status: "Confirmed",
+  },
+  {
+    id: "mock-5",
+    time: "2:15 PM",
+    patient: "Anu Maharjan",
+    doctor: "Dr. R. Joshi",
+    department: "Orthopaedics",
+    status: "Pending",
+  },
+  {
+    id: "mock-6",
+    time: "3:00 PM",
+    patient: "Nabin KC",
+    doctor: "Dr. B. Shrestha",
+    department: "Endocrinology",
+    status: "Confirmed",
+  },
 ];
 
 export default function AdminOverviewPage() {
@@ -52,7 +103,7 @@ export default function AdminOverviewPage() {
   const [followUps, setFollowUps] = useState<FollowUpRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [usingMock, setUsingMock] = useState(false);
-  const [departmentFilter, setDepartmentFilter] = useState('All departments');
+  const [departmentFilter, setDepartmentFilter] = useState("All departments");
   const [selected, setSelected] = useState<FollowUpRow | null>(null);
 
   useEffect(() => {
@@ -73,9 +124,11 @@ export default function AdminOverviewPage() {
         // the substitutes are never presented as live values.
         const realCounts = [
           appointments.length,
-          appointments.filter((a) => a.status === 'Confirmed').length,
-          appointments.filter((a) => a.status === 'Reschedule Requested').length,
-          verifications.filter((d) => d.verification_status === 'Pending').length,
+          appointments.filter((a) => a.status === "Confirmed").length,
+          appointments.filter((a) => a.status === "Reschedule Requested")
+            .length,
+          verifications.filter((d) => d.verification_status === "Pending")
+            .length,
         ];
         const values = [
           summary.scheduled,
@@ -85,17 +138,17 @@ export default function AdminOverviewPage() {
         ].map((n, i) => (realCounts[i] === 0 ? 0 : n));
 
         setStats([
-          [String(values[0]), 'Scheduled today'],
-          [String(values[1]), 'Confirmed'],
-          [String(values[2]), 'Reschedule requests'],
-          [String(values[3]), 'Pending doctors'],
+          [String(values[0]), "Scheduled today"],
+          [String(values[1]), "Confirmed"],
+          [String(values[2]), "Reschedule requests"],
+          [String(values[3]), "Pending doctors"],
         ]);
         setFollowUps(
           appointments.map((a) => ({
             id: a.id,
             time: a.appointment_time,
-            patient: a.patient?.full_name ?? '—',
-            doctor: a.doctor?.full_name ?? '—',
+            patient: a.patient?.full_name ?? "—",
+            doctor: a.doctor?.full_name ?? "—",
             department: a.department,
             status: a.status,
           }))
@@ -110,20 +163,24 @@ export default function AdminOverviewPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const todayLabel = new Date().toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
+  const todayLabel = new Date().toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
   });
-  const departments = Array.from(new Set(followUps.map((row) => row.department)));
+  const departments = Array.from(
+    new Set(followUps.map((row) => row.department))
+  );
   const visibleFollowUps = followUps.filter(
-    (row) => departmentFilter === 'All departments' || row.department === departmentFilter
+    (row) =>
+      departmentFilter === "All departments" ||
+      row.department === departmentFilter
   );
 
   function handleExport() {
     downloadCsv(
-      'today-follow-ups.csv',
-      ['Time', 'Patient', 'Doctor', 'Department', 'Status'],
+      "today-follow-ups.csv",
+      ["Time", "Patient", "Doctor", "Department", "Status"],
       visibleFollowUps.map((row) => [
         row.time,
         row.patient,
@@ -142,19 +199,21 @@ export default function AdminOverviewPage() {
           {stats.map(([value, label], i) => (
             <div
               key={label}
-              className={`sm:px-6 sm:first:pl-0 ${i < 3 ? 'sm:border-r sm:border-[#E2E8F0]' : ''}`}
+              className={`sm:px-6 sm:first:pl-0 ${i < 3 ? "sm:border-r sm:border-[#E2E8F0]" : ""}`}
             >
               <p
                 className={`text-2xl sm:text-[32px] lg:text-[34px] font-semibold tracking-[-0.045em] tabular-nums ${
-                  i === 2 ? 'text-[#F59E0B]' : 'text-[#0F172A]'
+                  i === 2 ? "text-[#F59E0B]" : "text-[#0F172A]"
                 }`}
               >
-                {loading ? '—' : value}
+                {loading ? "—" : value}
               </p>
               <p className="mt-1 text-[11px] font-medium text-[#64748B]">
                 {label}
                 {usingMock && i === 0 && (
-                  <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
+                  <span className="ml-2 text-[10px] text-amber-500 font-medium">
+                    (demo data)
+                  </span>
                 )}
               </p>
             </div>
@@ -168,12 +227,14 @@ export default function AdminOverviewPage() {
             </h2>
             <p className="mt-0.5 text-[11px] text-[#64748B]">
               {loading ? (
-                'Loading…'
+                "Loading…"
               ) : (
                 <>
                   Appointments across all departments
                   {usingMock && (
-                    <span className="ml-2 text-[10px] text-amber-500 font-medium">(demo data)</span>
+                    <span className="ml-2 text-[10px] text-amber-500 font-medium">
+                      (demo data)
+                    </span>
                   )}
                 </>
               )}
@@ -219,8 +280,12 @@ export default function AdminOverviewPage() {
                   key={row.id}
                   className="grid h-[62px] sm:h-[65px] grid-cols-[.65fr_1.15fr_1.2fr_1fr_1.25fr_70px] items-center gap-4 border-t border-[#E2E8F0] px-4 text-[11px] text-[#475569]"
                 >
-                  <span className="font-semibold tabular-nums text-[#334155]">{row.time}</span>
-                  <span className="font-semibold text-[#0F172A]">{row.patient}</span>
+                  <span className="font-semibold tabular-nums text-[#334155]">
+                    {row.time}
+                  </span>
+                  <span className="font-semibold text-[#0F172A]">
+                    {row.patient}
+                  </span>
                   <span>{row.doctor}</span>
                   <span className="text-[#64748B]">{row.department}</span>
                   <span>
@@ -252,7 +317,9 @@ export default function AdminOverviewPage() {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-[14px] font-semibold text-[#0F172A]">Follow-up details</h3>
+              <h3 className="text-[14px] font-semibold text-[#0F172A]">
+                Follow-up details
+              </h3>
               <button
                 onClick={() => setSelected(null)}
                 className="text-[10px] font-semibold text-[#64748B] hover:text-[#0F172A]"
