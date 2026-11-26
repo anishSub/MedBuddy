@@ -1,59 +1,34 @@
-# MedBuddy — Presentation
+# MedBuddy — Company Presentation
 
-## Slide 1 — Title
+**Fixed ingredients**: six slides, about 25 words each, one idea per slide, real photos of users and places — not stock images.
 
-- **MedBuddy** — healthcare platform for patients, doctors, and clinic admins
-- Context: Nepal (domestic healthcare coordination)
+## Slide 1 — Title and Hook (Time 0:00–0:30)
 
-## Slide 2 — The Problem
+- Product name: MedBuddy — one platform for complete care.
+- One-line promise: patients, doctors, clinics in one place.
+- Visual: a photo, scene, question, or number.
 
-- Patients lack a single place for records, prescriptions, and visits
-- Medication adherence is hard to track manually
-- Emergency access to numbers / hospitals is fragmented
-- Doctor workflows (templates, patient context, follow-ups) live outside the patient flow
+## Slide 2 — Problem (Time 0:40–1:00)
 
-## Slide 3 — The Solution
+- One person, one real number.
+- A story, a quote, or a simple chart.
 
-- One app covering the full care loop: book → consult → prescribe → track → records → emergency
+## Slide 3 — Solution and Demo (Time 2:00–2:45)
 
-## Slide 4 — Patient Features
+- One-line setup, then the video.
+- Voice-over or captions, advert or plain.
 
-- Dashboard (adherence, upcoming visits, follow-up)
-- Medical Records (prescriptions, lab reports, X-rays) with illustrated cards
-- Medicine Tracker (morning/afternoon/night slots)
-- Appointment booking (doctor, free slot, call type, date/time, confirm)
-- QR Health Pass
-- Emergency numbers (ambulance, hospitals, emergency line, caretaker office) + Call Now buttons
+## Slide 4 — Value (Time 0:40–1:00)
 
-## Slide 5 — Doctor Features
+- Who benefits, who pays, why you beat the alternative.
+- Two or three canvas boxes to show.
 
-- Dashboard (appointments, stats)
-- Patient page (clinical context, active meds, records, Rx builder, templates)
-- Templates (treatment plans, apply to patient)
-- Scan (patient code → context)
-- Messages (consultation booking from chat)
-- Appointments / analytics
+## Slide 5 — Built with AI (Time 0:30–0:45)
 
-## Slide 6 — Admin Features
+- What AI did, what you checked by hand.
+- Tools, one prompt, a before and after.
 
-- Overview, Users, Verification, Follow-ups, Analytics
+## Slide 6 — Vision and Ask (Time 0:30–0:45)
 
-## Slide 7 — Tech Stack
-
-- Next.js 15 (App Router), React 19, TypeScript (strict), Tailwind CSS v4
-- Supabase (Postgres + REST) for data
-- npm; ESLint + Prettier + Husky (pre-commit) + GitHub Actions CI
-
-## Slide 8 — Architecture & Data
-
-- Two data layers: `AuthContext` (session) + `services` (Supabase queries)
-- `supabase/schema.sql` + `seed.sql`; RLS present but permissive
-- Mock/demo fallbacks in pages; booking currently UI-state only
-
-## Slide 9 — Current Status
-
-- Live DB seeded and applied
-- Booking moved from appointments page to dedicated `/book-appointment` page
-- Medical record card images now use real medical photos
-- Emergency cards now offer direct "Call Now"
-- CI (lint, format, typecheck, build) + pre-commit hooks in place
+- Next step, what you need, QR code to your live URL.
+- Team photo, roadmap, pilot partner.
