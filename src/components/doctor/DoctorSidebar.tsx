@@ -43,7 +43,7 @@ export function DoctorSidebar() {
           <Icon name="plus" size={20} className="rotate-45" />
         </button>
       </div>
-      <p className="px-6 pb-6 text-[9px] font-semibold uppercase tracking-[0.14em] text-[#94A3B8]">
+      <p className="px-6 pb-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#64748B]">
         Doctor workspace
       </p>
 
@@ -74,12 +74,12 @@ export function DoctorSidebar() {
           title="Click to logout or switch account"
           className="w-full flex items-center gap-2.5 rounded-lg p-1.5 transition-colors hover:bg-slate-100 text-left"
         >
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#DDEBE9] text-[11px] font-semibold text-[#0F766E]">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#DDEBE9] text-xs font-semibold text-[#0F766E]">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[12px] font-semibold text-[#0F172A]">{name}</p>
-            <p className="text-[10px] text-[#64748B]">{specialization}</p>
+            <p className="truncate text-[13px] font-semibold text-[#0F172A]">{name}</p>
+            <p className="text-[11px] text-[#64748B]">{specialization}</p>
           </div>
           <Icon name="chevron" size={15} className="ml-auto text-[#94A3B8]" />
         </button>

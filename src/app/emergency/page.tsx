@@ -69,10 +69,10 @@ function NumberCard({ title, number, icon, bg, text }: NumberCard) {
         <Icon name={icon} size={16} />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
           {title}
         </p>
-        <p className="mt-0.5 text-[20px] font-bold leading-tight text-[#0F172A] tabular-nums">
+        <p className="mt-0.5 text-[18px] font-bold leading-tight text-[#0F172A] tabular-nums">
           {number}
         </p>
       </div>
@@ -88,23 +88,23 @@ export default function EmergencyPage() {
           <p className="text-[13px] text-[#475569]">
             Call these numbers — they go to emergency services.
           </p>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
             {NUMBER_CARDS.map((card) => (
               <NumberCard key={card.title} {...card} />
             ))}
           </div>
-          <h3 className="mt-6 text-[12px] font-semibold text-[#0F172A]">
+          <h3 className="mt-6 text-sm font-semibold text-[#0F172A]">
             Hospitals in Pokhara
           </h3>
           <ul className="mt-2 space-y-2">
             {HOSPITALS.map((h, i) => (
-              <li key={i} className="patient-card flex items-center gap-3">
+              <li key={i} className="patient-card flex items-center gap-3 p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#F1F5F9]">
                   <Icon name="stethoscope" size={16} className="text-[#0D9488]" />
                 </div>
                 <div>
-                  <p className="text-[12px] font-semibold text-[#0F172A]">{h.name}</p>
-                  <p className="text-[11px] text-[#64748B]">{h.detail}</p>
+                  <p className="text-[13px] font-semibold text-[#0F172A]">{h.name}</p>
+                  <p className="text-xs text-[#64748B]">{h.detail}</p>
                 </div>
               </li>
             ))}

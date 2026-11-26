@@ -420,8 +420,8 @@ function DoctorPatientContent() {
   return (
     <main className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
       {/* Left Context Column */}
-      <aside className="w-full xl:w-[38%] border-b xl:border-b-0 xl:border-r border-[#E2E8F0] bg-[#FCFDFD] px-4 sm:px-6 lg:px-8 py-6 sm:py-7 shrink-0 xl:overflow-y-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.13em] text-[#94A3B8]">
+      <aside className="w-full shrink-0 border-b border-[#E2E8F0] bg-[#F8FAFC] px-4 py-5 sm:px-6 sm:py-6 xl:w-[38%] xl:overflow-y-auto xl:border-b-0 xl:border-r">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-[#64748B]">
           Clinical context
           {loading && <span className="ml-2 normal-case tracking-normal">Loading…</span>}
           {usingMockPatient && (
@@ -432,7 +432,7 @@ function DoctorPatientContent() {
         </p>
 
         {/* Patient header */}
-        <div className="mt-4 border-b border-[#E2E8F0] pb-5 sm:pb-6">
+        <div className="patient-card mt-4 p-4">
           <div className="flex items-center">
             <div className="grid h-11 w-11 sm:h-12 sm:w-12 place-items-center rounded-full bg-[#DDEBE9] text-[13px] font-semibold text-[#0F766E] shrink-0">
               {patient.avatar_initials ?? '??'}
@@ -441,7 +441,7 @@ function DoctorPatientContent() {
               <h1 className="text-base sm:text-[18px] font-semibold tracking-[-0.02em] text-[#0F172A] truncate">
                 {patient.full_name}
               </h1>
-              <p className="mt-0.5 text-[10px] text-[#64748B]">
+              <p className="mt-1 text-xs text-[#64748B]">
                 #{patient.patient_code} · {patient.age ?? '—'} years · {patient.gender ?? '—'} ·{' '}
                 {patient.blood_group ?? '—'}
               </p>
@@ -450,14 +450,14 @@ function DoctorPatientContent() {
               <p className="text-xl sm:text-[22px] font-semibold tracking-[-0.04em] tabular-nums text-[#0D9488]">
                 {patient.weekly_adherence ?? '—'}%
               </p>
-              <p className="text-[9px] text-[#94A3B8]">Adherence</p>
+              <p className="text-[11px] text-[#64748B]">Adherence</p>
             </div>
           </div>
 
           {/* Quick patient switcher dropdown */}
           {allPatients.length > 0 && (
-            <div className="mt-3.5 flex items-center gap-2 rounded-lg bg-[#F1F5F9] p-1.5 text-[11px]">
-              <span className="font-semibold text-[#64748B] pl-1 shrink-0">Select patient:</span>
+            <div className="mt-4 flex flex-col gap-2 rounded-lg bg-[#F1F5F9] p-2 text-sm">
+              <span className="font-semibold text-[#475569]">Select patient:</span>
               <select
                 value={patient.patient_code}
                 onChange={(e) => {
@@ -465,7 +465,7 @@ function DoctorPatientContent() {
                   router.push(`/doctor/patient?code=${targetCode}`);
                 }}
                 aria-label="Switch patient"
-                className="h-7 w-full rounded border border-[#CBD5E1] bg-white px-2 text-[11px] font-medium text-[#0F172A] focus:border-[#0D9488] focus:outline-none"
+                className="h-10 w-full rounded-lg border border-[#CBD5E1] bg-white px-3 text-sm font-medium text-[#0F172A] focus:border-[#0D9488] focus:outline-none"
               >
                 {allPatients.map((p) => (
                   <option key={p.profile_id} value={p.patient_code}>
@@ -478,10 +478,10 @@ function DoctorPatientContent() {
         </div>
 
         {/* Active meds */}
-        <div className="border-b border-[#E2E8F0] py-4 sm:py-5">
+        <div className="mt-5">
           <div className="mb-3 flex justify-between">
-            <h2 className="text-[12px] font-semibold text-[#334155]">Active medications</h2>
-            <span className="text-[10px] text-[#94A3B8]">
+            <h2 className="text-base font-semibold text-[#0F172A]">Active medications</h2>
+            <span className="text-xs text-[#64748B]">
               {medsLoading ? (
                 'Loading…'
               ) : (
@@ -498,22 +498,22 @@ function DoctorPatientContent() {
             medications.map(([name, dose]) => (
               <div
                 key={name}
-                className="flex items-center border-t border-[#F1F5F9] py-2.5 sm:py-3 first:border-0"
+                className="patient-card mb-2 flex items-center gap-2 px-3 py-3 last:mb-0"
               >
-                <span className="mr-3 h-1.5 w-1.5 rounded-full bg-[#10B981] shrink-0" />
-                <p className="text-[11px] font-semibold text-[#334155]">{name}</p>
-                <p className="ml-auto text-[10px] tabular-nums text-[#64748B]">{dose}</p>
+                <span className="h-2 w-2 shrink-0 rounded-full bg-[#10B981]" />
+                <p className="min-w-0 text-sm font-semibold text-[#334155]">{name}</p>
+                <p className="ml-auto text-right text-xs tabular-nums text-[#64748B]">{dose}</p>
               </div>
             ))}
         </div>
 
         {/* Recent uploads */}
-        <div className="pt-4 sm:pt-5">
+        <div className="mt-5">
           <div className="mb-3 sm:mb-4 flex justify-between">
-            <h2 className="text-[12px] font-semibold text-[#334155]">Recent uploads</h2>
+            <h2 className="text-base font-semibold text-[#0F172A]">Recent uploads</h2>
             <Link
               href="/records"
-              className="text-[10px] font-semibold text-[#0D9488] hover:underline"
+              className="text-xs font-semibold text-[#0D9488] hover:underline"
             >
               View all records
             </Link>
@@ -524,17 +524,17 @@ function DoctorPatientContent() {
             records.map(([type, title, date, kind]) => (
               <div
                 key={title}
-                className="flex w-full items-center gap-3 border-t border-[#E2E8F0] py-3 text-left"
+                className="patient-card mb-2 flex w-full items-center gap-3 p-3 text-left last:mb-0"
               >
                 <div className="h-12 w-14 sm:h-14 sm:w-16 shrink-0 overflow-hidden rounded border border-[#E2E8F0]">
                   <DocumentThumb kind={kind} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.08em] text-[#0D9488]">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#0D9488]">
                     {type}
                   </span>
-                  <p className="mt-0.5 text-[11px] font-semibold text-[#334155] truncate">{title}</p>
-                  <p className="mt-0.5 text-[9px] text-[#94A3B8]">{date}</p>
+                  <p className="mt-0.5 truncate text-sm font-semibold text-[#334155]">{title}</p>
+                  <p className="mt-0.5 text-xs text-[#64748B]">{date}</p>
                 </div>
                 <Icon name="arrow" size={14} className="ml-auto text-[#94A3B8] shrink-0" />
               </div>

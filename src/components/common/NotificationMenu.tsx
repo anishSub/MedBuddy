@@ -94,7 +94,13 @@ const DEFAULT_ADMIN_NOTIFICATIONS: NotificationItem[] = [
   },
 ];
 
-export function NotificationMenu({ className = '' }: { className?: string }) {
+export function NotificationMenu({
+  className = '',
+  inverse = false,
+}: {
+  className?: string;
+  inverse?: boolean;
+}) {
   const { user } = useAuth();
   const role = user?.role || 'Patient';
 
@@ -197,7 +203,11 @@ export function NotificationMenu({ className = '' }: { className?: string }) {
         onClick={() => setOpen(!open)}
         aria-label="Notifications"
         title="View Notifications & Reminders"
-        className={`relative grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg border border-[#E2E8F0] bg-white text-[#475569] shadow-xs transition hover:border-[#B9D8D5] hover:bg-[#F8FAFC] ${className}`}
+        className={`relative grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg border shadow-xs transition ${
+          inverse
+            ? 'border-white/30 bg-white/10 text-white hover:border-white/50 hover:bg-white/20'
+            : 'border-[#E2E8F0] bg-white text-[#475569] hover:border-[#B9D8D5] hover:bg-[#F8FAFC]'
+        } ${className}`}
       >
         <Icon name="bell" size={17} />
         {unreadCount > 0 && (

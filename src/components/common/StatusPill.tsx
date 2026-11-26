@@ -5,7 +5,13 @@ interface StatusPillProps {
 export function StatusPill({ status }: StatusPillProps) {
   let style = 'bg-[#F1F5F9] text-[#475569]';
 
-  if (status === 'Confirmed' || status === 'Active' || status === 'Approved') {
+  if (
+    status === 'Confirmed' ||
+    status === 'Active' ||
+    status === 'Approved' ||
+    status === 'Checked in' ||
+    status === 'Next'
+  ) {
     style = 'bg-[#ECFDF5] text-[#059669]';
   } else if (status === 'Pending') {
     style = 'bg-[#FFFBEB] text-[#B45309]';
@@ -14,7 +20,7 @@ export function StatusPill({ status }: StatusPillProps) {
   }
 
   return (
-    <span className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-semibold ${style}`}>
+    <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${style}`}>
       {status}
     </span>
   );
